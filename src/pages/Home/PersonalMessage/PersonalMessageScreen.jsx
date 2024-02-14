@@ -3,8 +3,7 @@ import { CgSearch } from "react-icons/cg";
 import { MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
-import SideScreenFn from "../Functions/SideScreen";
-
+import SideScreenPersonalFn from "../Functions/SideScreen_personal";
 function PersonalMsgScreen() {
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -112,7 +111,7 @@ function PersonalMsgScreen() {
 
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        <SideScreenFn handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>
+        <SideScreenPersonalFn data={{"image":selectedChat?.image,"username":selectedChat?.username}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>
       </div>}
     </>
   );

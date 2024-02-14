@@ -115,3 +115,6 @@ box-shadow: none !important;
   height: 50px;
   cursor: pointer;
 }
+.alignself_center{
+ align-self: center ;
+}

@@ -75,3 +75,10 @@ const Home2 = () => {
   );
 };
 export default Home;
+
+
+<div className="section3_features">
+                        <MdOutlinePersonAddAlt className="icon"/>
+                        <MdMessage className="icon"/>
+                        <IoMdHeartDislike className="icon"/>
+                    </div>
