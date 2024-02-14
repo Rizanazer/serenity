@@ -17,13 +17,13 @@ const Home = () => {
 
     <div className="container center">
       <Nav Screen={Screen} setScreen={setScreen}/>
-      {Screen == "PersonalMessage" && <PersonalMsgScreen/>}
-      {Screen == "Profile" && <ProfileScreen />}
-      {Screen == "CommunityMessage" && <CommunityMsgScreen />}
-      {Screen == "CommunityReccomendation" && <ReccomendationScreen />}
-      {Screen == "SearchCommunity" && <SearchScreen />}
-      {Screen == "AddFriends" && <AddFriendsScreen/>}
-      {Screen == "Settings" && <SettingsScreen />}
+      {Screen === "PersonalMessage" && <PersonalMsgScreen/>}
+      {Screen === "Profile" && <ProfileScreen />}
+      {Screen === "CommunityMessage" && <CommunityMsgScreen screen={setScreen}/>}
+      {Screen === "CommunityReccomendation" && <ReccomendationScreen />}
+      {Screen === "SearchCommunity" && <SearchScreen />}
+      {Screen === "AddFriends" && <AddFriendsScreen/>}
+      {Screen === "Settings" && <SettingsScreen />}
 
 
 

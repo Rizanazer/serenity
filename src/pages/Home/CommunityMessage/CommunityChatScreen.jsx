@@ -3,7 +3,10 @@ import { CgSearch } from "react-icons/cg";
 import { MdOutlineMenu ,MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import GroupList from "../Functions/GroupList";
 import UpperChatInfo from "../Functions/UpperChatInfo";
-function CommunityMsgScreen() {
+import Menu from "../Functions/menu";
+
+
+function CommunityMsgScreen({screen}) {
   const [ChatSearch, SetChatSearch] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -35,7 +38,7 @@ function CommunityMsgScreen() {
       <div className="section1 box">
         <div className="box searchbox flexrow spacebetween">
           <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={()=>{}}/>
-          <MdOutlineMenu className="menu_icon" onClick={()=>{console.log("menu-create/join community");}}/>
+          <Menu setScreen={screen}/>
         </div>
         {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
 
