@@ -1,0 +1,22 @@
+input{
+  padding: 10px 20px;
+  box-shadow:var(--shadow);
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+button{
+  padding: 10px 20px;
+  box-shadow:var(--shadow);
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  background: var(--deep_purple_A200);
+  color: #fff;
+  cursor: pointer;
+}
+
+

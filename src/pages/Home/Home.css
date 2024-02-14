@@ -1,0 +1,244 @@
+.container {
+    /* gap:20px; */
+    background: var(--bgclr);
+    padding: 20px 0;
+}
+
+.nav {
+    flex: 0.6;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* overflow-y: auto; */
+    gap: 5px;
+}
+
+
+.active {
+    padding-top: 5px;
+    /* padding:10px 0px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* gap: 5px; */
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.active>img {
+    width: 50px;
+    aspect-ratio: 1/1;
+    border-radius: 500px;
+}
+
+.navbox {
+    flex: 1;
+    width: 100%;
+    background: var(--navclr);
+    border-radius: 0 40px 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.section1 {
+    flex: 3;
+    height: 100%;
+    margin: 10px;
+    overflow-y: auto;
+}
+
+.searchbox {
+    padding: 5px 5px !important;
+    border-radius: 10px !important;
+
+}
+
+.profile_text {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat {
+    flex-direction: row !important;
+    justify-content: space-between;
+    padding: 10px !important;
+    border-radius: 5px;
+    align-items: center;
+
+}
+
+.chat_info {
+    display: flex;
+    flex-direction: row !important;
+    gap: inherit;
+}
+
+.profile_chat_img {
+    padding: 0px 0px !important;
+}
+
+.chat_notification {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section2 {
+    flex: 9;
+    height: 100%;
+    /* margin: 10px; */
+    padding: 0px 0px !important;
+    background-color: var(--bgclr) !important;
+    gap: 5px !important;
+
+}
+
+.upper_chatroom_padding {
+    flex: .5;
+    padding: 6px 5px !important;
+    border-radius: 20px 20px 0px 0px !important;
+
+}
+
+.chat_area {
+    flex: 7;
+    border-radius: 0px 0px 0px 0px !important;
+    overflow-y: auto;
+}
+
+.chat_typing {
+    flex: .5;
+    position: relative;
+    bottom: 0;
+    border-radius: 0px 0px 20px 20px !important;
+    padding: 5px 5px !important;
+
+}
+
+.type_message {
+    display: flex;
+    flex: 1;
+}
+
+.message_length {
+    flex: 1;
+}
+
+.chatfeature {
+    display: flex;
+    flex-direction: row;
+}
+
+.feature_with_send {
+    display: flex;
+    gap: 25px !important;
+}
+
+.send {
+    padding: 7px 0px !important;
+}
+
+.msg {
+    padding: 10px;
+    margin-left: 10px;
+    background: #f5f5f5;
+    border-radius: 5px 5px 5px 0;
+    display: inline-block;
+    /* Change to inline-block */
+    max-width: fit-content;
+    width: auto;
+    /* Allow the width to adjust dynamically */
+    box-shadow: var(--shadow);
+    position: relative;
+    right: 0;
+
+}
+
+.icon_search {
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.menu_icon {
+    padding: 5px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+.more_options {
+    position: absolute;
+    right: 0;
+    margin-right: 2%;
+    height: 15%;
+    width: 15%;
+    border-radius: 20px 0 20px 20px;
+    background: #eeeeee;
+    padding: 5px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    box-shadow: var(--shadow);
+
+}
+.more_option_adjusted{
+    margin-right: 21% !important;
+}
+.section3{
+   
+    flex: 3;
+    flex-direction: column;
+    height: 100%;
+    margin: 10px;
+    overflow-y: auto;
+    background: var(--bgclr) !important;
+}
+.section3_back{
+    position: absolute;
+    width: 100%;
+   background: transparent;
+}
+.section3_1{
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    background: #fff;
+    flex: 6;
+    width: 100%;
+}
+.section3_1_1{
+    display: flex;
+    flex: 6;
+    width: 100%;
+    
+    /* justify-content: center; */
+}
+.section3_1_2{
+    flex: 3;
+    width: 100%;
+    gap: 10px;
+}
+.section3_2{
+    border-radius: 5px;
+    background: #fff;
+    position: relative;
+    flex: 2;
+    width: 100%;
+}
+.section3_3{
+    position: relative;
+    flex: 2;
+    width: 100%;
+}
+.section3_textArea{
+    gap: 5px;
+}
+.section3_features{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}

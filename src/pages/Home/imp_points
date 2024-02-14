@@ -1,0 +1,77 @@
+const Home = () => {
+  var [k,setK] = useState(["niyas","ashar","riza","shibili","fahad"]);
+//   usestate is used to declare a state
+
+  var [val,setVal] = useState("");
+//   setK,setval -> funtions
+//   k , val->variables
+
+  return (
+    <div className="container">
+      {
+        // .msg{
+        //     padding: 10px;
+        //     margin-left: 10px;
+        //     background: #d6e8ed;
+        //     border-radius: 5px 5px 5px 0;
+        //     max-width: 200px;
+        // }
+
+        k.map((el)=><p className="msg">{el}</p>)
+        // mapping to k array
+      }
+      <input type="text" onChange={(event)=>{setVal(event.target.value);}}/>
+         {/* event used to denote instance value of the target  */}
+      <button onClick={()=>{setK([...k,val])}}>click</button>
+      {/* [...k] here is used to get all the array elements */}
+    </div>
+  );
+};
+
+// ()=>{} used as fn
+
+import React, { useEffect, useState } from "react";
+import './Home.css'
+import { Link } from "react-router-dom";
+const Home1 = () => {
+  var [k,setK] = useState(["niyas","ashar","riza","shibili","fahad"]);
+  var [val,setVal] = useState("");
+
+  return (
+    <div className="container">
+      {
+        k.map((el)=><h1>❤️{el}</h1>)
+      }
+      {/* prints all elements with emot preceeding it. */}
+      <input type="text" onChange={(event)=>{setVal(event.target.value);}}/>
+      {/* if we use event.target we get info on instance of the target */}
+      <button onClick={()=>{setK([...k,"HELLO"])}}>click</button>
+      {/* in each press ,after click is pressed,"HELLO" is printed. */}
+    </div>
+  );
+};
+// export default Hom21;
+
+
+import React, { useEffect, useState } from "react";
+import './Home.css'
+import { Link } from "react-router-dom";
+const Home2 = () => {
+  var [k,setK] = useState(10);
+  var [m,setM] = useState("💕");
+
+  useEffect(()=>{
+    if(k>15){
+      setM('❤️')
+    }
+  },[k]);
+  // useeffect is used to connect 2 states.it uses a fn and dependecy array. 
+  return (
+    <div className="container">
+      <nav>{m}</nav>
+      <main>{k}</main>
+      <button onClick={()=>{setK("niyas")}}>click</button>
+    </div>
+  );
+};
+export default Home;
