@@ -1,6 +1,13 @@
 .menu_div {
     text-align: center;
+    border: none !important;
 }
 .menu_div_adj{
     margin-right: 20px !important;
+    border: none !important;
+    color: #ffffff !important;
 }
+.gVNztz:is(:hover, :focus, :active) {
+    color: #ffffff;
+    background: #5E4AE3 !important;
+  }
