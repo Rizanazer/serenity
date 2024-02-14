@@ -4,6 +4,8 @@ import { MdOutlineMenu ,MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend
 import GroupList from "../Functions/GroupList";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import Menu from "../Functions/menu";
+import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetails";
+import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 
 
 function CommunityMsgScreen({screen}) {
@@ -11,6 +13,12 @@ function CommunityMsgScreen({screen}) {
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   var [selectedChat, setSelectedChat] = useState(null);
+  const [More, setMore] = useState(false);
+  const toggleMore = () => {
+    setMore(prevState => !prevState);
+  };
+  const [Moreadj,setMoreadj]=useState(false);
+  var [Member,setMember]=useState(false);
   var [GroupName, setGroupName] = useState([
     { "groupname": "Group 1", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) } },
     { "groupname": "Group 2", "image": "images/groupprofile.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) } },
@@ -54,7 +62,7 @@ function CommunityMsgScreen({screen}) {
 
                 <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
-                {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true) } }} />}
+                {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true); } }} />}
               </div>
 
               <div className="center gap">
@@ -73,13 +81,14 @@ function CommunityMsgScreen({screen}) {
                 }
                 </div>
 
-                <MdMoreVert className="icon nobordershadow" color="" onClick={() => { console.log("more options like mute,blocklist..."); }} />
+                <MdMoreVert className="icon nobordershadow" color="" onClick={toggleMore} />
 
               </div>
             </div>
 
             {/* middlechats component-chat_area */}
             <div className="box chat_area nopadding">
+            {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
 
               {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
 
@@ -106,7 +115,12 @@ function CommunityMsgScreen({screen}) {
           <></>
         }
       </div>
-      {SideScreen && <div className="section1 box" onClick={() => { setSideScreen(false) }}></div>}
+      {SideScreen && <div className="section3 box nopadding nobordershadow">
+        {Member?<SideScreenCommunityMemberFn data={{"image":"images/profileimg_chat.jpg","username":"arif"}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}} member={()=>{setMember(false)}}/>
+        :
+        <SideScreenCommunityDetailsFn data={{"image":selectedChat?.image,"username":selectedChat?.groupname}} member={()=>{setMember(true);}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>}
+        
+      </div>}
     </>
   );
 }

@@ -118,3 +118,6 @@ box-shadow: none !important;
 .alignself_center{
  align-self: center ;
 }
+.blur{
+  filter: blur(4px);
+}

@@ -238,7 +238,9 @@
     width: 100%;
     padding: 10px 10px;
     overflow-y: scroll;
+    
 }
+
 .Group_Participations{
     overflow-y: scroll;
     height: max-content;
