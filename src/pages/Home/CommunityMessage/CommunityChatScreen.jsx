@@ -3,7 +3,7 @@ import { CgSearch } from "react-icons/cg";
 import { MdOutlineMenu ,MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import GroupList from "../Functions/GroupList";
 import UpperChatInfo from "../Functions/UpperChatInfo";
-import Menu from "../Functions/menu";
+import Menu from "../Functions/Menu/menu";
 import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetails";
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 
@@ -62,7 +62,7 @@ function CommunityMsgScreen({screen}) {
 
                 <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
-                {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true); } }} />}
+                {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true);setMember(false); } }} />}
               </div>
 
               <div className="center gap">
@@ -90,7 +90,11 @@ function CommunityMsgScreen({screen}) {
             <div className="box chat_area nopadding">
             {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
 
-              {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
+              {messages.map((el, i) => <div className="msg_main">
+                 <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
+                 <p className="msg " key={i}>{el}</p>
+                </div>)}
+              
 
             </div>
 

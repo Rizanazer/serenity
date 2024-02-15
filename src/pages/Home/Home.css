@@ -139,7 +139,13 @@
 .send {
     padding: 7px 0px !important;
 }
-
+.msg_main{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    /* height: 10px; */
+    width: auto;
+}
 .msg {
     padding: 10px;
     margin-left: 10px;
