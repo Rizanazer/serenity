@@ -9,7 +9,7 @@ function GroupList({ data ,HandleClick}) {
             <span className="light">{data.message}</span>
           </div>
         </div>
-        {/* {data.status && <FaCircleDot className="" color="#5e4ae3" />} */}
+        {data.status && <span className="light">joined</span>}
       </div>
     )
   }
