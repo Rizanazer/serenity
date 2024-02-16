@@ -1,10 +1,9 @@
 import React, {useState } from "react";
-import { CgSearch } from "react-icons/cg";
-import { MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
+import { MdArrowBack, MdMoreVert} from "react-icons/md";
 import GroupList from "../Functions/GroupList";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import "./SearchScreen.css"
-
+import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
 function SearchScreen(){
   const [Join,setJoin]=useState(false);
   var [ViewChat, setViewChat] = useState(false);
@@ -92,7 +91,7 @@ function SearchScreen(){
 
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        {/* <SideScreenPersonalFn data={{"image":selectedChat?.image,"username":selectedChat?.username}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/> */}
+      {<SideScreenCommunityJoinFn data={{"image":selectedChat?.image,"groupname":selectedChat?.groupname}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>}
       </div>}
     </>
   );

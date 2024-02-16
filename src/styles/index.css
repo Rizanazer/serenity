@@ -124,6 +124,9 @@ box-shadow: none !important;
 .circle{
   border-radius: 50px;
 }
+.transparent{
+  background: transparent !important;
+}
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
