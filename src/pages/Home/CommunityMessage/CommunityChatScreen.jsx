@@ -8,7 +8,7 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 
 
-function CommunityMsgScreen({screen}) {
+function CommunityMsgScreen({screen,create}) {
   const [ChatSearch, SetChatSearch] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -46,7 +46,7 @@ function CommunityMsgScreen({screen}) {
       <div className="section1 box">
         <div className="box searchbox flexrow spacebetween">
           <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={()=>{}}/>
-          <Menu setScreen={screen}/>
+          <Menu setScreen={screen} setCreateAlert={create}/>
         </div>
         {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
 

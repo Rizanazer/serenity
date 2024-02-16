@@ -4,7 +4,7 @@ import { CircleMenu, CircleMenuItem } from "react-circular-menu";
 import {MdOutlineMenu,MdOutlineGroupAdd,MdCreate  } from  "react-icons/md";
 
 
-function Menu ({setScreen}){
+function Menu ({setScreen,setCreateAlert}){
     const [MenuAdj,setMenuAdj]=useState(false);
     const toggleMore = () => {
         setMenuAdj(prevState => !prevState);
@@ -23,7 +23,7 @@ function Menu ({setScreen}){
       >
         <CircleMenuItem
             className="menu_div_adj"
-          onClick={() => alert("create community")}
+          onClick={() => setCreateAlert(true)}
           tooltip="Create Community" 
           tooltipPlacement="right"
           style={{borderColor:"#5E4AE3",backgroundColor:"#5E4AE3"}}
