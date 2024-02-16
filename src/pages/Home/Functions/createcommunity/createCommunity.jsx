@@ -17,65 +17,65 @@ var CreateCommunity = ({ setCreateAlert }) => {
                             </div>
                         </div>
                         <div className="box create_gp_Members">
-            
+
                             <div className="member_box flexrow" onClick={() => { }}>
                                 <input type="checkbox" />
                                 <img src="images/profileimg_chat.jpg" className="icon_member" />
                                 <span className="bold pointer">arif</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">riza</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">arjun</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">ebin</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">arif</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">riza</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">arjun</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">ebin</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">arif</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">riza</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">arjun</span>
                             </div>
                             <div className="member_box flexrow" onClick={() => { }}>
-                            <input type="checkbox" />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
+                                <input type="checkbox" />
+                                <img src="images/profileimg_chat.jpg" className="icon_member" alt=""/>
                                 <span className="bold pointer">ebin</span>
                             </div>
                         </div>
