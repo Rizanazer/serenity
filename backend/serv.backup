@@ -1,0 +1,234 @@
+  const express = require('express');
+  const cors = require('cors');
+  const mongoose = require('mongoose');
+  const router = express.Router()
+  const app = express();
+  const port = process.env.PORT || 5000;
+  const connectDB = require('./db'); 
+  const User = require('./models/user'); 
+  const { MongoClient } = require('mongodb');
+const Community = require('./models/community');
+const CommunityChats = require('./models/communityChats');
+  app.use(cors());
+  app.use(express.json());
+
+  connectDB();
+  router.route("/register").post(async (req, res) => {
+    try {
+      const newData = req.body;
+      newData.friends = []
+      newData.communities = []
+      const result = await User.create(newData);
+      console.log('Data inserted Succesfully');
+      res.json({"success":true})
+    } catch (error) {
+      console.error('Error inserting data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+// Assuming you have your CommunityChats model defined
+router.route("/fetchmessages").post(async (req, res) => {
+  try {
+    const { c_id } = req.body;
+    if (!c_id) {
+      return res.status(400).json({ "success": false, "error": "Missing required property: c_id." });
+    }
+
+    // Find the CommunityChats document for the given communityId
+    const existingChat = await CommunityChats.findOne({ communityId: c_id });
+
+    if (existingChat) {
+      // If the document exists, send the messages as a response
+      console.log(`succcess`);
+      res.json({ "success": true, "messages": existingChat.messages });
+    } else {
+      // If the document doesn't exist, send an empty array as a response
+      console.log(`succcess`);
+      res.json({ "success": true, "messages": [] });
+    }
+  } catch (error) {
+    console.log(`fail`);
+
+    console.error("Error in fetching messages from db:", error);
+    res.status(500).json({ "success": false, "error": "Internal server error." });
+  }
+});
+
+
+
+
+  router.route("/login").post(async(req,res)=>{
+    const userdata = req.body
+    //insertData(req.body.name,req.body.age);
+    const pw = userdata.pass
+    const maill = userdata.mail
+    const ph = userdata.phone
+    const query = { username: maill, password: pw };
+    try{
+      const result = await User.findOne(query);
+      console.log(result);
+      console.log(result._id)
+      //res.json(result)
+      if(result){
+        res.json({"success":true,"userid":result._id})
+      }else if (result === null) {
+        res.json({"success":false})
+      }
+    }catch{
+      res.json({"success":false})
+    }
+    
+    
+  });
+
+
+
+
+
+  router.route("/sendmessage").post(async (req, res) => {
+    try {
+      const { c_id, u_id, message,u_name} = req.body;
+      console.log(req.body);
+      if (!c_id || !u_id || !message) {
+        return res.status(400).json({ "success": false, "error": "Missing required properties." });
+      }
+      const existingChat = await CommunityChats.findOne({ communityId: c_id });
+  
+      if (existingChat) {
+        existingChat.messages.push({ u_id, message,u_name });
+        await existingChat.save();
+      } else {
+        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message }] });
+      }
+      res.json({ "success": true });
+    } catch (error) {
+      console.error("Error in sending message to db:", error);
+      res.status(500).json({ "success": false, "error": "Internal server error." });
+    }
+  });
+  
+
+
+
+
+  router.route("/createcommunity").post(async(req,res) =>{
+    try {
+      const communityData = req.body;
+      const cname = req.body.communityname;
+      const cdescription = req.body.description;
+      const createdby = req.body.createdby;
+      const admins = req.body.createdby || [];
+      const members = req.body.createdby || [];
+  
+      const result = await Community.create({
+        communityName: cname,
+        createdBy: createdby,
+        description: cdescription,
+        admins: admins,
+        members: members,
+      });
+  
+      console.log('Community created successfully:', result);
+      res.json({"success":true});
+    } catch (error) {
+      console.error('Error creating community:', error);
+      res.json({"success":false});
+    }
+    
+  });
+
+
+
+  router.route("/getcommunities").get(async(req,res)=>{
+    console.log("userid :" + req.query.userid);
+    try{
+      const allCommunities = await Community.find();
+      const userid = req.query.userid; 
+      const memberCommunities = await Community.find({ members: userid });
+      console.log("memberof :"+memberCommunities);
+      res.json({ "success": true, "communities": allCommunities ,"memberof":memberCommunities});
+    }catch{
+      console.error(error);
+      res.status(500).json({ "success": false });
+    }
+    
+    
+  });
+
+  router.route("/joincommunity").post(async(req,res)=>{
+    
+    try{
+      const c_id = req.body.c_id
+      const u_id = req.body.u_id
+      //console.log(c_id+" "+u_id);
+      const updateTargetCommunity = await Community.findByIdAndUpdate(
+        c_id,
+        {$addToSet:{members:u_id}},
+        {new:true}
+        );
+      const updateTargetUser = await User.findByIdAndUpdate(
+        u_id,
+        {$addToSet:{communities:c_id}},
+        {new:true}
+        );
+     //console.log(updateTargetCommunity);
+      res.json({ "success": true});
+    }catch{
+      console.error(error);
+    res.status(500).json({ "success": false });
+    }
+    
+    
+  });
+
+  app.use('/',router)
+  /*
+  app.get('/', (req, res) => {
+    collection.find({}).toArray((err, data) => {
+      if (err) {
+        console.error('Error fetching data:', err);
+        res.status(500).json({ error: 'An error occurred while fetching data.' });
+        return;
+      }
+      res.json(data);
+    });
+  });
+
+    
+    async function insertData(v1,v2) {
+      try {
+        
+    
+        // Connect to MongoDB
+        await client.connect();
+    
+        // Access your desired database and collection
+        
+        const dataToInsert = 
+          { name: v1, age: v2 }
+          
+          // Add more data here
+        
+        // Insert the data
+        const result = await collection.insertOne(dataToInsert);
+          
+        console.log(`Inserted 1 document into the collection`);
+        res.json({"response":"hi "})
+        // Close the connection
+        client.close();
+      } catch (error) {
+        console.error('Error inserting data:', error);
+      }
+    }
+    //insertData();
+  
+
+  */
+
+
+  // Define your routes for handling user input and database operations
+
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
