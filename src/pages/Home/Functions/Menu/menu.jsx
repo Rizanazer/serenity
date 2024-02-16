@@ -9,6 +9,9 @@ function Menu ({setScreen,setCreateAlert}){
     const toggleMore = () => {
         setMenuAdj(prevState => !prevState);
       };
+      const togglecreate = () => {
+        setCreateAlert(prevState => !prevState);
+      };
     return(<>
      <div className=""  onClick={()=>{toggleMore()}}>
       <CircleMenu
@@ -23,7 +26,7 @@ function Menu ({setScreen,setCreateAlert}){
       >
         <CircleMenuItem
             className="menu_div_adj"
-          onClick={() => setCreateAlert(true)}
+          onClick={() => togglecreate()}
           tooltip="Create Community" 
           tooltipPlacement="right"
           style={{borderColor:"#5E4AE3",backgroundColor:"#5E4AE3"}}
