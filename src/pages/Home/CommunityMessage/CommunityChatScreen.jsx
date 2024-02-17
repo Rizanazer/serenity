@@ -11,7 +11,14 @@ import axios from "axios";
 function CommunityMsgScreen({screen,create}) {
   ///////////////////////////
   const [selectedCommunityName,setSelectedCommunityName] = useState(null)
-
+  const [selectedCommunity,setSelectedCommunity] = useState(null)
+  const [individualCommunity,setIndividualCommunity] = useState([])
+  const userdata = JSON.parse(localStorage.getItem('userdata'))
+  const [communityList,updateCommunityList] = useState(userdata.communities)
+  const [chatByCommunity,setChatByCommunity] = useState(null)
+  //console.log(communityList);
+  const [loadChatByCommunity,setLoadChatByCommunity] = useState(null)
+  const [allCommunityMessages,setAllCommunityMessages] = useState([])
   //////////////////////////
   const [ChatSearch, SetChatSearch] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
@@ -24,7 +31,7 @@ function CommunityMsgScreen({screen,create}) {
   const [Moreadj,setMoreadj]=useState(false);
   var [Member,setMember]=useState(false);
   var [GroupName, setGroupName] = useState([
-    { "groupname": "Group 1", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) } },
+    { "groupname": "Group ss1", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) } },
     { "groupname": "Group 2", "image": "images/groupprofile.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) } },
     { "groupname": "Group 3", "image": "images/groupprofile.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) } },
     { "groupname": "Group 4", "image": "images/groupprofile.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) } },
@@ -45,6 +52,44 @@ function CommunityMsgScreen({screen,create}) {
       setMessages([...messages, text])
     }
   }
+
+////////////////////////////////////////
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('/loadchat', { communitylist: communityList });
+        const temp1 = response.data.map(element => element.chats).flat()
+        console.log(temp1)
+        // const temp2 = temp1.map(element => element.messages).flat();
+        // console.log("temp2 : "+temp2);
+        setAllCommunityMessages(temp1.flat())
+        const k = allCommunityMessages.map((el) => el.messages)
+        console.log(allCommunityMessages);
+      } catch (error) {
+        console.error(error);
+      }
+      };
+
+      fetchData();
+  }, []); 
+    useEffect(() => {
+      //console.log(communityList);
+      async function fetchCommunityDetails() {
+        try {
+          const response = await axios.post('/individualcommunity', { data: communityList });
+          setIndividualCommunity(response.data);
+        } catch (error) {
+          console.error('Error fetching community details:', error);
+        }
+      }
+
+      if (communityList.length > 0) {
+        fetchCommunityDetails();
+      }
+    }, []);
+////////////////////////////////////////
+
+
   return (
     <>
       <div className="section1 box">
@@ -52,8 +97,8 @@ function CommunityMsgScreen({screen,create}) {
           <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={()=>{}}/>
           <Menu setScreen={screen} setCreateAlert={create}/>
         </div>
-        {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
-
+        {/* {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)} */}
+        {individualCommunity.map((el, i) => <GroupList data={el} key={i} actions={{setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>)}
 
       </div>
 
@@ -66,7 +111,9 @@ function CommunityMsgScreen({screen,create}) {
 
                 <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
-                {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true);setMember(false); } }} />}
+                {/* {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true);setMember(false); } }} />} */}
+                {<UpperChatInfo data={{individualCommunity,selectedCommunityName}} actions={{setSelectedCommunity}}  />}
+
               </div>
 
               <div className="center gap">
@@ -91,13 +138,22 @@ function CommunityMsgScreen({screen,create}) {
             </div>
 
             {/* middlechats component-chat_area */}
-            <div className="box chat_area nopadding">
+            <div className="box chat_area nopadding" onClick={()=>(console.log(allCommunityMessages.map(s=>s.messages.map(t=>t.message))))}>
             {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
 
-              {messages.map((el, i) => <div className="msg_main">
+              {/* {messages.map((el, i) => <div className="msg_main">
                  <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
                  <p className="msg " key={i}>{el}</p>
-                </div>)}
+                </div>)} */}
+                {allCommunityMessages.map(community => {
+              if (selectedCommunity === community.communityId) {
+                return community.messages.map(message => (
+                  <p key={message.id}>{message.message}</p>
+                ));
+              } else {
+                return null; 
+              }
+            })}
               
 
             </div>
