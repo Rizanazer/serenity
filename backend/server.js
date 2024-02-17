@@ -55,15 +55,12 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       return res.status(400).json({ "success": false, "error": "Missing required property: c_id." });
     }
 
-    // Find the CommunityChats document for the given communityId
     const existingChat = await CommunityChats.findOne({ communityId: c_id });
     const commDetails = await Community.find({_id: c_id});
     if (existingChat) {
-      // If the document exists, send the messages as a response
       console.log(`succcess`);
       res.json({ "success": true, "messages": existingChat.messages,"commDetails":commDetails });
     } else {
-      // If the document doesn't exist, send an empty array as a response
       console.log(`succcess`);
       res.json({ "success": true, "messages": [] });
     }
@@ -235,19 +232,14 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     try {
       const communityList = req.body.communitylist; // Array of community IDs
   
-      // Array to store chats for each community
       const allChats = [];
   
-      // Iterate over each community ID
       for (const communityId of communityList) {
-        // Query CommunityChats collection to find all chats for the current community ID
         const chats = await CommunityChats.find({ communityId });
   
-        // Push retrieved chats to the array
         allChats.push({ communityId, chats });
       }
       console.log(allChats);
-      // Send back the retrieved chats to the client
       res.json(allChats);
     } catch (error) {
       console.error(error);
