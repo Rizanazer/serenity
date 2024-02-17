@@ -138,7 +138,8 @@ function CommunityMsgScreen({screen,create}) {
             </div>
 
             {/* middlechats component-chat_area */}
-            <div className="box chat_area nopadding" onClick={()=>(console.log(allCommunityMessages.map(s=>s.messages.map(t=>t.message))))}>
+            {/* //onClick={()=>(console.log(allCommunityMessages.map(s=>s.messages.map(t=>t.message))))} */}
+            <div className="box chat_area nopadding" >
             {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
 
               {/* {messages.map((el, i) => <div className="msg_main">
@@ -148,7 +149,11 @@ function CommunityMsgScreen({screen,create}) {
                 {allCommunityMessages.map(community => {
               if (selectedCommunity === community.communityId) {
                 return community.messages.map(message => (
-                  <p key={message.id}>{message.message}</p>
+                  <div className="msg_main">
+                 <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
+                  <p className="uname-msg">{message.u_name}</p>
+                  <p className="msg" key={message.id}>{message.message}</p>
+                  </div>
                 ));
               } else {
                 return null; 
