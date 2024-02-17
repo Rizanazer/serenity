@@ -144,3 +144,11 @@ box-shadow: none !important;
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+.viewerror{
+  min-height: 10px;
+  max-height: 10px;
+  font-size: small;
+  color: red;
+  display: flex;
+  align-items: center;
+}

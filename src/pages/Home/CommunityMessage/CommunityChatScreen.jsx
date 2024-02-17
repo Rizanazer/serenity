@@ -6,9 +6,13 @@ import UpperChatInfo from "../Functions/UpperChatInfo";
 import Menu from "../Functions/Menu/menu";
 import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetails";
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
-
+import axios from "axios";
 
 function CommunityMsgScreen({screen,create}) {
+  ///////////////////////////
+  const [selectedCommunityName,setSelectedCommunityName] = useState(null)
+
+  //////////////////////////
   const [ChatSearch, SetChatSearch] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
