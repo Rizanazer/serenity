@@ -255,68 +255,36 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   app.use('/',router)
  
   io.on('connection', (socket) => {
-    console.log('Client connected');
-  
-    // Handle incoming messages from clients
-    // socket.on('getfetchedmessages', async (c_id) => {
-    //   try {
-    //     if (!c_id) {
-    //       socket.emit('Insufficient data');
-    //       return;
-    //     }
-    
-    //     const existingChat = await CommunityChats.findOne({ communityId: c_id });
-    
-    //     if (existingChat) {
-    //       // Emit the fetched messages only to the specific socket that requested it
-    //       socket.emit('fetchMessage', { messages: existingChat.messages });
-    //     } else {
-    //       console.log('fail');
-    //     }
-    //   } catch (error) {
-    //     console.log('fail');
-    //     console.error("Error in fetching messages from db:", error);
-    //   }
-    // });
-    
+    console.log('Socket Client connected');
 
 
-
-
-
-
-
-
-
-
-
-    socket.on('sendmessage', async ({ c_id, u_name, message, u_id }) => {
+    socket.on('sendMessage', async ({ c_id, u_name, message, u_id }) => {
+      console.log(c_id,+" "+message+" "+u_name+" "+u_id);
       try {
         if (!c_id || !u_id || !message) {
-          return io.emit({ success: false, "error": "Missing required properties." });
+          return socket.emit({ success: false, "error": "Missing required properties." });
         }
-        console.log(`Message Sent through socket`);
+    
         const existingChat = await CommunityChats.findOne({ communityId: c_id });
-        // if(existingChat){
-        //   io.emit('newMessage', {u_id, u_name, message });
-
-        // }
-        io.emit('newMessage', { u_id, u_name, message });
+    
         if (existingChat) {
-          socket.emit('previousMessages', { messages: existingChat.messages,success:true });
-          existingChat.messages.push({ u_id, message,u_name });
+          existingChat.messages.push({ u_id, message, u_name });
           await existingChat.save();
         } else {
-          await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message }] });
-          io.emit({ success: true });
+          await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message,u_name }] });
         }
-        io.emit('newMessage', {u_id, u_name, message });
+    
+        // Emit the new message to all connected clients
+        io.emit('newMessage', { u_id, u_name, message });
+        socket.emit({ success: true });
       } catch (error) {
         console.error('Error in handling incoming message:', error);
-        //console.error("Error in sending message to db:", error);
-        //res.status(500).json({ "success": false, "error": "Internal server error." });
+        socket.emit({ success: false, "error": "Internal server error." });
       }
     });
+    
+
+
   });
 
 

@@ -7,19 +7,86 @@ import Menu from "../Functions/Menu/menu";
 import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetails";
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
-
+import {io} from "socket.io-client"
 function CommunityMsgScreen({screen,create}) {
   ///////////////////////////
+  //const [updationToggle,setUpdationToggle]=useState(0)
+  const [communityMessages, setCommunityMessages] = useState({});
   const [selectedCommunityName,setSelectedCommunityName] = useState(null)
   const [selectedCommunity,setSelectedCommunity] = useState(null)
   const [individualCommunity,setIndividualCommunity] = useState([])
   const userdata = JSON.parse(localStorage.getItem('userdata'))
   const [communityList,updateCommunityList] = useState(userdata.communities)
-  const [chatByCommunity,setChatByCommunity] = useState(null)
+  const [chatByCommunity,setChatByCommunity] = useState([])
   //console.log(communityList);
   const [loadChatByCommunity,setLoadChatByCommunity] = useState(null)
   const [allCommunityMessages,setAllCommunityMessages] = useState([])
+  
+  const [socket, setSocket] = useState(null);
+  // function updationToggleFunc(){
+  //   if(updationToggle === 0){
+  //     setUpdationToggle(1)
+  //   }else{
+  //     setUpdationToggle(0)
+  //   }
+  // }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('/loadchat', { communitylist: communityList });
+        const temp1 = response.data.map(element => element.chats).flat()
+        console.log(temp1)
+        // const temp2 = temp1.map(element => element.messages).flat();
+        // console.log("temp2 : "+temp2);
+        setAllCommunityMessages(temp1.flat())
+        //const k = allCommunityMessages.map((el) => el.messages)
+        console.log(allCommunityMessages);
+        
+      } catch (error) {
+        console.error(error);
+      }
+      };
+      
+      const res = allCommunityMessages.find(community => community.communityId === selectedCommunity)
+      console.log("dssf  "+res);
+      //setChatByCommunity(allCommunityMessages.find(community => community.communityId === selectedCommunity))
+      console.log(`chttt: `+chatByCommunity);
+      fetchData();
+  }, [communityList]); 
+
+  useEffect(() => {
+    const newSocket = io('http://:3000'); 
+    setSocket(newSocket);
+  
+    newSocket.on('connect', () => {
+      console.log('Connected to the server socket');
+    });
+  
+    newSocket.on('newMessage', (message) => {
+
+       console.log('New message from the server socket:', message);
+      setAllCommunityMessages((prevCommunityMessages) => {
+        const index = prevCommunityMessages.findIndex(chat => chat.c_id === message.c_id);
+        console.log(index);
+        if (index !== -1) {
+          const updatedCommunityMessages = [...prevCommunityMessages];
+          updatedCommunityMessages[index].messages.push(message);
+          return updatedCommunityMessages;
+        } else {
+          return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [message] }];
+        }
+      });
+    });
+  
+    return () => {
+      newSocket.disconnect();
+      console.log('Disconnected from the server');
+    };
+  }, [allCommunityMessages]);
+  
   //////////////////////////
+  //console.log(`allcommu`);
+    //console.log(allCommunityMessages)
   const [ChatSearch, SetChatSearch] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -30,54 +97,46 @@ function CommunityMsgScreen({screen,create}) {
   };
   const [Moreadj,setMoreadj]=useState(false);
   var [Member,setMember]=useState(false);
-  var [GroupName, setGroupName] = useState([
-    { "groupname": "Group ss1", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 2", "image": "images/groupprofile.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 3", "image": "images/groupprofile.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 4", "image": "images/groupprofile.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 5", "image": "images/groupprofile.jpg", "message": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 6", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 7", "image": "images/groupprofile.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 8", "image": "images/groupprofile.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 9", "image": "images/groupprofile.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) } },
-    { "groupname": "Group 10", "image": "images/groupprofile.jpg", "message": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) } }
-
-  ]
-  );
   var [text, setText] = useState("");
   var [messages, setMessages] = useState([]);
 
   const send = async () => {
-    if (text.length > 0) {
-      setMessages([...messages, text])
+    console.log(text);
+    if (text.trim().length > 0 && selectedCommunity) {
+      const messageData = { c_id: selectedCommunity, message: text ,u_id:localStorage.getItem('userid'),u_name:localStorage.getItem('username')};
+      console.log(messageData);
+      if (socket) {
+        socket.emit('sendMessage', messageData);
+        // updationToggleFunc()
+        console.log(`sendfunc`);
+        console.log(allCommunityMessages);
+        console.log(`///`);
+        console.log(messageData);
+      }
+      // setMessages([...messages, text]);
+      
+      setAllCommunityMessages(prevCommunityMessages => {
+        const index = prevCommunityMessages.findIndex(chat => selectedCommunity === messageData.c_id);
+        if (index !== -1) {
+          const updatedCommunityMessages = [...prevCommunityMessages];
+          updatedCommunityMessages[index].messages.push(messageData);
+          return updatedCommunityMessages;
+        } else {
+          return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [messageData] }];
+        }
+      });
     }
-  }
+  };
 
 ////////////////////////////////////////
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post('/loadchat', { communitylist: communityList });
-        const temp1 = response.data.map(element => element.chats).flat()
-        console.log(temp1)
-        // const temp2 = temp1.map(element => element.messages).flat();
-        // console.log("temp2 : "+temp2);
-        setAllCommunityMessages(temp1.flat())
-        const k = allCommunityMessages.map((el) => el.messages)
-        console.log(allCommunityMessages);
-      } catch (error) {
-        console.error(error);
-      }
-      };
-
-      fetchData();
-  }, []); 
+ 
     useEffect(() => {
       //console.log(communityList);
       async function fetchCommunityDetails() {
         try {
           const response = await axios.post('/individualcommunity', { data: communityList });
           setIndividualCommunity(response.data);
+          //console.log("ii "+communityList);
         } catch (error) {
           console.error('Error fetching community details:', error);
         }
@@ -98,7 +157,7 @@ function CommunityMsgScreen({screen,create}) {
           <Menu setScreen={screen} setCreateAlert={create}/>
         </div>
         {/* {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)} */}
-        {individualCommunity.map((el, i) => <GroupList data={el} key={i} actions={{setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>)}
+        {individualCommunity.map((el, i) => <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>)}
 
       </div>
 
@@ -146,19 +205,23 @@ function CommunityMsgScreen({screen,create}) {
                  <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
                  <p className="msg " key={i}>{el}</p>
                 </div>)} */}
-                {allCommunityMessages.map(community => {
+                {/* {chatByCommunity.map((m)=><p>{m.communityId}</p>)} */}
+                {chatByCommunity.map((m)=>{
+                  <p>{m.message}</p>
+                })}
+                {/* {allCommunityMessages.map(community => {
               if (selectedCommunity === community.communityId) {
                 return community.messages.map(message => (
                   <div className="msg_main">
                  <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
                   <p className="uname-msg">{message.u_name}</p>
-                  <p className="msg" key={message.id}>{message.message}</p>
+                  <p className="msg" key={message._id}>{message.message}</p>
                   </div>
                 ));
               } else {
                 return null; 
               }
-            })}
+            })} */}
               
 
             </div>
@@ -166,7 +229,8 @@ function CommunityMsgScreen({screen,create}) {
             {/* bottomchats component-chat_typing */}
             <div className="box center chat_typing flexrow spacebetween">
               <div className="type_message">
-                <input type="text" className="nobordershadow message_length" placeholder="type Here!!" onChange={(event) => { setText(event.target.value) }} />
+              <input type="text" className="nobordershadow message_length" placeholder="type Heere!!" onChange={(event) => { setText(event.target.value)}} />
+
               </div>
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
