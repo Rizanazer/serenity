@@ -13,7 +13,7 @@ function CommunityMsgScreen({screen,create}) {
   //const [updationToggle,setUpdationToggle]=useState(0)
   const [communityMessages, setCommunityMessages] = useState({});
   const [selectedCommunityName,setSelectedCommunityName] = useState(null)
-  const [selectedCommunity,setSelectedCommunity] = useState(null)
+  const [selectedCommunity,setSelectedCommunity] = useState("")
   const [individualCommunity,setIndividualCommunity] = useState([])
   const userdata = JSON.parse(localStorage.getItem('userdata'))
   const [communityList,updateCommunityList] = useState(userdata.communities)
@@ -53,6 +53,20 @@ function CommunityMsgScreen({screen,create}) {
       console.log(`chttt: `+chatByCommunity);
       fetchData();
   }, [communityList]); 
+
+  function onclick(id, name) {
+    setViewChat(true);
+    setSelectedCommunityName(name);
+    console.log(id);
+    const selectedMessages = allCommunityMessages.find(elem => elem.communityId === id);
+    if (selectedMessages) {
+      setCommunityMessages(selectedMessages.messages);
+    }
+    console.log(selectedMessages.messages);
+    console.log("////////////////////////////////");
+    console.log(communityMessages);
+
+  }
 
   useEffect(() => {
     const newSocket = io('http://:3000'); 
@@ -157,7 +171,20 @@ function CommunityMsgScreen({screen,create}) {
           <Menu setScreen={screen} setCreateAlert={create}/>
         </div>
         {/* {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)} */}
-        {individualCommunity.map((el, i) => <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>)}
+        {individualCommunity.map((el, i) => 
+        // <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>
+        <div className="box chat pointer">
+
+        <div className="chat_info" onClick={()=>onclick(el._id,el.communityName)}>
+          <img className="icon profile_chat_img"  alt="" />
+          <div className=" profile_text">
+            <span className="bold">{el.communityName}</span>
+            <span className="light">{el.message}</span>
+          </div>
+        </div>
+        {/* {data.status && <span className="light">joined</span>} */}
+      </div>
+        )}
 
       </div>
 
@@ -205,10 +232,8 @@ function CommunityMsgScreen({screen,create}) {
                  <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
                  <p className="msg " key={i}>{el}</p>
                 </div>)} */}
+                
                 {/* {chatByCommunity.map((m)=><p>{m.communityId}</p>)} */}
-                {chatByCommunity.map((m)=>{
-                  <p>{m.message}</p>
-                })}
                 {/* {allCommunityMessages.map(community => {
               if (selectedCommunity === community.communityId) {
                 return community.messages.map(message => (
@@ -222,6 +247,19 @@ function CommunityMsgScreen({screen,create}) {
                 return null; 
               }
             })} */}
+            {communityMessages.map(message => {
+              if (message) {
+                return  (
+                  <div className="msg_main">
+                 <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
+                  <p className="uname-msg">{message.u_name}</p>
+                  <p className="msg" key={message._id}>{message.message}</p>
+                  </div>
+                );
+              } else {
+                return null; 
+              }
+            })}
               
 
             </div>
