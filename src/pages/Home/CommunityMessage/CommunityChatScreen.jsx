@@ -53,10 +53,10 @@ function CommunityMsgScreen({screen,create}) {
       }
       };
       
-      const res = allCommunityMessages.find(community => community.communityId === selectedCommunity)
-      console.log("dssf  "+res);
+      //const res = allCommunityMessages.find(community => community.communityId === selectedCommunity)
+      //console.log("dssf  "+res);
       //setChatByCommunity(allCommunityMessages.find(community => community.communityId === selectedCommunity))
-      console.log(`chttt: `+chatByCommunity);
+      //console.log(`chttt: `+chatByCommunity);
       fetchData();
   }, [communityList]); 
 
@@ -71,7 +71,7 @@ function CommunityMsgScreen({screen,create}) {
     }
     console.log(selectedMessages.messages);
     console.log("////////////////////////////////");
-    console.log(communityMessages);
+    //console.log(communityMessages);
 
   }
 
@@ -86,19 +86,30 @@ function CommunityMsgScreen({screen,create}) {
     newSocket.on('newMessage', (message) => {
 
        console.log('New message from the server socket:', message);
-      setAllCommunityMessages((prevCommunityMessages) => {
-        const index = prevCommunityMessages.findIndex(chat => chat.c_id === message.c_id);
-        console.log(index);
-        if (index !== -1) {
-          const updatedCommunityMessages = [...prevCommunityMessages];
-          updatedCommunityMessages[index].messages.push(message);
-          setCommunityMessages(prevMessages => [...prevMessages, message]);
-
-          return updatedCommunityMessages;
-        } else {
-          return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [message] }];
+       const updatedMessages = [...allCommunityMessages];
+       updatedMessages.forEach((elem)=>{
+        //console.log(message)
+        if(elem.communityId === message.c_id){
+          //console.log(`hi`);
+          const appenddata = {"u_id":message.u_id,"u_name":message.u_name,"message":message.message}
+          elem.messages.push(appenddata);
         }
-      });
+        //console.log(updatedMessages);
+        setAllCommunityMessages(updatedMessages)
+       })
+      // setAllCommunityMessages((prevCommunityMessages) => {
+      //   const index = prevCommunityMessages.findIndex(chat => chat.c_id === message.c_id);
+      //   console.log(index);
+      //   if (index !== -1) {
+      //     const updatedCommunityMessages = [...prevCommunityMessages];
+      //     updatedCommunityMessages[index].messages.push(message);
+      //     setCommunityMessages(prevMessages => [...prevMessages, message]);
+
+      //     return updatedCommunityMessages;
+      //   } else {
+      //     return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [message] }];
+      //   }
+      // });
     });
   
     return () => {
@@ -130,6 +141,18 @@ function CommunityMsgScreen({screen,create}) {
       console.log(messageData);
       if (socket) {
         socket.emit('sendMessage', messageData);
+
+        const updatedMessages = [...allCommunityMessages];
+       updatedMessages.forEach((elem)=>{
+        //console.log(message)
+        if(elem.communityId === selectedCommunity){
+          //console.log(`hi`);
+          const appenddata = {"u_id":localStorage.getItem('userid'),"u_name":localStorage.getItem('username'),"message":text}
+          elem.messages.push(appenddata);
+        }
+        //console.log(updatedMessages);
+        setAllCommunityMessages(updatedMessages)
+       })
 
         // updationToggleFunc()
         console.log(`sendfunc`);
@@ -247,7 +270,7 @@ function CommunityMsgScreen({screen,create}) {
                 </div>)} */}
                 
                 {/* {chatByCommunity.map((m)=><p>{m.communityId}</p>)} */}
-                {/* {allCommunityMessages.map(community => {
+                {allCommunityMessages.map(community => {
               if (selectedCommunity === community.communityId) {
                 return community.messages.map(message => (
                   <div className="msg_main">
@@ -259,8 +282,8 @@ function CommunityMsgScreen({screen,create}) {
               } else {
                 return null; 
               }
-            })} */}
-            {communityMessages.map(message => {
+            })}
+            {/* {communityMessages.map(message => {
               if (message) {
                 return  (
                   <div className="msg_main">
@@ -272,7 +295,7 @@ function CommunityMsgScreen({screen,create}) {
               } else {
                 return <div>no messsages</div>; 
               }
-            })}
+            })} */}
               
 
             </div>

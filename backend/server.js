@@ -266,7 +266,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         }
     
         const existingChat = await CommunityChats.findOne({ communityId: c_id });
-    
+       
         if (existingChat) {
           existingChat.messages.push({ u_id, message, u_name });
           await existingChat.save();
@@ -275,8 +275,8 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         }
     
         // Emit the new message to all connected clients
-        io.emit('newMessage', { u_id, u_name, message });
-        socket.emit({ success: true });
+        io.emit('newMessage', { u_id, u_name, message ,c_id});
+        //socket.emit({ success: true });
       } catch (error) {
         console.error('Error in handling incoming message:', error);
         socket.emit({ success: false, "error": "Internal server error." });
