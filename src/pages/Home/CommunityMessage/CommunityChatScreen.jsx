@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
 import { MdOutlineMenu ,MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import GroupList from "../Functions/GroupList";
@@ -21,7 +21,7 @@ function CommunityMsgScreen({screen,create}) {
   //console.log(communityList);
   const [loadChatByCommunity,setLoadChatByCommunity] = useState(null)
   const [allCommunityMessages,setAllCommunityMessages] = useState([])
-  
+  const chatAreaRef = useRef(null);
   const [socket, setSocket] = useState(null);
   // function updationToggleFunc(){
   //   if(updationToggle === 0){
@@ -30,6 +30,12 @@ function CommunityMsgScreen({screen,create}) {
   //     setUpdationToggle(0)
   //   }
   // }
+  useEffect(() => {
+    if (chatAreaRef.current) {
+      chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+    }
+  }, [communityMessages]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -232,7 +238,7 @@ function CommunityMsgScreen({screen,create}) {
 
             {/* middlechats component-chat_area */}
             {/* //onClick={()=>(console.log(allCommunityMessages.map(s=>s.messages.map(t=>t.message))))} */}
-            <div className="box chat_area nopadding" >
+            <div className="box chat_area nopadding"  ref={chatAreaRef}>
             {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
 
               {/* {messages.map((el, i) => <div className="msg_main">
