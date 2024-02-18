@@ -257,7 +257,7 @@ function CommunityMsgScreen({screen,create}) {
                   </div>
                 );
               } else {
-                return null; 
+                return <div>no messsages</div>; 
               }
             })}
               
