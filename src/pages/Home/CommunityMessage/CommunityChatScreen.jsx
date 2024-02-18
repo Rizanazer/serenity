@@ -57,6 +57,7 @@ function CommunityMsgScreen({screen,create}) {
   function onclick(id, name) {
     setViewChat(true);
     setSelectedCommunityName(name);
+    setSelectedCommunity(id)
     console.log(id);
     const selectedMessages = allCommunityMessages.find(elem => elem.communityId === id);
     if (selectedMessages) {
@@ -85,6 +86,8 @@ function CommunityMsgScreen({screen,create}) {
         if (index !== -1) {
           const updatedCommunityMessages = [...prevCommunityMessages];
           updatedCommunityMessages[index].messages.push(message);
+          setCommunityMessages(prevMessages => [...prevMessages, message]);
+
           return updatedCommunityMessages;
         } else {
           return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [message] }];
@@ -121,11 +124,15 @@ function CommunityMsgScreen({screen,create}) {
       console.log(messageData);
       if (socket) {
         socket.emit('sendMessage', messageData);
+
         // updationToggleFunc()
         console.log(`sendfunc`);
         console.log(allCommunityMessages);
         console.log(`///`);
         console.log(messageData);
+        const appenddata = { u_id:localStorage.getItem('userid'),u_name:localStorage.getItem('username'),message: text };
+        setCommunityMessages(prevMessages => [...prevMessages, appenddata]);
+
       }
       // setMessages([...messages, text]);
       
