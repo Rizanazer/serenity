@@ -132,23 +132,29 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 
   router.route("/createcommunity").post(async(req,res) =>{
     try {
-      const communityData = req.body;
-      const cname = req.body.communityname;
-      const cdescription = req.body.description;
+      //const communityData = req.body;
+      const c_name = req.body.c_name;
+      const c_desc = req.body.c_desc;
       const createdby = req.body.createdby;
       const admins = req.body.createdby || [];
       const members = req.body.createdby || [];
   
       const result = await Community.create({
-        communityName: cname,
+        communityName: c_name,
         createdBy: createdby,
-        description: cdescription,
+        description: c_desc,
         admins: admins,
         members: members,
       });
-  
+
+      const addtouser = await User.findOneAndUpdate(
+        { _id: createdby },
+        { $push: { communities: result._id } }, 
+        { new: true }
+      );
+
       console.log('Community created successfully:', result);
-      res.json({"success":true});
+      res.json({"success":true,"result":result});
     } catch (error) {
       console.error('Error creating community:', error);
       res.json({"success":false});
