@@ -149,7 +149,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 
       const addtouser = await User.findOneAndUpdate(
         { _id: createdby },
-        { $push: { communities: result._id } }, 
+        { $addToSet: { communities: result._id } }, 
         { new: true }
       );
 
@@ -232,7 +232,34 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   });
 
 
+  router.post('/addfriend',async(req,res)=>{
+    try {
+      const userid = req.body.userid
+      const friendtobe = req.body.friendtobe
+      console.log(friendtobe)
+      const result = await User.findByIdAndUpdate(
+        userid,
+        {$addToSet:{friendrequestssent:friendtobe}},
+        {new:true}
+      )
+      const result2 = await User.findByIdAndUpdate(
+        friendtobe,
+        {$addToSet:{friendrequests:userid}},
+        {new:true}
+      )
+      console.log(result);
+      if(result && result2){
+        res.json({ "success": true });
+      }else{
+        res.json({ "success": false });
+      }
+        
 
+    } catch (error) {
+      console.error(error)
+      res.json({ "success": false });
+    }
+  })
 
   router.post("/loadchat", async (req, res) => {
     try {

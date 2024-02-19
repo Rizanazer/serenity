@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     password:String,
     friends:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
     friendrequests:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
+    friendrequestssent:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
     communities:[{type:mongoose.Schema.Types.ObjectId, ref:'Community'}],
     userType:{type:Number,default:2},
     dateAdded: {

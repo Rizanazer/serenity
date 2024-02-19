@@ -1,10 +1,23 @@
 import { MdArrowBack, MdReport ,MdOutlinePersonAddAlt, MdMessage, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
 import { IoMdHeartDislike } from "react-icons/io";
 import { useState } from "react";
+import axios from "axios";
 
-var SideScreenCommunityMemberFn = ({ handleClick, data,member }) => {
+
+
+var SideScreenCommunityMemberFn = ({ handleClick, data,member,selectedUser }) => {
     //status of anonymous :not used now but soon
     const[AnonymsGps,setAnonymsGps]=useState(true);
+    const u_id = localStorage.getItem('userid')
+    async function addfriend(){
+        if(u_id != selectedUser.userid){
+            const response = await axios.post('/addfriend',{userid:u_id,friendtobe:selectedUser.userid})
+        }else{
+            console.log(`both same users`);
+        }
+            
+    }
+    
     return (
         <>
             <div className="section3_back">
@@ -18,12 +31,12 @@ var SideScreenCommunityMemberFn = ({ handleClick, data,member }) => {
                     {/* continue from here */}
                     <div className="section3_textArea profile_text">
                     <span className="light">SerenityScore:<span className="bold">90.99</span></span>
-                        <span className="bold alignself_center">{data.username}</span>
-                        <span className="light alignself_center">status_text</span>
+                        <span className="bold alignself_center">{selectedUser.username}</span>
+                        <span className="light alignself_center">status</span>
                         
                     </div>
                     <div className="section3_features">
-                        <MdOutlinePersonAddAlt className="icons_1"/>
+                        <MdOutlinePersonAddAlt className="icons_1" onClick={()=>addfriend(selectedUser.userid)}/>
                         <MdMessage className="icons_1"/>
                         <IoMdHeartDislike className="icons_2"/>
                     </div>

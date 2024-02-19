@@ -23,6 +23,7 @@
     const [allCommunityMessages,setAllCommunityMessages] = useState([])
     const chatAreaRef = useRef(null);
     const [socket, setSocket] = useState(null);
+    const [selectedUser,setSelectedUser] = useState({username:'',userid:''})
     // function updationToggleFunc(){
     //   if(updationToggle === 0){
     //     setUpdationToggle(1)
@@ -274,9 +275,9 @@
                 if (selectedCommunity === community.communityId) {
                   return community.messages.map(message => (
                     <div className="msg_main">
-                  <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
+                  <img src="images/profileimg_chat.jpg" className="icon_search circle"  alt=""  srcset="" onClick={()=>{setSelectedUser({username:message.u_name,userid:message.u_id });setMember(true);setSideScreen(true)}}/>
                     <p className="uname-msg">{message.u_name}</p>
-                    <p className="msg" key={message._id}>{message.message}</p>
+                    <p className="msg" key={message.u_id}>{message.message}</p>
                     </div>
                   ));
                 } else {
@@ -323,7 +324,7 @@
           }
         </div>
         {SideScreen && <div className="section3 box nopadding nobordershadow">
-          {Member?<SideScreenCommunityMemberFn data={{"image":"images/profileimg_chat.jpg","username":"arif"}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}} member={()=>{setMember(false)}}/>
+          {Member?<SideScreenCommunityMemberFn  selectedUser={selectedUser} data={{"image":"images/profileimg_chat.jpg","username":"arif"}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}} member={()=>{setMember(false)}}/>
           :
           <SideScreenCommunityDetailsFn data={{"image":selectedChat?.image,"username":selectedChat?.groupname}} member={()=>{setMember(true);}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>}
           
