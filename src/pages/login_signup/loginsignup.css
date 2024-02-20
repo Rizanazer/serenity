@@ -6,6 +6,20 @@ input{
   border-radius: 10px;
   font-size: 15px;
 }
+.inputrow{
+  gap: 10px;
+}
+.input_otp{
+  align-items: center;
+  height: 50px;
+  width: 50px;
+  padding: 10px 10px;
+  box-shadow:var(--shadow);
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+}
 
 button{
   padding: 10px 20px;

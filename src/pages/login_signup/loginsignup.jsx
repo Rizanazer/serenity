@@ -36,7 +36,12 @@ const OTPInput = ({ handleActionChange }) =>
 (
 
   <div className="box">
-    <input placeholder='OTP' />
+    <div className="center inputrow flexrow">
+    <input className='input_otp ' type='text' maxLength="1"/>
+    <input className='input_otp' type='text' maxLength="1"/>
+    <input className='input_otp' type='text' maxLength="1"/>
+    <input className='input_otp' type='text' maxLength="1"/>
+    </div>
     <button onClick={()=>{window.location="/dashboard"}}>VALIDATE</button>
     <button onClick={()=>handleActionChange("GetOTP")}>BACK</button>
   </div>

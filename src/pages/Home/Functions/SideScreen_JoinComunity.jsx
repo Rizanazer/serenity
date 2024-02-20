@@ -24,38 +24,12 @@ var SideScreenCommunityJoinFn = ({ handleClick, data, }) => {
                         <GiExitDoor className="icons_2" />
                         <IoMdHeartDislike className="icons_2" />
                     </div>
-                    {/* <div className="section3_location flexrow center">
-                        <MdLocationPin className="icon nobordershadow" />
-                        <span className="bold">Kerala,India</span>
-                    </div> */}
+                    
 
                 </div>
             </div>
             <div className="section3_2 flexcolumn transparent">
-                {/* <div className="center spacebetween">
-                    <span className="bold">Group Members</span>
-                    <MdGroups className="icon_search" />
-                </div>
-                <div className="Group_Participations box nobordershadow">
-                    <div className="group_box flexrow" onClick={()=>{member()}}>
-                        <img src="images/profileimg_chat.jpg" className="icon_search" />
-                        <span className="bold pointer">arif</span>
-                    </div>
-                    <div className="group_box flexrow" onClick={()=>{member()}}>
-                    <img src="images/profileimg_chat.jpg" className="icon_search" />
-                        <span className="bold pointer">riza</span>
-                    </div>
-                    <div className="group_box flexrow" onClick={()=>{member()}}>
-                    <img src="images/profileimg_chat.jpg" className="icon_search" />
-                        <span className="bold pointer">arjun</span>
-                    </div>
-                    <div className="group_box flexrow" onClick={()=>{member()}}>
-                    <img src="images/profileimg_chat.jpg" className="icon_search" />
-                        <span className="bold pointer">ebin</span>
-                    </div>
-                    
-
-                </div> */}
+               
 
             </div>
 

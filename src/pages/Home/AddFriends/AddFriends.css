@@ -1,0 +1,30 @@
+.profile_pic{
+    height: 40%;
+    width: 60%;
+}
+.serenity_score{
+
+}
+.personality{
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    gap: 20px;
+   align-content: center;
+}
+.likes{
+    width: 50%;
+    /* display: flex; */
+    flex-direction: column ;
+}
+.dontlikes{
+    width: 50%;
+    /* display: flex; */
+    flex-direction: column ;
+}
+.textcover{
+    display: flex;
+    width: fit-content;
+    height: 20px;
+}
+.personality_prediction{}
