@@ -37,6 +37,7 @@ const Home = () => {
   return (
 
     <div className="container center">
+      
       <Nav Screen={Screen} setScreen={setScreen}/>
       {Screen === "PersonalMessage" && <PersonalMsgScreen/>}
       {Screen === "Profile" && <ProfileScreen />}

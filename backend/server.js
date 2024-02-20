@@ -14,9 +14,10 @@
   const http = require('http')
   const server = http.createServer(app);
   const io = socketIo(server);
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-const Community = require('./models/community');
-const CommunityChats = require('./models/communityChats');
+  const Community = require('./models/community');
+  const CommunityChats = require('./models/communityChats');
   app.use(cors());
   app.use(express.json());
 
