@@ -6,7 +6,7 @@ import AddFriendsScreen from "./AddFriends/AddFriendsScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
 import ReccomendationScreen from "./CommunityReccomendation/ReccomendationScreen";
 import SearchScreen from "./Search/SearchScreen";
-import SettingsScreen from "./Settings/SettingsScreen";
+import SettingsScreen from "./SettingsScreen/SettingsScreen";
 import Nav from "./Nav/Nav";
 import axios from "axios";
 import CreateCommunity from "./Functions/createcommunity/createCommunity";
