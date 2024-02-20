@@ -15,8 +15,8 @@
 }
 .name_image{
     display: flex;
-    gap: 5px;
-    align-items: end !important;
+    gap: 10px;
+    /* align-items: end !important; */
 }
 .name_members{
     display: flex;
