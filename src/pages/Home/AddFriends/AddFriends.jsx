@@ -5,10 +5,10 @@ function Add_Friends({ data,handleClick,addFriendsAlert }) {
       <div className="box chat pointer" onClick= {()=>{handleClick();addFriendsAlert();}}>
   
         <div className="chat_info">
-          <img className="icon profile_chat_img" src={data.image} alt="image" />
+          <img className="icon profile_chat_img" src="/uploads/img.png" alt="image" />
           <div className=" profile_text center">
             <span className="bold">{data.username}</span>
-            <span className="light">{data.status}</span>
+            <span className="light">status </span>
           </div>
         </div>
         <MdArrowForwardIos  className=""/>
