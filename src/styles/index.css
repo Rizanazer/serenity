@@ -1,28 +1,48 @@
+@font-face {
+  font-display: swap;
+  font-style: normal;
+  src: url("assets/fonts/InterBold.ttf");
+  font-family: "Inter";
+  font-weight: 700;
+}
 
-@font-face { font-display: swap; font-style : normal; src: url("assets/fonts/InterBold.ttf"); font-family : "Inter"; font-weight : 700;  }
-@font-face { font-display: swap; font-style : normal; src: url("assets/fonts/InterRegular.ttf"); font-family : "Inter"; font-weight : 400;  }
-@font-face { font-display: swap; font-style : normal; src: url("assets/fonts/InterSemiBold.ttf"); font-family : "Inter"; font-weight : 600;  }
+@font-face {
+  font-display: swap;
+  font-style: normal;
+  src: url("assets/fonts/InterRegular.ttf");
+  font-family: "Inter";
+  font-weight: 400;
+}
 
-:root { 
-  --gray_500:#979697; 
-  --blue_gray_50:#eaedf2; 
-  --black_900:#000000; 
-  --pink_A400:#ff0150; 
-  --white_A700_01:#fffcfc; 
-  --deep_purple_A200:#5e4ae3; 
-  --black_900_0c:#0000000c; 
-  --white_A700:#ffffff; 
-  --gray_100:#f2f2f2; 
+@font-face {
+  font-display: swap;
+  font-style: normal;
+  src: url("assets/fonts/InterSemiBold.ttf");
+  font-family: "Inter";
+  font-weight: 600;
+}
+
+:root {
+  --gray_500: #979697;
+  --blue_gray_50: #eaedf2;
+  --black_900: #000000;
+  --pink_A400: #ff0150;
+  --white_A700_01: #fffcfc;
+  --deep_purple_A200: #5e4ae3;
+  --black_900_0c: #0000000c;
+  --white_A700: #ffffff;
+  --gray_100: #f2f2f2;
   --shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  --text:#979697;
-  --bgclr:#EAEDF2;
-  --navclr:#5E4AE3;
-  }
+  --text: #979697;
+  --bgclr: #EAEDF2;
+  --navclr: #5E4AE3;
+}
 
 * {
   box-sizing: border-box;
   line-height: normal;
 }
+
 body {
   font-family: "Roboto", sans-serif !important;
   margin: 0;
@@ -30,84 +50,92 @@ body {
 }
 
 
-.container{
+.container {
   width: 100vw;
   height: 100vh;
 }
-.center{
+
+.center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.bg{
- background-image: url('../../public/images/profilebg1.png');
- 
- background-repeat: no-repeat;
- background-size: 100%;
+
+.bg {
+  background-image: url('../../public/images/profilebg1.png');
+
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
-.box{
+
+.box {
   border-radius: 20px;
-  background:#fff;
+  background: #fff;
   padding: 40px 30px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow:var(--shadow);
+  box-shadow: var(--shadow);
 }
-.horiz{
+
+.horiz {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
 }
-.line{
-  border-left: 70px dashed var(--text) ;
+
+.line {
+  border-left: 70px dashed var(--text);
 }
 
-.bold{
+.bold {
   font-weight: 600;
 }
 
-.light{
-    color: #9b9b9b;
-    font-size: 15px;
+.light {
+  color: #9b9b9b;
+  font-size: 15px;
 }
 
-.pointer{
+.pointer {
   cursor: pointer;
 }
 
-.flexrow{
+.flexrow {
   flex-direction: row !important;
 }
-.flexcolumn{
+
+.flexcolumn {
   flex-direction: column !important;
 }
 
-.gap{
+.gap {
   gap: 10px !important;
 }
 
-.nobordershadow{
-border: none !important;
-box-shadow: none !important;
+.nobordershadow {
+  border: none !important;
+  box-shadow: none !important;
 }
 
-.spacebetween{
+.spacebetween {
   justify-content: space-between;
 }
 
-.nopadding{
- padding: 0px 0px !important;  
+.nopadding {
+  padding: 0px 0px !important;
 }
 
-.icon_small{
-  padding:15px 0 !important;
+.icon_small {
+  padding: 15px 0 !important;
 }
-.widthmax{
-  width:100%;
+
+.widthmax {
+  width: 100%;
 }
-.icon{
+
+.icon {
   padding: 10px;
   border-radius: 10px;
   box-shadow: var(--shadow);
@@ -115,18 +143,23 @@ box-shadow: none !important;
   height: 50px;
   cursor: pointer;
 }
-.alignself_center{
- align-self: center ;
+
+.alignself_center {
+  align-self: center;
 }
-.blur{
+
+.blur {
   filter: blur(4px);
 }
-.circle{
+
+.circle {
   border-radius: 50%;
 }
-.transparent{
+
+.transparent {
   background: transparent !important;
 }
+
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
@@ -143,4 +176,34 @@ box-shadow: none !important;
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.alert {
+  width: 40%;
+  height: 100%;
+  background: #fff;
+  border-radius: 20px 20px 20px 20px;
+  gap: 10px;
+  padding: 30px 30px;
+}
+
+.alert_content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.back_btn {
+  width: 100%;
+  height: 10%;
+  background: transparent;
+}
+
+.viewerror {
+  min-height: 10px;
+  max-height: 10px;
+  font-size: small;
+  color: red;
+  display: flex;
+  align-items: center;
 }
