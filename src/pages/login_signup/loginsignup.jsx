@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = ({ actions ,userData }) =>
 (
 
-  <div className="box">
+  <div className="box ">
     <input placeholder='Email' onChange={actions.handleInputChange} value={userData.mail} name="mail" />
     <input placeholder='Password' onChange={actions.handleInputChange} value={userData.pass} name = "pass"/>
     <div className='viewerror'>
@@ -24,13 +24,45 @@ const Login = ({ actions ,userData }) =>
       <FaFacebook className='icon' />
       <FaApple className='icon' />
     </div>
+    <div className="create_account">
+      <span>dont have an account?</span>
+      <span className='text_btn' onClick={()=>{actions.handleActionChange("Create_Account")}}>Create Now!!!</span>
+    </div>
+  </div>
+
+);
+const CreateAccount = ({ actions  }) =>
+(
+
+  <div className="box">
+    <input placeholder='Email' onChange={actions.handleInputChange} />
+    <input placeholder='Password' onChange={actions.handleInputChange} />
+    <input placeholder='Re-Password' onChange={actions.handleInputChange} />
+    <input placeholder='MobileNumber' onChange={actions.handleInputChange}/>
+    <div className='viewerror'>
+    {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
+    </div>
+    <button onClick={()=>{actions.handleActionChange("VALIDATE")}}>Create Account</button>
+    <div className="horiz">
+      <hr className='line' />or<hr className='line' />
+    </div>
+    <div className="horiz">
+      <FaGoogle className='icon' />
+      <FaTwitter className='icon' />
+      <FaFacebook className='icon' />
+      <FaApple className='icon' />
+    </div>
+    <div className="create_account">
+      <span>have an account?</span>
+      <span className='text_btn' onClick={()=>{actions.handleActionChange("LOGIN")}}>Login Now!!!</span>
+    </div>
   </div>
 
 );
 const MobileNumberInput = ({ actions }) =>
 (
 
-  <div className="box">
+  <div className="box ">
     <input placeholder='MobileNumber' />
     <button onClick={()=>actions.handleActionChange("VALIDATE")}>GetOTP</button>
     <button onClick={()=>actions.handleActionChange("LOGIN")}>BACK</button>
@@ -40,7 +72,7 @@ const MobileNumberInput = ({ actions }) =>
 const OTPInput = ({ actions }) =>
 (
 
-  <div className="box">
+  <div className="box ">
     <div className="center inputrow flexrow">
     <input className='input_otp ' type='text' maxLength="1"/>
     <input className='input_otp' type='text' maxLength="1"/>
@@ -112,6 +144,7 @@ return (
     {action === "LOGIN" && <Login actions={{handleActionChange, handleInputChange, handleClick,handlereg,setViewError}} userData={{userData,viewError}} />}
     {action === "GetOTP" && <MobileNumberInput actions={{handleActionChange}} />}
     {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} />}
+    {action === "Create_Account"&&<CreateAccount actions={{handleActionChange}} />}
   </div>
 );
 };

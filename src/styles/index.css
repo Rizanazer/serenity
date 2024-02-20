@@ -207,3 +207,11 @@ body {
   display: flex;
   align-items: center;
 }
+.text_btn{
+cursor: pointer;
+color: #000000;
+font-weight: 700;
+}
+.text_btn:hover{
+color: #5E4AE3;
+}

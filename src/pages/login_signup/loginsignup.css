@@ -32,5 +32,12 @@ button{
   color: #fff;
   cursor: pointer;
 }
-
-
+.create_account{
+  display: flex;
+  flex-direction: row;
+  font-size: 15px;
+}
+.optimizedLoginBox{
+  width: 25%;
+  height: 60%;
+}
