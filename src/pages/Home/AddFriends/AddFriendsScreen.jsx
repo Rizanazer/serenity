@@ -38,7 +38,7 @@ function AddFriendsScreen() {
       <div className="section2 box center">
         <div className="alert flexcolumn">
           <div className="back_btn">
-            <MdArrowBack className="icon nobordershadow" onClick={() => { }} />
+            <MdArrowBack className="icon nobordershadow" onClick={() => {setSelectedUserdata(null); setSelectedRequest(null) ;}} />
           </div>
           <div className="center alert_content">
             <img src="images/profileimg_chat.jpg" alt="image" className="circle profile_pic" />
@@ -76,7 +76,7 @@ function AddFriendsScreen() {
           </div>
         </div>
 
-      </div>):<div></div>}
+      </div>):<div className="section2"></div>}
     </>
   );
 }
