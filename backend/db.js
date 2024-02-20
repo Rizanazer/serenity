@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    const url = 'mongodb://localhost:27017/serenity';
+    const url = 'mongodb://127.0.0.1:27017/serenity';
     await mongoose.connect(url);
     console.log('MongoDB connected successfully');
   } catch (error) {
