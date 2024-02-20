@@ -282,6 +282,29 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
   });
 
+  router.post("/fetchrequests", async (req, res) => {
+    try {
+      const u_id = req.body.u_id
+      
+      const result = await User.findOne({_id:u_id})
+      const requests = result.friendrequests
+      console.log(requests);
+      const allrequestdetails = []
+      for (const item of requests) {
+        const userDetails = await User.findById(item);
+        allrequestdetails.push(userDetails);
+      }
+      if(allrequestdetails){
+        res.json({"friendrequests":allrequestdetails});
+      }else{
+        res.json({"success":false})
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
 
 
 

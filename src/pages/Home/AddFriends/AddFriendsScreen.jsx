@@ -1,24 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AddFriends.css";
 import Add_Friends from "./AddFriends";
 import { MdArrowBack, MdLocationPin } from "react-icons/md";
+import axios from "axios";
 function AddFriendsScreen() {
+  const [selectedRequest, setSelectedRequest] = useState(null);
+
+  useEffect(()=>{
+    async function retrieverequests(){
+      try {
+        const u_id = localStorage.getItem('userid')
+        const response = await axios.post('/fetchrequests',{u_id:u_id})
+        console.log(response.data);
+        setAddFriends(response.data.friendrequests)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    retrieverequests()
+  },[])
+  const [selectedUserData,setSelectedUserdata] = useState(null)
+
+  useEffect(()=>{
+    AddFriends.forEach((element)=>{
+      if(element._id === selectedRequest){
+        setSelectedUserdata(element)
+      }
+    })
+  },[selectedRequest])
   var [ViewChat, setViewChat] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(null);
-  var [AddFriends, setAddFriends] = useState([
-    { "username": "albert", "image": "images/profileimg_chat.jpg", "Status": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }, },
-    { "username": "jennifer", "image": "images/profileimg_chat.jpg", "Status": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) }, },
-    { "username": "michael", "image": "images/profilepic.jpg", "Status": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) }, },
-    { "username": "emily", "image": "images/profileimg_chat.jpg", "Status": "quis nostrud", "viewchat": () => { setViewChat(true) }, },
-    { "username": "daniel", "image": "images/profileimg_chat.jpg", "Status": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) }, },
-    { "username": "albert", "image": "images/profileimg_chat.jpg", "Status": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }, },
-  ]
-  );
+  var [AddFriends, setAddFriends] = useState([]);
   return (
     <>
       <div className="section1 box">
-        {AddFriends.map((el, i) => <Add_Friends data={el} key={i} handleClick={() => { setSelectedChat(el) }} addFriendsAlert={() => { }} />)}
-      </div>
+        {AddFriends.map((el, i) => <Add_Friends data={el} key={i} handleClick={() => { setSelectedRequest(el._id) }} addFriendsAlert={() => { }} />)}
+      </div>{selectedUserData ?(
       <div className="section2 box center">
         <div className="alert flexcolumn">
           <div className="back_btn">
@@ -26,7 +42,7 @@ function AddFriendsScreen() {
           </div>
           <div className="center alert_content">
             <img src="images/profileimg_chat.jpg" alt="image" className="circle profile_pic" />
-            <span className="bold">name</span>
+            <span className="bold">{selectedUserData.username}</span>
             <span className="light">Personal_Status</span>
             <div className="serenity_score">
               <span>SerinityScore:</span>
@@ -60,7 +76,7 @@ function AddFriendsScreen() {
           </div>
         </div>
 
-      </div>
+      </div>):<div></div>}
     </>
   );
 }
