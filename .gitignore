@@ -7,6 +7,8 @@
 
 /node_modules/.cache/default-development/3.pack
 
+/backend/node_modules/
+
 # testing
 /coverage
 

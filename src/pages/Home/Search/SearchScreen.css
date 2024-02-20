@@ -1,8 +1,0 @@
-.joinbtn{
-    padding: 15px !important;
-    height:auto;
-}
-.joinbtn:hover{
-    background-color: var(--navclr);
-    color: var(--white_A700_01);
-}

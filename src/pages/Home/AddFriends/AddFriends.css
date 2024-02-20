@@ -13,11 +13,15 @@
    align-content: center;
 }
 .likes{
+    display: flex;
     width: 50%;
     /* display: flex; */
     flex-direction: column ;
+    align-items: end;
 }
 .dontlikes{
+    display: flex;
+    align-items: start;
     width: 50%;
     /* display: flex; */
     flex-direction: column ;

@@ -28,7 +28,6 @@ function AddFriendsScreen() {
       }
     })
   },[selectedRequest])
-  var [ViewChat, setViewChat] = useState(false);
   var [AddFriends, setAddFriends] = useState([]);
   return (
     <>
@@ -56,7 +55,7 @@ function AddFriendsScreen() {
               <MdLocationPin className="" />
               <span className="bold">Kerala,India</span>
             </div>
-            <span className="light">
+            <span className=" alignAll">
               the facts that you need to know about this person:
             </span>
             <div className="personality  flexrow">
@@ -64,14 +63,14 @@ function AddFriendsScreen() {
                 <span className="textcover">#likes cats</span>
                 <span className="textcover">#likes anime</span>
               </div>
-              <div className="dontlike">
+              <div className="dontlikes">
                 <span className="textcover">#don't likes crowed Area</span>
               </div>
             </div>
              
-            <div className="txtbtn flexrow ">
-                <span className="bold pointer txtbtn_clr" onClick={() => { }}>accept</span>
-                <span className="bold pointer txtbtn_clr" onClick={() => { }}>reject</span>
+            <div className="txtbtn gap flexrow ">
+                <span className="bold box joinbtn" onClick={() => { }}>accept</span>
+                <span className="bold box joinbtn" onClick={() => { }}>reject</span>
               </div>
           </div>
         </div>
