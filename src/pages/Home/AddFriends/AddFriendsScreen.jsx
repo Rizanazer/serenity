@@ -5,7 +5,14 @@ import { MdArrowBack, MdLocationPin } from "react-icons/md";
 import axios from "axios";
 function AddFriendsScreen() {
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedUserData,setSelectedUserdata] = useState(null)
+  const u_id = localStorage.getItem('userid')
+  useEffect(()=>{
+    if(selectedUserData){
 
+      console.log(selectedUserData.username)
+    }
+  },[selectedUserData])
   useEffect(()=>{
     async function retrieverequests(){
       try {
@@ -19,7 +26,6 @@ function AddFriendsScreen() {
     }
     retrieverequests()
   },[])
-  const [selectedUserData,setSelectedUserdata] = useState(null)
 
   useEffect(()=>{
     AddFriends.forEach((element)=>{
@@ -29,11 +35,21 @@ function AddFriendsScreen() {
     })
   },[selectedRequest])
   var [AddFriends, setAddFriends] = useState([]);
+
+  async function acceptRequest(u_id,tobefriend){
+    const response = await axios.post("/accept",{u_id:u_id,tobefriend:tobefriend})
+    
+  }
+
+  async function rejectRequest(u_id,tobefriend){ 
+    const response = await axios.post('/reject',{u_id:u_id,tobefriend:tobefriend})
+  }
   return (
-    <>
+    <>{AddFriends.length>0?(
       <div className="section1 box">
         {AddFriends.map((el, i) => <Add_Friends data={el} key={i} handleClick={() => { setSelectedRequest(el._id) }} addFriendsAlert={() => { }} />)}
-      </div>{selectedUserData ?(
+      </div>):(<div className="box chat pointer center">No Requests</div>)}
+      {selectedUserData ?(
       <div className="section2 box center">
         <div className="alert flexcolumn">
           <div className="back_btn">
@@ -69,8 +85,8 @@ function AddFriendsScreen() {
             </div>
              
             <div className="txtbtn gap flexrow ">
-                <span className="bold box joinbtn" onClick={() => { }}>accept</span>
-                <span className="bold box joinbtn" onClick={() => { }}>reject</span>
+                <span className="bold box joinbtn" onClick={()=>acceptRequest(u_id,selectedUserData._id)}>accept</span>
+                <span className="bold box joinbtn" onClick={()=>rejectRequest(u_id,selectedUserData._id)}>reject</span>
               </div>
           </div>
         </div>

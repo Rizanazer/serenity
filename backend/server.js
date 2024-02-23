@@ -305,6 +305,70 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
   });
 
+  router.post("/accept",async (req,res)=>{
+    
+    try {
+      const u_id  = req.body.u_id
+      const tobefriend  = req.body.tobefriend
+      const result1 = await User.findOneAndUpdate(
+        {_id : u_id },
+        {
+          $addToSet:{friends:tobefriend},
+          $pull:{friendrequests:tobefriend}},
+        {new : true}
+        );
+      const result2 = await User.findOneAndUpdate(
+        {_id : tobefriend },
+        {
+          $addToSet:{friends:u_id},
+          $pull:{friendrequestssent:u_id}},
+        {new : true}
+        );
+        if(result1 != null && result2 != null){
+          console.log(tobefriend);
+          console.log("request accepted")
+          console.log(result1);
+          res.json({"success":true})
+        }else{
+          res.json({"success":false})
+        }
+    } catch (error) {
+      console.log("error ocuurred while accepting")
+      res.json({"success":false})
+    }
+  })
+
+  router.post("/reject",async (req,res)=>{
+    
+    try {
+      const u_id  = req.body.u_id
+      const tobefriend  = req.body.tobefriend
+      const result1 = await User.findOneAndUpdate(
+        {_id : u_id },
+        {
+          $pull:{friendrequests:tobefriend}},
+        {new : true}
+        );
+      const result2 = await User.findOneAndUpdate(
+        {_id : tobefriend },
+        {
+          $pull:{friendrequestssent:u_id}},
+        {new : true}
+        );
+        if(result1 != null && result2 != null){
+          console.log(tobefriend);
+          console.log("request rejected")
+          console.log(result1);
+          res.json({"success":true})
+        }else{
+          res.json({"success":false})
+        }
+    } catch (error) {
+      console.log("error ocuurred while accepting")
+      res.json({"success":false})
+    }
+  })
+
 
 
 
