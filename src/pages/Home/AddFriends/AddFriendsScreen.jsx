@@ -7,18 +7,13 @@ function AddFriendsScreen() {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [selectedUserData,setSelectedUserdata] = useState(null)
   const u_id = localStorage.getItem('userid')
-  useEffect(()=>{
-    if(selectedUserData){
-
-      console.log(selectedUserData.username)
-    }
-  },[selectedUserData])
+  
   useEffect(()=>{
     async function retrieverequests(){
       try {
         const u_id = localStorage.getItem('userid')
         const response = await axios.post('/fetchrequests',{u_id:u_id})
-        console.log(response.data);
+        console.log(response.data.friendrequests);
         setAddFriends(response.data.friendrequests)
       } catch (error) {
         console.error(error)
@@ -37,12 +32,20 @@ function AddFriendsScreen() {
   var [AddFriends, setAddFriends] = useState([]);
 
   async function acceptRequest(u_id,tobefriend){
-    const response = await axios.post("/accept",{u_id:u_id,tobefriend:tobefriend})
+    const username = localStorage.getItem('username')
+    const tobefriend_username = selectedUserData?.username
+    const response = await axios.post("/accept",{u_id:u_id,tobefriend:tobefriend,tobefriend_username:tobefriend_username,username:username})
+    if(response.success === true){
+      setAddFriends((prev)=>prev.filter(item=>item._id !== tobefriend))
+    }
     
   }
 
   async function rejectRequest(u_id,tobefriend){ 
     const response = await axios.post('/reject',{u_id:u_id,tobefriend:tobefriend})
+    if(response.success === true){
+      setAddFriends((prev)=>prev.filter(item=>item._id !== tobefriend))
+    }
   }
   return (
     <>{AddFriends.length>0?(

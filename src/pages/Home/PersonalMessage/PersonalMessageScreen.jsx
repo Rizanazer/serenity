@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CgSearch } from "react-icons/cg";
+import { FaCircleDot } from "react-icons/fa6";
+
 import { MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
+import axios from "axios"
 function PersonalMsgScreen() {
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -14,30 +17,40 @@ function PersonalMsgScreen() {
     setMore(prevState => !prevState);
   };
   const [Moreadj,setMoreadj]=useState(false);
-  var [contacts, setContacts] = useState([
-    { "username": "albert", "image": "images/profileimg_chat.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "username": "jennifer", "image": "images/profileimg_chat.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) }, "status": false },
-    { "username": "michael", "image": "images/profilepic.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "username": "emily", "image": "images/profileimg_chat.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "username": "daniel", "image": "images/profileimg_chat.jpg", "message": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) }, "status": false },
-    { "username": "albert", "image": "images/profileimg_chat.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "username": "jennifer", "image": "images/profileimg_chat.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) }, "status": false },
-    { "username": "michael", "image": "images/profileimg_chat.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "username": "emily", "image": "images/profileimg_chat.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "username": "daniel", "image": "images/profileimg_chat.jpg", "message": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) }, "status": false }, { "username": "albert", "image": "images/profileimg_chat.jpg", "message": "lorem ipsum dolor", "status": true },
-    { "username": "jennifer", "image": "images/profileimg_chat.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) }, "status": false },
-    { "username": "michael", "image": "images/profileimg_chat.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "username": "emily", "image": "images/profileimg_chat.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "username": "daniel", "image": "images/profileimg_chat.jpg", "message": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) }, "status": false }
-  ]
-  );
+  const [contacts, setContacts] = useState([])
+  const u_id = localStorage.getItem('userid')
+  const [selectedUser,setSelectedUser] = useState(null)
+  const alluserdatastring = localStorage.getItem('userdata')
+  const friends = JSON.parse(alluserdatastring).friends
+  const username = localStorage.getItem('username')
+  useEffect(()=>{
+    async function fetchfriends(friends){
+      const u_id = localStorage.getItem('userid')
+
+      try {
+        const response =  await axios.post("/fetchfriends",{u_id:u_id})
+        console.log(response.data.chats);
+        setContacts(response.data.chats)
+      } catch (error) {
+        console.log("error fetching friends")
+      }
+    } 
+    fetchfriends()
+    
+  },[])
+  
   var [text, setText] = useState("");
   var [messages, setMessages] = useState([]);
-
+  const [viewSelectedChat,setViewSelectedChat] = useState([])
   const send = async () => {
     if (text.length > 0) {
       setMessages([...messages, text])
     }
+  }
+  async function onclickfriend(f_id){
+    setViewChat(true)
+    setSelectedChat(f_id)
+    console.log(f_id);
   }
   return (
     <>
@@ -45,7 +58,15 @@ function PersonalMsgScreen() {
         <div className="box searchbox">
           <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
         </div>
-        {contacts.map((el, i) => <Contact data={el} key={i} handleClick={() => { setSelectedChat(el) }} />)}
+        {Array.isArray(contacts) && contacts.map((el, i) => <div className="box chat pointer" >
+            <div className="chat_info" key= {i} onClick={()=>onclickfriend(el.users[0].userid !== u_id ? el.users[0]:el.users[1])}>
+              <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+              <div className=" profile_text">
+                  <span className="bold">{el.users[0].username !== username ? el.users[0].username:el.users[1].username}</span>
+                <span className="light">messaage</span>
+              </div>
+            </div>
+            {contacts && <FaCircleDot className="" color="#5e4ae3" />}</div>)}
 
       </div>
 
@@ -57,7 +78,11 @@ function PersonalMsgScreen() {
 
               <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
-              {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.username, "status": () => { setSideScreen(true);setMoreadj(true);} }} />}
+              {/* {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.username, "status": () => { setSideScreen(true);setMoreadj(true);} }} />} */}
+              {<div>
+                <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                <span className="bold">{selectedChat.username}</span>
+              </div>}
             </div>
 
             <div className="center gap">

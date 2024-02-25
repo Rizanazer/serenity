@@ -19,6 +19,7 @@
 
   const Community = require('./models/community');
   const CommunityChats = require('./models/communityChats');
+  const DirectChats = require('./models/directchats')
   app.use(cors());
   app.use(express.json());
 
@@ -310,6 +311,8 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     try {
       const u_id  = req.body.u_id
       const tobefriend  = req.body.tobefriend
+      const tobefriend_username  = req.body.tobefriend_username
+      const username = req.body.username
       const result1 = await User.findOneAndUpdate(
         {_id : u_id },
         {
@@ -324,7 +327,23 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
           $pull:{friendrequestssent:u_id}},
         {new : true}
         );
-        if(result1 != null && result2 != null){
+        const savedDirectChat = await DirectChats.create({
+          users:
+            [{userid:u_id,username:username},{userid:tobefriend,username:tobefriend_username}]
+          ,
+          message:{
+            from: {
+              userid: tobefriend,
+              username: tobefriend_username
+            },
+            to: {
+              userid: u_id,
+              username: username
+            },
+          messageBody: "Welcome to the chat",
+          messageType: "text"}        
+        });
+        if(result1 != null && result2 != null && savedDirectChat != null){
           console.log(tobefriend);
           console.log("request accepted")
           console.log(result1);
@@ -338,6 +357,22 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
   })
 
+  router.post("/getachat", async (req, res) => {
+    try {
+      const user1 = req.body.user1;
+      const user2 = req.body.user2;
+  
+      // Find chats where both user IDs are present in the users array
+      const result = await DirectChats.find({
+        users: { $all: [user1, user2] }
+      }).sort({ dateAdded: 1 }); // Adjust sort condition as per your requirement
+  
+      res.json(result);
+    } catch (error) {
+      console.log("Error in getting chat:", error);
+      res.status(500).json({ error: "Error in getting chat" });
+    }
+  });
   router.post("/reject",async (req,res)=>{
     
     try {
@@ -365,6 +400,20 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         }
     } catch (error) {
       console.log("error ocuurred while accepting")
+      res.json({"success":false})
+    }
+  })
+
+
+  router.post("/fetchfriends",async (req,res)=>{
+    
+    try {  
+    const u_id = req.body.u_id;
+    const chats = await DirectChats.find({ $or: [{ "users.userid": u_id }, { "users.userid": u_id }] }).sort({ dateAdded: -1 });
+    //console.log(chats + "sdsds");
+    res.json({ "success": true, "chats":chats });
+    } catch (error) {
+      console.log("error ocuurred while loading friends")
       res.json({"success":false})
     }
   })
