@@ -328,10 +328,11 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         {new : true}
         );
         const savedDirectChat = await DirectChats.create({
-          users:
-            [{userid:u_id,username:username},{userid:tobefriend,username:tobefriend_username}]
-          ,
-          message:{
+          users: [
+            { userid: u_id, username: username },
+            { userid: tobefriend, username: tobefriend_username }
+          ],
+          messages: [{
             from: {
               userid: tobefriend,
               username: tobefriend_username
@@ -340,8 +341,9 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
               userid: u_id,
               username: username
             },
-          messageBody: "Welcome to the chat",
-          messageType: "text"}        
+            messageBody: "Welcome to the chat",
+            messageType: "text"
+          }]
         });
         if(result1 != null && result2 != null && savedDirectChat != null){
           console.log(tobefriend);
@@ -419,8 +421,23 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   })
 
 
-
-
+  
+  router.post("/fetchpersonal",async (req,res)=>{
+    
+    try {  
+    // const u_id = req.body.u_id;
+    // const chats = await DirectChats.find({ $or: [{ "users.userid": u_id }, { "users.userid": u_id }] }).sort({ dateAdded: -1 });
+    const {f_id,u_id} = req.body
+        const chats = await DirectChats.findOne({
+            'users.userid': { $all: [f_id, u_id] }
+        }).sort({ dateAdded: -1 });
+    console.log(chats);
+    res.json({ "success": true,"chats":chats});
+    } catch (error) {
+      console.log("error ocuurred while loading personalchat")
+      res.json({"success":false})
+    }
+  })
 
 
   app.use('/',router)
@@ -429,6 +446,31 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     console.log('Socket Client connected');
 
 
+    socket.on('send_p_message', async (msg) => {
+      console.log(msg);
+      const { from, to, fromname, toname, message } = msg;
+      const existingChat = await DirectChats.findOne({
+        $or: [
+          { "users.userid": from, "users.userid": to },
+          { "users.userid": to, "users.userid": from }
+        ]
+      });
+      console.log(existingChat);
+      if (existingChat) {
+        existingChat.message.push({
+          from: { userid: from, username: fromname },
+          to: { userid: to, username: toname },
+          messageBody: message,
+          messageType: "text"
+          // You can add other message details here
+        });
+        await existingChat.save();
+      }
+      console.log(existingChat.users);
+      io.emit("message_received_at_server");
+    });
+    
+    //personal message area end
     socket.on('sendMessage', async ({ c_id, u_name, message, u_id }) => {
       console.log(c_id,+" "+message+" "+u_name+" "+u_id);
       try {

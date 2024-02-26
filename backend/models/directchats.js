@@ -2,51 +2,54 @@ const mongoose = require("mongoose");
 const { string } = require("prop-types");
 
 const directChatSchema = new mongoose.Schema({
-  users: [{userid:{ 
-    type: mongoose.Schema.ObjectId,
-    ref: 'User'
-  },
-  username:{
-    type:String
-  }}
-],
-  message:{
+  users: [{
+    userid: { 
+      type: mongoose.Schema.ObjectId,
+      ref: 'User'
+    },
+    username: {
+      type: String
+    }
+  }],
+  messages: [{
     from: {
-    userid:{
-      type: mongoose.Schema.ObjectId,
-      ref: 'User'
+      userid: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+      },
+      username: {
+        type: String
+      }
     },
-    username:{
-      type:String
-    }
-  },
-  to: {
-    userid:{
-      type: mongoose.Schema.ObjectId,
-      ref: 'User'
+    to: {
+      userid: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+      },
+      username: {
+        type: String
+      }
     },
-    username:{
-      type:String
+    messageBody: {  
+      type: String,
+    },
+    messageType: { 
+      type: String,
+    },
+    read: { 
+      type: Boolean,
+      default: false,
+    },
+    time: { 
+      type: Date,
+      default: Date.now,
     }
-  },
-  messageBody: {  
-    type: String,
-  },
-  messageType: { 
-    type: String,
-  },
-  read: { 
-    type: Boolean,
-    default: false,
-  },
-  time: { 
-    type:Date,
-    default: Date.now,
-  }},
+  }],
   dateAdded: { 
-    type:Date,
+    type: Date,
     default: Date.now,
   },
 });
+
 const DirectChats = mongoose.model('DirectChats',directChatSchema)
 module.exports = DirectChats

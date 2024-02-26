@@ -7,6 +7,7 @@ import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
 import axios from "axios"
+import io from "socket.io-client"
 function PersonalMsgScreen() {
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -23,6 +24,16 @@ function PersonalMsgScreen() {
   const alluserdatastring = localStorage.getItem('userdata')
   const friends = JSON.parse(alluserdatastring).friends
   const username = localStorage.getItem('username')
+  const [mySocket,setMySocket] = useState(null)
+  var [text, setText] = useState("");
+
+  useEffect(()=>{
+    const socket = io('http://:3000');
+    setMySocket(socket)
+    socket.on('recieve_p_message',(message)=>{
+      console.log(message);
+    })
+  },[])
   useEffect(()=>{
     async function fetchfriends(friends){
       const u_id = localStorage.getItem('userid')
@@ -39,18 +50,28 @@ function PersonalMsgScreen() {
     
   },[])
   
-  var [text, setText] = useState("");
   var [messages, setMessages] = useState([]);
   const [viewSelectedChat,setViewSelectedChat] = useState([])
+
+
   const send = async () => {
-    if (text.length > 0) {
-      setMessages([...messages, text])
-    }
+    const senddata = {"fromname":username,"from":u_id,"toname":selectedChat.username,"to":selectedChat.userid,"message":text}
+    mySocket.emit("send_p_message",senddata)
   }
-  async function onclickfriend(f_id){
+
+
+  async function onclickfriend(friend){
     setViewChat(true)
-    setSelectedChat(f_id)
-    console.log(f_id);
+    setSelectedChat(friend)
+    console.log(friend);
+    try {
+      const response = await axios.post('/fetchpersonal',{f_id:friend.userid,u_id:u_id})
+      console.log(response.data.chats.message);
+       setMessages([response.data.chats.message])
+    } catch (error) {
+      console.log('personal message fetch error')
+    }
+    
   }
   return (
     <>
@@ -112,7 +133,7 @@ function PersonalMsgScreen() {
           <div className="box chat_area nopadding">
             {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
 
-            {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
+            {messages.map((el, i) => <p className="msg " key={i}>{el.from.username +" "}: {el.messageBody}</p>)}
 
           </div>
 
