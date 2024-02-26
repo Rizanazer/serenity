@@ -1,0 +1,17 @@
+.reccomendation_box{
+    overflow-y: auto;
+    flex: 5;
+    padding-top: 5px !important;
+}
+.search_box{
+    overflow-y: auto;
+    flex: 7;
+}
+.searchBoxContnt{
+    overflow-y: auto;
+    
+}
+.reccomendationBoxContnt{
+    overflow-y: auto;
+    
+}

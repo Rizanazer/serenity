@@ -9,7 +9,6 @@ export default function Nav({Screen,setScreen,setSetting}){
           <CgProfile className="icon" color={Screen=="Profile" ? "#979697" :"#fff"} onClick={() => { setScreen("Profile"); }} />
           <PiChat className="icon" color={Screen=="PersonalMessage" ? "#979697" :"#fff"} onClick={() => { setScreen("PersonalMessage");}} />
           <PiChats className="icon" color={Screen=="CommunityMessage" ? "#979697" :"#fff"} onClick={() => { setScreen("CommunityMessage");}} />
-          <MdGroups className="icon" color={Screen=="CommunityReccomendation" ? "#979697" :"#fff"} onClick={() => { setScreen("CommunityReccomendation"); }} />
           <CgSearch className="icon" color={Screen=="SearchCommunity" ? "#979697" :"#fff"} onClick={() => { setScreen("SearchCommunity");}} />
           <MdPersonAddAlt1 className="icon" color={Screen=="AddFriends" ? "#979697" :"#fff"} onClick={() => { setScreen("AddFriends");}} />
           <MdOutlineSettings className="icon" color={Screen=="Settings" ? "#979697" :"#fff"} onClick={() => {setSetting()}} />

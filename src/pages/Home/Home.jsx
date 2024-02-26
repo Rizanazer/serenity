@@ -4,7 +4,7 @@ import './Home.css'
 import PersonalMsgScreen from "./PersonalMessage/PersonalMessageScreen";
 import AddFriendsScreen from "./AddFriends/AddFriendsScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
-import ReccomendationScreen from "./CommunityReccomendation/ReccomendationScreen";
+
 import SearchScreen from "./Search/SearchScreen";
 import SettingsScreen from "./Settings/SettingsScreen";
 import Nav from "./Nav/Nav";
@@ -42,7 +42,6 @@ const Home = () => {
       {Screen === "PersonalMessage" && <PersonalMsgScreen/>}
       {Screen === "Profile" && <ProfileScreen />}
       {Screen === "CommunityMessage" && <CommunityMsgScreen screen={setScreen} create={setCreateAlert} individualCommunity={individualCommunity}/>}
-      {Screen === "CommunityReccomendation" && <ReccomendationScreen />}
       {Screen === "SearchCommunity" && <SearchScreen />}
       {Screen === "AddFriends" && <AddFriendsScreen/>}
       

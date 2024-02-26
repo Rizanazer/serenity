@@ -110,8 +110,11 @@ body {
   flex-direction: column !important;
 }
 
-.gap {
+.gap10 {
   gap: 10px !important;
+}
+.gap20 {
+  gap: 20px !important;
 }
 
 .nobordershadow {

@@ -87,7 +87,7 @@ function AddFriendsScreen() {
               </div>
             </div>
              
-            <div className="txtbtn gap flexrow ">
+            <div className="txtbtn gap10 flexrow ">
                 <span className="bold box joinbtn" onClick={()=>acceptRequest(u_id,selectedUserData._id)}>accept</span>
                 <span className="bold box joinbtn" onClick={()=>rejectRequest(u_id,selectedUserData._id)}>reject</span>
               </div>

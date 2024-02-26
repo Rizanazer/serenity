@@ -1,11 +1,11 @@
-import React, {useState } from "react";
-import { MdArrowBack, MdMoreVert} from "react-icons/md";
+import React, { useState } from "react";
+import { MdArrowBack, MdMoreVert } from "react-icons/md";
 import GroupList from "../Functions/GroupList";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import "./SearchScreen.css"
 import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
-function SearchScreen(){
-  const [Join,setJoin]=useState(false);
+function SearchScreen() {
+  const [Join, setJoin] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -14,15 +14,15 @@ function SearchScreen(){
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
-  const[Status,setStatus]=useState(false);
-  const [Moreadj,setMoreadj]=useState(false);
+  const [Status, setStatus] = useState(false);
+  const [Moreadj, setMoreadj] = useState(false);
   var [GroupName, setGroupName] = useState([
-    { "groupname": "Group 1", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) } ,"status":true},
-    { "groupname": "Group 2", "image": "images/groupprofile.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) } ,"status":true },
-    { "groupname": "Group 3", "image": "images/groupprofile.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) }  ,"status":true},
-    { "groupname": "Group 4", "image": "images/groupprofile.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) } ,"status":true },
-    { "groupname": "Group 5", "image": "images/groupprofile.jpg", "message": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) }  ,"status":false},
-    { "groupname": "Group 6", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }  ,"status":true},
+    { "groupname": "Group 1", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }, "status": true },
+    { "groupname": "Group 2", "image": "images/groupprofile.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) }, "status": true },
+    { "groupname": "Group 3", "image": "images/groupprofile.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) }, "status": true },
+    { "groupname": "Group 4", "image": "images/groupprofile.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) }, "status": true },
+    { "groupname": "Group 5", "image": "images/groupprofile.jpg", "message": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) }, "status": false },
+    { "groupname": "Group 6", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }, "status": true },
 
 
   ]
@@ -37,12 +37,26 @@ function SearchScreen(){
   }
   return (
     <>
-      <div className="section1 section_margin box">
-        <div className="box searchbox">
-          <input type="text" placeholder="Search for New Communities" className="nobordershadow widthmax" />
+      <div className="section1 section_margin box gap20">
+        <div className="box nopadding nobordershadow search_box">
+          <div className="box searchbox">
+            <input type="text" placeholder="Search for New Communities" className="nobordershadow widthmax" />
+          </div>
+          <div className="box nopadding nobordershadow searchBoxContnt">
+            {GroupName.map((el, i) => <GroupList_1 data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
+          </div>
         </div>
-        {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
 
+        <div className="box reccomendation_box">
+          <div className=" searchbox">
+            <span className="bold">Community Reccomendations</span>
+          </div>
+          <div className="box nopadding nobordershadow reccomendationBoxContnt">
+          {GroupName.map((el, i) => <GroupList_2 data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
+          </div>
+
+
+        </div>
 
       </div>
 
@@ -50,15 +64,15 @@ function SearchScreen(){
         {ViewChat ? <>
           {/* upperchats component */}
           <div className="box upper_chatroom_padding flexrow spacebetween">
-            <div className="center gap">
+            <div className="center gap10">
 
               <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
-              {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.groupname, "status": () => { setSideScreen(true);setMoreadj(true);} }} />}
+              {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.groupname, "status": () => { setSideScreen(true); setMoreadj(true); } }} />}
             </div>
 
-            <div className="center gap">
-            
+            <div className="center gap10">
+
 
               <MdMoreVert className="icon nobordershadow " color="" onClick={toggleMore} />
 
@@ -67,7 +81,7 @@ function SearchScreen(){
 
           {/* middlechats component-chat_area */}
           <div className="box chat_area nopadding">
-            {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
+            {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}></div>}
 
             {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
 
@@ -75,15 +89,15 @@ function SearchScreen(){
 
           {/* bottomchats component-chat_typing */}
           {
-          Join?<div className="box center pointer joinbtn" onClick={()=>{}}>
-            <span className="bold">Enter Chat</span>
-          </div>
-          :
-          <div className="box center pointer joinbtn" onClick={()=>{
-            setJoin(true);
-          }}>
-            <span className="bold">join</span>
-          </div>
+            Join ? <div className="box center pointer joinbtn" onClick={() => { }}>
+              <span className="bold">Enter Chat</span>
+            </div>
+              :
+              <div className="box center pointer joinbtn" onClick={() => {
+                setJoin(true);
+              }}>
+                <span className="bold">join</span>
+              </div>
           }
         </>
           :
@@ -91,9 +105,45 @@ function SearchScreen(){
 
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-      {<SideScreenCommunityJoinFn data={{"image":selectedChat?.image,"groupname":selectedChat?.groupname}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>}
+        {<SideScreenCommunityJoinFn data={{ "image": selectedChat?.image, "groupname": selectedChat?.groupname }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
       </div>}
     </>
   );
-  }
-  export default SearchScreen;
+}
+function GroupList_1({ data ,HandleClick}) {
+    
+  return (
+    <div  onClick= {()=>{data.viewchat();HandleClick();}}>
+      <div className="box chat pointer">
+
+      <div className="chat_info" >
+        <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+        <div className=" profile_text">
+          <span className="bold">{data.groupname}</span>
+          <span className="light">{data.message}</span>
+        </div>
+      </div>
+      {data.status && <span className="light">joined</span>}
+    </div>
+    </div>
+  )
+}
+function GroupList_2({ data ,HandleClick}) {
+    
+  return (
+    <div  onClick= {()=>{data.viewchat();HandleClick();}}>
+      <div className="box chat pointer">
+
+      <div className="chat_info" >
+        <img className="icon profile_chat_img" src={data.image} alt="" />
+        <div className=" profile_text">
+          <span className="bold">{data.groupname}</span>
+          <span className="light">{data.message}</span>
+        </div>
+      </div>
+      {data.status && <span className="light">joined</span>}
+    </div>
+    </div>
+  )
+}
+export default SearchScreen;
