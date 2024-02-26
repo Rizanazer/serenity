@@ -9,6 +9,11 @@ input{
 .inputrow{
   gap: 10px;
 }
+
+.box{
+  width:24vw;
+  height:60vh;
+}
 .input_otp{
   align-items: center;
   height: 50px;
