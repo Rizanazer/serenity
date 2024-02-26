@@ -2,7 +2,14 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    margin: 225px 90px;
+    margin: 20px 10px;
     width:  clamp(200px, 40%, 300px);
     height: 60%;
+    padding: 0px 0px !important;
+}
+.settings_back{
+    width: 100%;
+}
+.settings_content{
+padding: 0px 20px !important;
 }

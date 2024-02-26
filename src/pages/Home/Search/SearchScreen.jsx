@@ -39,7 +39,7 @@ function SearchScreen(){
     <>
       <div className="section1 box">
         <div className="box searchbox">
-          <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
+          <input type="text" placeholder="Search for New Communities" className="nobordershadow widthmax" />
         </div>
         {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
 
