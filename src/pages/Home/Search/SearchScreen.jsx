@@ -37,7 +37,7 @@ function SearchScreen(){
   }
   return (
     <>
-      <div className="section1 box">
+      <div className="section1 section_margin box">
         <div className="box searchbox">
           <input type="text" placeholder="Search for New Communities" className="nobordershadow widthmax" />
         </div>

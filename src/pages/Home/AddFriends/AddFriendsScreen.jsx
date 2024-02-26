@@ -49,9 +49,9 @@ function AddFriendsScreen() {
   }
   return (
     <>{AddFriends.length>0?(
-      <div className="section1 box">
+      <div className="section1 box section_margin">
         {AddFriends.map((el, i) => <Add_Friends data={el} key={i} handleClick={() => { setSelectedRequest(el._id) }} addFriendsAlert={() => { }} />)}
-      </div>):(<div className=" pointer center section1 box">No Requests</div>)}
+      </div>):(<div className=" pointer center section1 section_margin box">No Requests</div>)}
       {selectedUserData ?(
       <div className="section2 box center">
         <div className="alert flexcolumn">

@@ -6,6 +6,7 @@
     width:  clamp(200px, 40%, 300px);
     height: 60%;
     padding: 0px 0px !important;
+    z-index: 5;
 }
 .settings_back{
     width: 100%;

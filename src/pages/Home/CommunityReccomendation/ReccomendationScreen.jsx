@@ -37,7 +37,7 @@ function ReccomendationScreen() {
   }
   return (
     <>
-      <div className="section1 box">
+      <div className="section1 section_margin box">
         <div className=" searchbox">
        <span className="bold">Community Reccomendations</span>
         </div>
