@@ -4,7 +4,7 @@ import { PiChat, PiChats } from "react-icons/pi";
 import UserProfile from "../Functions/UserProfile";
 
 export default function Nav({Screen,setScreen,setSetting}){
-    return(<div className="nav center">
+    return(<aside className="nav center">
         <div className="navbox center">
           <CgProfile className="icon" color={Screen=="Profile" ? "#979697" :"#fff"} onClick={() => { setScreen("Profile"); }} />
           <PiChat className="icon" color={Screen=="PersonalMessage" ? "#979697" :"#fff"} onClick={() => { setScreen("PersonalMessage");}} />
@@ -17,5 +17,5 @@ export default function Nav({Screen,setScreen,setSetting}){
 
         <UserProfile data={{ "image": "images/profilepic.jpg", "Username": "sungjinwoo", "status": true }} />
 
-      </div>)
+      </aside>)
 }
