@@ -190,12 +190,11 @@
     width: 15%;
     border-radius: 20px 0 20px 20px;
     background: #eeeeee;
-    padding: 5px 5px;
     display: flex;
     flex-direction: column;
     gap: 5px;
     box-shadow: var(--shadow);
-
+    padding: 15px 15px;
 }
 
 .more_option_adjusted {
