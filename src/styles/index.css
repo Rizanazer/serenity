@@ -65,7 +65,7 @@ body {
   background-image: url('../../public/images/profilebg1.png');
 
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 
 .box {

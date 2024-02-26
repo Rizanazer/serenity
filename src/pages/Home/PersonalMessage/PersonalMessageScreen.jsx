@@ -79,7 +79,7 @@ function PersonalMsgScreen() {
               <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
               {/* {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.username, "status": () => { setSideScreen(true);setMoreadj(true);} }} />} */}
-              {<div>
+              {<div className="center inputrow" onClick={()=>{setSideScreen(true);setMoreadj(true);}}>
                 <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
                 <span className="bold">{selectedChat.username}</span>
               </div>}
