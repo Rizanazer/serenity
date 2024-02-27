@@ -15,7 +15,7 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}
                     <div className="section3_textArea profile_text">
-                        <span className="bold alignself_center">{data.username}</span>
+                        <span className="bold alignself_center">{data.selectedCommunityName}</span>
                         <span className="light">Group Discription</span>
                     </div>
             

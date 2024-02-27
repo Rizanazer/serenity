@@ -15,24 +15,26 @@ const Home = () => {
   const [CreateAlert,setCreateAlert]=useState(false);
   const [individualCommunity,setIndividualCommunity] = useState([])
   const userdata = JSON.parse(localStorage.getItem("userdata"))
-  const [communityList,updateCommunityList] = useState(userdata.communities)
+  const [communityList,updateCommunityList] = useState(userdata.communities);
   const [Setting,setSetting]=useState(false);
+  
+  async function fetchCommunityDetails() {
+    try {
+      const response = await axios.post('/getUsersCommunities', { id:userdata._id});
+      setIndividualCommunity(response.data);
+    } catch (error) {
+      console.error('Error fetching community details:', error);
+    }
+  }
+  
   useEffect(() => {
-    //console.log(communityList);
-    async function fetchCommunityDetails() {
-      try {
-        const response = await axios.post('/individualcommunity', { data: communityList });
-        setIndividualCommunity(response.data);
-        //console.log("ii "+communityList);
-      } catch (error) {
-        console.error('Error fetching community details:', error);
+    if (communityList.length > 0) {
+      if(userdata){
+        fetchCommunityDetails();
       }
     }
-
-    if (communityList.length > 0) {
-      fetchCommunityDetails();
-    }
   }, []);
+
   console.log(individualCommunity);
   return (
 
@@ -46,7 +48,7 @@ const Home = () => {
       {Screen === "AddFriends" && <AddFriendsScreen/>}
       
 
-      {CreateAlert&&<CreateCommunity setCreateAlert={setCreateAlert} setIndividualCommunity={setIndividualCommunity} />}
+      {CreateAlert&&<CreateCommunity setCreateAlert={setCreateAlert} fetchCommunityDetails={fetchCommunityDetails}/>}
       {Setting?<SettingsScreen handleClick={()=>{setSetting(false)}}/>:null}
     </div>
   );

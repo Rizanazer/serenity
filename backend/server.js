@@ -38,6 +38,18 @@
     }
   });
 
+  router.post('/getUsersCommunities', async (req, res) => {
+    try {
+      const user = await User.findOne({_id:req.body.id});
+      const communityIds = user.communities;
+      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",user);
+      const communities = await Community.find({ _id: { $in: communityIds } });
+      res.json(communities);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 
   router.post('/individualcommunity', async (req, res) => {
     try {
