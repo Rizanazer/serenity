@@ -53,15 +53,17 @@
     
       newSocket.on('newMessage', (message) => {
 
-        console.log('New message from the server socket:', message);
-        const updatedMessages = [...allCommunityMessages];
-        updatedMessages.forEach((elem)=>{
-          if(elem.communityId === message.c_id){
-            const appenddata = {"u_id":message.u_id,"u_name":message.u_name,"message":message.message}
-            elem.messages.push(appenddata);
-          }
-          setAllCommunityMessages(updatedMessages)
-        })
+        const appenddata = {"u_id":message.u_id,"u_name":message.u_name,"message":message.message}
+        setMessages((prev)=>[...prev,appenddata])
+        // console.log('New message from the server socket:', message);
+        // const updatedMessages = [...allCommunityMessages];
+        // updatedMessages.forEach((elem)=>{
+        //   if(elem.communityId === message.c_id){
+        //     const appenddata = {"u_id":message.u_id,"u_name":message.u_name,"message":message.message}
+        //     elem.messages.push(appenddata);
+        //   }
+        //   setAllCommunityMessages(updatedMessages)
+        // })
       });
     
       return () => {
@@ -89,18 +91,18 @@
         console.log(messageData);
         if (socket) {
           socket.emit('sendMessage', messageData);
-
-          const updatedMessages = [...allCommunityMessages];
-        updatedMessages.forEach((elem)=>{
-          //console.log(message)
-          if(elem.communityId === selectedCommunity){
-            //console.log(`hi`);
-            const appenddata = {"u_id":localStorage.getItem('userid'),"u_name":localStorage.getItem('username'),"message":text}
-            elem.messages.push(appenddata);
-          }
-          //console.log(updatedMessages);
-          setAllCommunityMessages(updatedMessages)
-        })
+          setMessages((prev)=>[...prev,messageData])
+        //   const updatedMessages = [...allCommunityMessages];
+        // updatedMessages.forEach((elem)=>{
+        //   //console.log(message)
+        //   if(elem.communityId === selectedCommunity){
+        //     //console.log(`hi`);
+        //     const appenddata = {"u_id":localStorage.getItem('userid'),"u_name":localStorage.getItem('username'),"message":text}
+        //     elem.messages.push(appenddata);
+        //   }
+        //   //console.log(updatedMessages);
+        //   setAllCommunityMessages(updatedMessages)
+        // })
 
           // updationToggleFunc()
           console.log(`sendfunc`);
