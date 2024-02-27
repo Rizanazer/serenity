@@ -452,6 +452,22 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   })
 
 
+
+  router.post("/get_c_messages",async (req,res)=>{
+    
+    try {  
+    const {c_id} = req.body
+    console.log(c_id);
+    const chats = await CommunityChats.findOne({communityId:c_id})
+     console.log(chats);
+    res.json({ "success": true,"chats":chats});
+    } catch (error) {
+      console.log("error ocuurred while loading community chat")
+      res.json({"success":false})
+    }
+  })
+
+
   app.use('/',router)
  
   io.on('connection', (socket) => {

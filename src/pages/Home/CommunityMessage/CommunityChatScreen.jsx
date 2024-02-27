@@ -12,11 +12,12 @@
     const [selectedCommunityName,setSelectedCommunityName] = useState(null)
     const [selectedCommunity,setSelectedCommunity] = useState("")
     const userdata = JSON.parse(localStorage.getItem('userdata'))
-    const [chatByCommunity,setChatByCommunity] = useState([]);
-    const [loadChatByCommunity,setLoadChatByCommunity] = useState(null)
+    // const [chatByCommunity,setChatByCommunity] = useState([]);
+    // const [loadChatByCommunity,setLoadChatByCommunity] = useState(null)
     const [allCommunityMessages,setAllCommunityMessages] = useState([])
     const chatAreaRef = useRef(null);
     const [socket, setSocket] = useState(null);
+    const [selectedCommunityMessages,setSelectedCommunityMessages] = useState([])
     const [selectedUser,setSelectedUser] = useState({username:'',userid:''})
 
     useEffect(() => {
@@ -26,11 +27,20 @@
     }, [allCommunityMessages]);
 
 
-    function onclick(id, name) {
+    async function onclick(id, name) {
       setViewChat(true);
       setSelectedCommunityName(name);
+      // console.log(selectedCommunity);
       setSelectedCommunity(id)
       console.log(id);
+      try {
+        const response = await axios.post('/get_c_messages',{c_id:selectedCommunity})
+        console.log(response.data.chats.messages);
+        setMessages(response.data.chats.messages)
+        console.log(messages);
+      } catch (error) {
+        console.log("error in fetching selected community messages")
+      }
     }
 
     useEffect(() => {
@@ -201,14 +211,25 @@
               {/* //onClick={()=>(console.log(allCommunityMessages.map(s=>s.messages.map(t=>t.message))))} */}
               <div className="box chat_area nopadding"  ref={chatAreaRef}>
               {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
-
                 {/* {messages.map((el, i) => <div className="msg_main">
                   <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
                   <p className="msg " key={i}>{el}</p>
                   </div>)} */}
-                  
+
+
+                    {messages && messages.map((el, i) => (
+                      <div className="msg_main" key={i}>
+                        <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcset="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
+                        <p className="uname-msg">{el.u_name}</p>
+                        <p className="msg">{el.message}</p>
+                      </div>
+                    ))}
+
+
+
+
                   {/* {chatByCommunity.map((m)=><p>{m.communityId}</p>)} */}
-                  {allCommunityMessages.map(community => {
+                  {/* {allCommunityMessages.map(community => {
                 if (selectedCommunity === community.communityId) {
                   return community.messages.map(message => (
                     <div className="msg_main">
@@ -220,7 +241,7 @@
                 } else {
                   return null; 
                 }
-              })}
+              })} */}
               {/* {communityMessages.map(message => {
                 if (message) {
                   return  (
