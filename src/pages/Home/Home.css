@@ -167,7 +167,21 @@
     right: 0;
 
 }
+.msg-rightside {
+    padding: 10px;
+    margin-right: 10px;
+    background: #f5f5f5;
+    border-radius: 5px 5px 5px 0;
+    display: inline-block;
+    /* Change to inline-block */
+    max-width: fit-content;
+    width: auto;
+    /* Allow the width to adjust dynamically */
+    box-shadow: var(--shadow);
+    position: relative;
+    right: 0;
 
+}
 .icon_search {
     padding: 5px;
     width: 30px;

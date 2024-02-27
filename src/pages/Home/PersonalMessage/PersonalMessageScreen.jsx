@@ -78,7 +78,7 @@ function PersonalMsgScreen() {
 // useEffect(()=>{
 //   if(messages){
 //     messages.forEach((el)=>{
-//       console.log(el.messageBody);
+//       console.log(el);
 //     })}
 // },[messages])
   async function onclickfriend(friend){
@@ -94,6 +94,7 @@ function PersonalMsgScreen() {
     }
     
   }
+  
   
   return (
     <>
@@ -167,7 +168,7 @@ function PersonalMsgScreen() {
             </div>}
 
             {/* {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)} */}
-            {messages.length>0 && messages.map((el, i) => <p className="msg " key={i}>{el.messageBody}</p>)}
+            {messages.length>0 && messages.map((el, i) => <p className={el.from.username === username?"msg-rightside":"msg"} key={i}>{el.messageBody}</p>)}
 
 
           </div>
