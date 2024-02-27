@@ -447,27 +447,36 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 
 
     socket.on('send_p_message', async (msg) => {
-      console.log(msg);
+      //console.log(msg);
       const { from, to, fromname, toname, message } = msg;
+      // console.log(toname+" "+to);
+      // const existingChat = await DirectChats.findOne({
+      //   $or: [
+      //     { "users.userid": from, "users.userid": to },
+      //     { "users.userid": to, "users.userid": from }
+      //   ]
+      // });
       const existingChat = await DirectChats.findOne({
-        $or: [
-          { "users.userid": from, "users.userid": to },
-          { "users.userid": to, "users.userid": from }
-        ]
-      });
-      console.log(existingChat);
+        users: {
+            $all: [
+                { $elemMatch: { userid: from } },
+                { $elemMatch: { userid: to } }
+            ]
+        }
+    });
+    
+      // console.log(existingChat);
       if (existingChat) {
-        existingChat.message.push({
+        existingChat.messages.push({
           from: { userid: from, username: fromname },
           to: { userid: to, username: toname },
           messageBody: message,
           messageType: "text"
-          // You can add other message details here
         });
-        await existingChat.save();
+      await existingChat.save();
       }
       console.log(existingChat.users);
-      io.emit("message_received_at_server");
+      io.emit("recieve_p_message",{"to":to,"from":from,"toname":toname,"fromname":fromname,"messageBody": message,"messageType": "text"});
     });
     
     //personal message area end

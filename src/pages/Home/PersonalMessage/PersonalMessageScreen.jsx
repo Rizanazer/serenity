@@ -32,7 +32,10 @@ function PersonalMsgScreen() {
     const socket = io('http://:3000');
     setMySocket(socket)
     socket.on('recieve_p_message',(message)=>{
-      console.log(message);
+      // console.log(message);
+      console.log(messages)
+      const newmessage = message
+      setMessages((prev)=>[...prev,newmessage])
     })
   },[])
   useEffect(() => {
@@ -67,24 +70,31 @@ function PersonalMsgScreen() {
 
 
   const send = async () => {
+    console.log(selectedChat);
     const senddata = {"fromname":username,"from":u_id,"toname":selectedChat.username,"to":selectedChat.userid,"message":text}
     mySocket.emit("send_p_message",senddata)
   }
 
-
+// useEffect(()=>{
+//   if(messages){
+//     messages.forEach((el)=>{
+//       console.log(el.messageBody);
+//     })}
+// },[messages])
   async function onclickfriend(friend){
     setViewChat(true)
     setSelectedChat(friend)
     console.log(friend);
     try {
       const response = await axios.post('/fetchpersonal',{f_id:friend.userid,u_id:u_id})
-      console.log(response.data.chats.message);
-       setMessages([response.data.chats.message])
+      console.log(response.data.chats.messages);
+       setMessages(response.data.chats.messages) 
     } catch (error) {
       console.log('personal message fetch error')
     }
     
   }
+  
   return (
     <>
       <div className="section1 section_margin box">
@@ -156,7 +166,9 @@ function PersonalMsgScreen() {
               </div>
             </div>}
 
-            {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
+            {/* {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)} */}
+            {messages.length>0 && messages.map((el, i) => <p className="msg " key={i}>{el.messageBody}</p>)}
+
 
           </div>
 
