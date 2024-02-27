@@ -9,71 +9,28 @@
   import axios from "axios";
   import {io} from "socket.io-client"
   function CommunityMsgScreen({screen,create,individualCommunity}) {
-    ///////////////////////////
-    //const [updationToggle,setUpdationToggle]=useState(0)
-    // const [communityMessages, setCommunityMessages] = useState({});
     const [selectedCommunityName,setSelectedCommunityName] = useState(null)
     const [selectedCommunity,setSelectedCommunity] = useState("")
-    // const [individualCommunity,setIndividualCommunity] = useState([])
     const userdata = JSON.parse(localStorage.getItem('userdata'))
-    const [communityList,updateCommunityList] = useState(userdata.communities)
-    const [chatByCommunity,setChatByCommunity] = useState([])
-    //console.log(communityList);
+    const [chatByCommunity,setChatByCommunity] = useState([]);
     const [loadChatByCommunity,setLoadChatByCommunity] = useState(null)
     const [allCommunityMessages,setAllCommunityMessages] = useState([])
     const chatAreaRef = useRef(null);
     const [socket, setSocket] = useState(null);
     const [selectedUser,setSelectedUser] = useState({username:'',userid:''})
-    // function updationToggleFunc(){
-    //   if(updationToggle === 0){
-    //     setUpdationToggle(1)
-    //   }else{
-    //     setUpdationToggle(0)
-    //   }
-    // }
+
     useEffect(() => {
       if (chatAreaRef.current) {
         chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
       }
     }, [allCommunityMessages]);
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.post('/loadchat', { communitylist: communityList });
-          const temp1 = response.data.map(element => element.chats).flat()
-          console.log(temp1)
-          // const temp2 = temp1.map(element => element.messages).flat();
-          // console.log("temp2 : "+temp2);
-          setAllCommunityMessages(temp1.flat())
-          //const k = allCommunityMessages.map((el) => el.messages)
-          console.log(allCommunityMessages);
-          
-        } catch (error) {
-          console.error(error);
-        }
-        };
-        
-        //const res = allCommunityMessages.find(community => community.communityId === selectedCommunity)
-        //console.log("dssf  "+res);
-        //setChatByCommunity(allCommunityMessages.find(community => community.communityId === selectedCommunity))
-        //console.log(`chttt: `+chatByCommunity);
-        fetchData();
-    }, [communityList]); 
 
     function onclick(id, name) {
       setViewChat(true);
       setSelectedCommunityName(name);
       setSelectedCommunity(id)
       console.log(id);
-      // const selectedMessages = allCommunityMessages.find(elem => elem.communityId === id);
-      // if (selectedMessages) {
-      //   setCommunityMessages(selectedMessages.messages);
-      // }
-      // console.log(selectedMessages.messages);
-      console.log("////////////////////////////////");
-      //console.log(communityMessages);
-
     }
 
     useEffect(() => {
@@ -89,28 +46,12 @@
         console.log('New message from the server socket:', message);
         const updatedMessages = [...allCommunityMessages];
         updatedMessages.forEach((elem)=>{
-          //console.log(message)
           if(elem.communityId === message.c_id){
-            //console.log(`hi`);
             const appenddata = {"u_id":message.u_id,"u_name":message.u_name,"message":message.message}
             elem.messages.push(appenddata);
           }
-          //console.log(updatedMessages);
           setAllCommunityMessages(updatedMessages)
         })
-        // setAllCommunityMessages((prevCommunityMessages) => {
-        //   const index = prevCommunityMessages.findIndex(chat => chat.c_id === message.c_id);
-        //   console.log(index);
-        //   if (index !== -1) {
-        //     const updatedCommunityMessages = [...prevCommunityMessages];
-        //     updatedCommunityMessages[index].messages.push(message);
-        //     setCommunityMessages(prevMessages => [...prevMessages, message]);
-
-        //     return updatedCommunityMessages;
-        //   } else {
-        //     return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [message] }];
-        //   }
-        // });
       });
     
       return () => {
@@ -118,10 +59,6 @@
         console.log('Disconnected from the server');
       };
     }, [allCommunityMessages]);
-    
-    //////////////////////////
-    //console.log(`allcommu`);
-      //console.log(allCommunityMessages)
     const [ChatSearch, SetChatSearch] = useState(false);
     var [ViewChat, setViewChat] = useState(false);
     var [SideScreen, setSideScreen] = useState(false);
@@ -235,7 +172,7 @@
                   <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
                   {/* {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true);setMember(false); } }} />} */}
-                  {<UpperChatInfo data={{individualCommunity,selectedCommunityName}} actions={{setSelectedCommunity}}  />}
+                  {<UpperChatInfo data={{individualCommunity,selectedCommunityName}} actions={{setSelectedCommunity}}  sidescreen={() => { setSideScreen(true);setMoreadj(true);setMember(false); } }/>}
 
                 </div>
 
@@ -326,7 +263,7 @@
         {SideScreen && <div className="section3 box nopadding nobordershadow">
           {Member?<SideScreenCommunityMemberFn  selectedUser={selectedUser} data={{"image":"images/profileimg_chat.jpg","username":"arif"}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}} member={()=>{setMember(false)}}/>
           :
-          <SideScreenCommunityDetailsFn data={{"image":selectedChat?.image,"username":selectedChat?.groupname}} member={()=>{setMember(true);}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>}
+          <SideScreenCommunityDetailsFn data={{individualCommunity,selectedCommunityName}} actions={{setSelectedCommunity}} member={()=>{setMember(true);}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>}
           
         </div>}
       </>

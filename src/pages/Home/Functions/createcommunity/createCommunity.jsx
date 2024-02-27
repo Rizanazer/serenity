@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./createCommunity.css"
 import { CgSearch } from "react-icons/cg";
 import axios from "axios"
-var CreateCommunity = ({ setCreateAlert,setIndividualCommunity }) => {
+var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
     const [Next, setNext] = useState(false);
     const [createCommunityData,setCreateCommunityData] = useState({c_name:'',c_desc:""})
    
@@ -11,21 +11,20 @@ var CreateCommunity = ({ setCreateAlert,setIndividualCommunity }) => {
         setCreateCommunityData({...createCommunityData,[name]:value})
     };
     
-    async function createCommunity(){
-        const createdBy = localStorage.getItem("userid")
-        const senddata = {createdby:createdBy,c_name:createCommunityData.c_name,c_desc:createCommunityData.c_desc}
+    async function createCommunity() {
+        const createdBy = localStorage.getItem("userid");
+        const senddata = { createdby: createdBy, c_name: createCommunityData.c_name, c_desc: createCommunityData.c_desc };
         try {
-            const response = await axios.post('/createcommunity',senddata)
-            setCreateAlert(false)
-            //console.log(response);
-            //setScreen('CommunityMessage')
-             setIndividualCommunity((prev)=>[...prev,response.data.result])
-             console.log(response.data);
+            const response = await axios.post('/createcommunity', senddata);
+            setCreateAlert(false);
+            console.log("❤️");
+            await fetchCommunityDetails();
+            console.log(response.data);
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-       
     }
+    
 
     return (
         <>
