@@ -169,6 +169,7 @@ function PersonalMsgScreen() {
 
             {/* {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)} */}
             {messages.length>0 && messages.map((el, i) => <p className={el.from.username === username?"msg-rightside":"msg"} key={i}>{el.messageBody}</p>)}
+            {/* {messages.length>0 && messages.map((el, i) => {el.from.username === username?<p key={i}className="msg">{el.messageBody}</p>:<p key={i}className="msg-rightside">{el.messageBody}</p>})} */}
 
 
           </div>
