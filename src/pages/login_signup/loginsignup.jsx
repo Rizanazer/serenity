@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = ({ actions ,userData }) =>
 (
 
-  <div className="box ">
+  <div className="box_login box center">
     <input placeholder='Email' onChange={actions.handleInputChange} value={userData.mail} name="mail" />
     <input placeholder='Password' onChange={actions.handleInputChange} value={userData.pass} name = "pass"/>
     <div className='viewerror'>
@@ -34,7 +34,7 @@ const Login = ({ actions ,userData }) =>
 const CreateAccount = ({ actions  }) =>
 (
 
-  <div className="box">
+  <div className="box_login box center">
     <input placeholder='Email' onChange={actions.handleInputChange} />
     <input placeholder='Password' onChange={actions.handleInputChange} />
     <input placeholder='Re-Password' onChange={actions.handleInputChange} />
@@ -62,7 +62,7 @@ const CreateAccount = ({ actions  }) =>
 const MobileNumberInput = ({ actions }) =>
 (
 
-  <div className="box ">
+  <div className="box_login box center">
     <input placeholder='MobileNumber' />
     <button onClick={()=>actions.handleActionChange("VALIDATE")}>GetOTP</button>
     <button onClick={()=>actions.handleActionChange("LOGIN")}>BACK</button>
@@ -72,7 +72,7 @@ const MobileNumberInput = ({ actions }) =>
 const OTPInput = ({ actions }) =>
 (
 
-  <div className="box ">
+  <div className="box_login box center">
     <div className="center inputrow flexrow">
     <input className='input_otp ' type='text' maxLength="1"/>
     <input className='input_otp' type='text' maxLength="1"/>

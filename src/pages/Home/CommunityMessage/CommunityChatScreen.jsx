@@ -202,7 +202,7 @@
 
     return (
       <>
-        <div className="section1 box">
+        <div className="section1 section_margin box">
           <div className="box searchbox flexrow spacebetween">
             <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={()=>{}}/>
             <Menu setScreen={screen} setCreateAlert={create}/>
@@ -230,7 +230,7 @@
             <>
               {/* upperchats component */}
               <div className="box upper_chatroom_padding flexrow spacebetween">
-                <div className="center gap">
+                <div className="center gap10">
 
                   <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
@@ -239,7 +239,7 @@
 
                 </div>
 
-                <div className="center gap">
+                <div className="center gap10">
                   <div className="box center nobordershadow nopadding spacebetween flexrow ">
                   {ChatSearch?
                   <>

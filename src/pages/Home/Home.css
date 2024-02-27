@@ -5,12 +5,16 @@
 }
 
 .nav {
-    flex: 0.6;
-    height: 100%;
+    position: fixed;
+    /* top: 0; */
+    left: 0;
+    height: 95%;
     display: flex;
     flex-direction: column;
     /* overflow-y: auto; */
     gap: 5px;
+    width: 72px;
+    z-index: 1;
 }
 
 
@@ -41,7 +45,9 @@
     flex-direction: column;
     gap: 25px;
 }
-
+.section_margin{
+    margin-left: 90px !important;
+}
 .section1 {
     flex: 3;
     height: 100%;
@@ -184,12 +190,11 @@
     width: 15%;
     border-radius: 20px 0 20px 20px;
     background: #eeeeee;
-    padding: 5px 5px;
     display: flex;
     flex-direction: column;
     gap: 5px;
     box-shadow: var(--shadow);
-
+    padding: 15px 15px;
 }
 
 .more_option_adjusted {

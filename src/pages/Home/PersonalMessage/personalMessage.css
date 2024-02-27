@@ -1,0 +1,17 @@
+.more_items{
+    height: 30%;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    display: flex !important;
+    width: 100%;
+  
+}
+.more_items:hover{
+    background-color: #d9d9d9 !important;
+}
+.neration{
+    display:flex ;
+    gap: 20px;
+    align-items: center;
+}

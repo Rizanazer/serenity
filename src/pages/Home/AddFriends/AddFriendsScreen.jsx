@@ -49,9 +49,9 @@ function AddFriendsScreen() {
   }
   return (
     <>{AddFriends.length>0?(
-      <div className="section1 box">
+      <div className="section1 box section_margin">
         {AddFriends.map((el, i) => <Add_Friends data={el} key={i} handleClick={() => { setSelectedRequest(el._id) }} addFriendsAlert={() => { }} />)}
-      </div>):(<div className="box chat pointer center">No Requests</div>)}
+      </div>):(<div className=" pointer center section1 section_margin box">No Requests</div>)}
       {selectedUserData ?(
       <div className="section2 box center">
         <div className="alert flexcolumn">
@@ -87,14 +87,14 @@ function AddFriendsScreen() {
               </div>
             </div>
              
-            <div className="txtbtn gap flexrow ">
+            <div className="txtbtn gap10 flexrow ">
                 <span className="bold box joinbtn" onClick={()=>acceptRequest(u_id,selectedUserData._id)}>accept</span>
                 <span className="bold box joinbtn" onClick={()=>rejectRequest(u_id,selectedUserData._id)}>reject</span>
               </div>
           </div>
         </div>
 
-      </div>):<div className="section2"></div>}
+      </div>):<div className="section2 box center"></div>}
     </>
   );
 }

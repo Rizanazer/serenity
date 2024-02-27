@@ -4,7 +4,7 @@ import './Home.css'
 import PersonalMsgScreen from "./PersonalMessage/PersonalMessageScreen";
 import AddFriendsScreen from "./AddFriends/AddFriendsScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
-import ReccomendationScreen from "./CommunityReccomendation/ReccomendationScreen";
+
 import SearchScreen from "./Search/SearchScreen";
 import SettingsScreen from "./Settings/SettingsScreen";
 import Nav from "./Nav/Nav";
@@ -16,7 +16,7 @@ const Home = () => {
   const [individualCommunity,setIndividualCommunity] = useState([])
   const userdata = JSON.parse(localStorage.getItem("userdata"))
   const [communityList,updateCommunityList] = useState(userdata.communities)
-
+  const [Setting,setSetting]=useState(false);
   useEffect(() => {
     //console.log(communityList);
     async function fetchCommunityDetails() {
@@ -38,17 +38,16 @@ const Home = () => {
 
     <div className="container center">
       
-      <Nav Screen={Screen} setScreen={setScreen}/>
+      <Nav Screen={Screen} setScreen={setScreen} setSetting={()=>{setSetting(true)}}/>
       {Screen === "PersonalMessage" && <PersonalMsgScreen/>}
       {Screen === "Profile" && <ProfileScreen />}
       {Screen === "CommunityMessage" && <CommunityMsgScreen screen={setScreen} create={setCreateAlert} individualCommunity={individualCommunity}/>}
-      {Screen === "CommunityReccomendation" && <ReccomendationScreen />}
       {Screen === "SearchCommunity" && <SearchScreen />}
       {Screen === "AddFriends" && <AddFriendsScreen/>}
-      {Screen === "Settings" && <SettingsScreen />}
+      
 
       {CreateAlert&&<CreateCommunity setCreateAlert={setCreateAlert} setIndividualCommunity={setIndividualCommunity} />}
-
+      {Setting?<SettingsScreen handleClick={()=>{setSetting(false)}}/>:null}
     </div>
   );
 };

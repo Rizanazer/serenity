@@ -63,9 +63,9 @@ body {
 
 .bg {
   background-image: url('../../public/images/profilebg1.png');
-
+  background-position: center center;
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 
 .box {
@@ -110,8 +110,11 @@ body {
   flex-direction: column !important;
 }
 
-.gap {
+.gap10 {
   gap: 10px !important;
+}
+.gap20 {
+  gap: 20px !important;
 }
 
 .nobordershadow {

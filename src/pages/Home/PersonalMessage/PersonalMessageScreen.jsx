@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { CgSearch } from "react-icons/cg";
 import { FaCircleDot } from "react-icons/fa6";
-
+import './personalMessage.css';
+import { HiMiniSpeakerXMark,HiMiniSpeakerWave  } from "react-icons/hi2";
 import { MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
@@ -17,10 +18,10 @@ function PersonalMsgScreen() {
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
-  const [Moreadj,setMoreadj]=useState(false);
+  const [Moreadj, setMoreadj] = useState(false);
   const [contacts, setContacts] = useState([])
   const u_id = localStorage.getItem('userid')
-  const [selectedUser,setSelectedUser] = useState(null)
+  const [selectedUser, setSelectedUser] = useState(null)
   const alluserdatastring = localStorage.getItem('userdata')
   const friends = JSON.parse(alluserdatastring).friends
   const username = localStorage.getItem('username')
@@ -34,24 +35,35 @@ function PersonalMsgScreen() {
       console.log(message);
     })
   },[])
-  useEffect(()=>{
-    async function fetchfriends(friends){
+  useEffect(() => {
+    async function fetchfriends(friends) {
       const u_id = localStorage.getItem('userid')
 
       try {
-        const response =  await axios.post("/fetchfriends",{u_id:u_id})
+        const response = await axios.post("/fetchfriends", { u_id: u_id })
         console.log(response.data.chats);
         setContacts(response.data.chats)
       } catch (error) {
         console.log("error fetching friends")
       }
-    } 
+    }
     fetchfriends()
-    
-  },[])
-  
+
+  }, [])
+
+  //speechtotext fn
+  const [Neration, setNeration] = useState(false);
+  const speakText = (message) => {
+    const speech = new SpeechSynthesisUtterance(message);
+    window.speechSynthesis.speak(speech);
+  };
+  const toggleNeration = () => {
+    setNeration(prevState => !prevState);
+  };
+//texttospeech
+
   var [messages, setMessages] = useState([]);
-  const [viewSelectedChat,setViewSelectedChat] = useState([])
+  const [viewSelectedChat, setViewSelectedChat] = useState([])
 
 
   const send = async () => {
@@ -75,19 +87,19 @@ function PersonalMsgScreen() {
   }
   return (
     <>
-      <div className="section1 box">
+      <div className="section1 section_margin box">
         <div className="box searchbox">
           <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
         </div>
         {Array.isArray(contacts) && contacts.map((el, i) => <div className="box chat pointer" >
-            <div className="chat_info" key= {i} onClick={()=>onclickfriend(el.users[0].userid !== u_id ? el.users[0]:el.users[1])}>
-              <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
-              <div className=" profile_text">
-                  <span className="bold">{el.users[0].username !== username ? el.users[0].username:el.users[1].username}</span>
-                <span className="light">messaage</span>
-              </div>
+          <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
+            <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+            <div className=" profile_text">
+              <span className="bold">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
+              <span className="light">messaage</span>
             </div>
-            {contacts && <FaCircleDot className="" color="#5e4ae3" />}</div>)}
+          </div>
+          {contacts && <FaCircleDot className="" color="#5e4ae3" />}</div>)}
 
       </div>
 
@@ -95,18 +107,18 @@ function PersonalMsgScreen() {
         {ViewChat ? <>
           {/* upperchats component */}
           <div className="box upper_chatroom_padding flexrow spacebetween">
-            <div className="center gap">
+            <div className="center gap10">
 
               <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
               {/* {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.username, "status": () => { setSideScreen(true);setMoreadj(true);} }} />} */}
-              {<div>
+              {<div className="center inputrow" onClick={() => { setSideScreen(true); setMoreadj(true); }}>
                 <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
                 <span className="bold">{selectedChat.username}</span>
               </div>}
             </div>
 
-            <div className="center gap">
+            <div className="center gap10">
               <div className="box center nobordershadow nopadding spacebetween flexrow">
 
                 {ChatSearch ?
@@ -131,9 +143,20 @@ function PersonalMsgScreen() {
 
           {/* middlechats component-chat_area */}
           <div className="box chat_area nopadding">
-            {More && <div className={Moreadj?"more_options more_option_adjusted":"more_options"}></div>}
+            {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
+              <div className="box nopadding more_items" onClick={()=>{
+                toggleNeration()
+                }}>
+                <div className="bold">{Neration?
+                <div className="neration flexrow center"><HiMiniSpeakerXMark className="icon_search"/>Narration OFF</div>
+                
+                : <div className="neration flexrow "><HiMiniSpeakerWave className="icon_search"/>Narration ON</div>
+                
+                }</div>
+              </div>
+            </div>}
 
-            {messages.map((el, i) => <p className="msg " key={i}>{el.from.username +" "}: {el.messageBody}</p>)}
+            {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
 
           </div>
 
@@ -157,7 +180,7 @@ function PersonalMsgScreen() {
 
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        <SideScreenPersonalFn data={{"image":selectedChat?.image,"username":selectedChat?.username}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>
+        <SideScreenPersonalFn data={{ "image": selectedChat?.image, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
       </div>}
     </>
   );
