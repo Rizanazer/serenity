@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef } from "react";
 import { CgSearch } from "react-icons/cg";
 import { FaCircleDot } from "react-icons/fa6";
 import './personalMessage.css';
@@ -7,8 +7,9 @@ import { MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyb
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
-import axios from "axios"
-import io from "socket.io-client"
+import axios from "axios";
+import io from "socket.io-client";
+
 function PersonalMsgScreen() {
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -27,7 +28,8 @@ function PersonalMsgScreen() {
   const username = localStorage.getItem('username')
   const [mySocket,setMySocket] = useState(null)
   var [text, setText] = useState("");
-
+  const hoverTimer = useRef(null);
+  const [hoveredMessage, setHoveredMessage] = useState("");
   useEffect(()=>{
     const socket = io('http://:3000');
     setMySocket(socket)
@@ -59,6 +61,16 @@ function PersonalMsgScreen() {
   const speakText = (message) => {
     const speech = new SpeechSynthesisUtterance(message);
     window.speechSynthesis.speak(speech);
+  };
+  const startHoverTimer = (message) => {
+    hoverTimer.current = setTimeout(() => {
+      setHoveredMessage(message);
+      speakText(message); 
+    }, 1000);
+  };
+
+  const cancelHoverTimer = () => {
+    clearTimeout(hoverTimer.current);
   };
   const toggleNeration = () => {
     setNeration(prevState => !prevState);
@@ -167,11 +179,9 @@ function PersonalMsgScreen() {
               </div>
             </div>}
 
-            {/* {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)} */}
-            {messages.length>0 && messages.map((el, i) => <p className={el.from.username === username?"msg-rightside":"msg"} key={i} onMouseEnter={() => { Neration && speakText(el.messageBody) }}>{el.messageBody}</p>)}
-            {/* {messages.length>0 && messages.map((el, i) => {el.from.username === username?<p key={i}className="msg">{el.messageBody}</p>:<p key={i}className="msg-rightside">{el.messageBody}</p>})} */}
-
-
+            {messages.length>0 && messages.map((el, i) => <p className={el.from.username === username?"msg-rightside":"msg"} key={i} 
+            onMouseEnter={() => {Neration&&startHoverTimer(el.messageBody)}}
+                  onMouseLeave={cancelHoverTimer}>{el.messageBody}</p>)}
           </div>
 
           {/* bottomchats component-chat_typing */}
