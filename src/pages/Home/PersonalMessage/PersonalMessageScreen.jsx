@@ -159,7 +159,7 @@ function PersonalMsgScreen() {
                 toggleNeration()
                 }}>
                 <div className="bold">{Neration?
-                <div className="neration flexrow center"><HiMiniSpeakerXMark className="icon_search"/>Narration OFF</div>
+                <div className="neration flexrow"><HiMiniSpeakerXMark className="icon_search"/>Narration OFF</div>
                 
                 : <div className="neration flexrow "><HiMiniSpeakerWave className="icon_search"/>Narration ON</div>
                 
@@ -168,7 +168,7 @@ function PersonalMsgScreen() {
             </div>}
 
             {/* {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)} */}
-            {messages.length>0 && messages.map((el, i) => <p className={el.from.username === username?"msg-rightside":"msg"} key={i}>{el.messageBody}</p>)}
+            {messages.length>0 && messages.map((el, i) => <p className={el.from.username === username?"msg-rightside":"msg"} key={i} onMouseEnter={() => { Neration && speakText(el.messageBody) }}>{el.messageBody}</p>)}
             {/* {messages.length>0 && messages.map((el, i) => {el.from.username === username?<p key={i}className="msg">{el.messageBody}</p>:<p key={i}className="msg-rightside">{el.messageBody}</p>})} */}
 
 
