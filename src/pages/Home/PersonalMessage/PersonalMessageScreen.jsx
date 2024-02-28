@@ -9,7 +9,7 @@ import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
 import axios from "axios";
 import io from "socket.io-client";
-import { useSwipeable } from "react-swipeable";
+
 
 function PersonalMsgScreen() {
   var [ViewChat, setViewChat] = useState(false);
@@ -32,6 +32,7 @@ function PersonalMsgScreen() {
   const hoverTimer = useRef(null);
   const [hoveredMessage, setHoveredMessage] = useState("");
   const [Deletefn,setDeletefn]=useState(false);
+
   useEffect(() => {
     const socket = io('http://:3000');
     setMySocket(socket)
@@ -42,6 +43,7 @@ function PersonalMsgScreen() {
       setMessages((prev) => [...prev, newmessage])
     })
   }, [])
+
   useEffect(() => {
     async function fetchfriends(friends) {
       const u_id = localStorage.getItem('userid')
@@ -56,18 +58,16 @@ function PersonalMsgScreen() {
     }
     fetchfriends()
 
-  }, [])
-  //delete conctact buton
-  // const handlers = useSwipeable({
-  //   onSwipedLeft: () => handleDeleteChat(),
-  //   preventDefaultTouchmoveEvent: true,
-  //   trackMouse: true
-  // });
+  }, []) 
+
+  //delete chat fn
   const toggleDeletefn = () => {
     setDeletefn(prevState => !prevState);
   };
   const handleDeleteChat = () => {
+
     // Implement delete chat functionality here
+
     console.log("Delete chat button clicked");
   };
 
@@ -93,7 +93,7 @@ function PersonalMsgScreen() {
   //texttospeech
 
   var [messages, setMessages] = useState([]);
-  const [viewSelectedChat, setViewSelectedChat] = useState([])
+
 
 
   const send = async () => {
@@ -102,12 +102,7 @@ function PersonalMsgScreen() {
     mySocket.emit("send_p_message", senddata)
   }
 
-  // useEffect(()=>{
-  //   if(messages){
-  //     messages.forEach((el)=>{
-  //       console.log(el);
-  //     })}
-  // },[messages])
+
   async function onclickfriend(friend) {
     setViewChat(true)
     setSelectedChat(friend)
@@ -147,7 +142,7 @@ function PersonalMsgScreen() {
           // </div>
 
 <div className={Deletefn?"flexrow swipe-container":"flexrow"}>
-  <div className="box chat pointer ">
+  <div className="box chat pointer word_shrink ">
     <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
       <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
       <div className="profile_text">
