@@ -10,14 +10,12 @@ import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember
 import axios from "axios";
 import { io } from "socket.io-client"
 function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity }) {
-  // const [selectedCommunityName, setSelectedCommunityName] = useState(null)
-  // const [selectedCommunity, setSelectedCommunity] = useState("")
+
   const userdata = JSON.parse(localStorage.getItem('userdata'))
-  // const [chatByCommunity,setChatByCommunity] = useState([]);
-  // const [loadChatByCommunity,setLoadChatByCommunity] = useState(null)
+
   const [allCommunityMessages, setAllCommunityMessages] = useState([]);
   const [socket, setSocket] = useState(null);
-  // const [selectedCommunityMessages, setSelectedCommunityMessages] = useState([])
+
   const [selectedUser, setSelectedUser] = useState({ username: '', userid: '' })
   const username = localStorage.getItem('username')
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -104,17 +102,6 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
       if (socket) {
         socket.emit('sendMessage', messageData);
         setMessages((prev) => [...prev, messageData]);
-        //   const updatedMessages = [...allCommunityMessages];
-        // updatedMessages.forEach((elem)=>{
-        //   //console.log(message)
-        //   if(elem.communityId === selectedCommunity){
-        //     //console.log(`hi`);
-        //     const appenddata = {"u_id":localStorage.getItem('userid'),"u_name":localStorage.getItem('username'),"message":text}
-        //     elem.messages.push(appenddata);
-        //   }
-        //   //console.log(updatedMessages);
-        //   setAllCommunityMessages(updatedMessages)
-        // })
 
         // updationToggleFunc()
         console.log(`sendfunc`);
@@ -141,25 +128,7 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
     }
   };
 
-  ////////////////////////////////////////
 
-  // useEffect(() => {
-  //   //console.log(communityList);
-  //   async function fetchCommunityDetails() {
-  //     try {
-  //       const response = await axios.post('/individualcommunity', { data: communityList });
-  //       setIndividualCommunity(response.data);
-  //       //console.log("ii "+communityList);
-  //     } catch (error) {
-  //       console.error('Error fetching community details:', error);
-  //     }
-  //   }
-
-  //   if (communityList.length > 0) {
-  //     fetchCommunityDetails();
-  //   }
-  // }, []);
-  ////////////////////////////////////////
 
 
   return (

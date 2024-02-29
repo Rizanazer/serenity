@@ -42,7 +42,11 @@ function SearchScreen({ setScreen }) {
       console.log(selectedChat)
       console.log("chatt" + selectedChat);
       const response = await axios.post('/checkjoinstatus', { c_id: selectedChat, u_id: userid })
-      setJoined(response.data.member)
+      setJoined(response.data.member);
+      console.log('====================================');
+      console.log(response.data.member);
+      console.log('====================================');
+      
     }
     checkjoin()
   }, [selectedChat])
