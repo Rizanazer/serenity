@@ -2,7 +2,24 @@ import { MdArrowBack,MdReport, MdGroups, MdBlockFlipped, MdLocationPin } from "r
 import { IoMdHeartDislike } from "react-icons/io";
 import { GiExitDoor } from "react-icons/gi";
 import SideScreenCommunityMemberFn from "./SideScreen_communityMember";
+import axios from "axios";
+import { useEffect, useState } from "react";
 var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
+    console.log(data.selectedCommunity);
+    const [memberNames,setMembernames] = useState([])
+    useEffect(()=>{
+        async function getmemberdata(){
+            try {
+                const response = await axios.post('/getmemberdata',{c_id:data.selectedCommunity})
+                setMembernames(response.data.names)
+                // console.log(memberNames)
+                console.log(response.data.names)
+            } catch (error) {
+                console.log('error fetching membername')
+            }
+        }
+        getmemberdata()
+    },[data.selectedCommunity])
     return (
         <>
             <div className="section3_back">
@@ -36,26 +53,15 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
                     <span className="bold">Group Members</span>
                     <MdGroups className="icon_search" />
                 </div>
-                <div className="Group_Participations box nobordershadow">
-                    <div className="group_box flexrow" onClick={()=>{member()}}>
+                {memberNames && memberNames.map((elem, i) => (
+                <div className="Group_Participations box nobordershadow" key={i}>
+                    <div className="group_box flexrow" onClick={() => { member() }}>
                         <img src="images/profileimg_chat.jpg" className="icon_search" />
-                        <span className="bold pointer">arif</span>
+                        <span className="bold pointer">{elem}</span>
                     </div>
-                    <div className="group_box flexrow" onClick={()=>{member()}}>
-                    <img src="images/profileimg_chat.jpg" className="icon_search" />
-                        <span className="bold pointer">riza</span>
-                    </div>
-                    <div className="group_box flexrow" onClick={()=>{member()}}>
-                    <img src="images/profileimg_chat.jpg" className="icon_search" />
-                        <span className="bold pointer">arjun</span>
-                    </div>
-                    <div className="group_box flexrow" onClick={()=>{member()}}>
-                    <img src="images/profileimg_chat.jpg" className="icon_search" />
-                        <span className="bold pointer">ebin</span>
-                    </div>
-                    
-
                 </div>
+            ))}
+
 
             </div>
 

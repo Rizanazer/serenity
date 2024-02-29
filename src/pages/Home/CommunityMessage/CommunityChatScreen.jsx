@@ -284,9 +284,9 @@
           }
         </div>
         {SideScreen && <div className="section3 box nopadding nobordershadow">
-          {Member?<SideScreenCommunityMemberFn  selectedUser={selectedUser} data={{"image":"images/profileimg_chat.jpg","username":"arif"}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}} member={()=>{setMember(false)}}/>
+          {Member?<SideScreenCommunityMemberFn  selectedUser={selectedUser} data={{"image":"images/profileimg_chat.jpg","username":"arsif"}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}} member={()=>{setMember(false)}}/>
           :
-          <SideScreenCommunityDetailsFn data={{individualCommunity,selectedCommunityName}} actions={{setSelectedCommunity}} member={()=>{setMember(true);}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>}
+          <SideScreenCommunityDetailsFn data={{individualCommunity,selectedCommunityName,selectedCommunity}} actions={{setSelectedCommunity}} member={()=>{setMember(true);}} handleClick={()=>{setSideScreen(false); setMoreadj(false);}}/>}
           
         </div>}
       </>

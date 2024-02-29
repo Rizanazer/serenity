@@ -1,6 +1,6 @@
   const express = require('express');
   const cors = require('cors');
-  const mongoose = require('mongoose');
+  //const mongoose = require('mongoose');
 
   const router = express.Router()
   const app = express();
@@ -451,8 +451,6 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
   })
 
-
-
   router.post("/get_c_messages",async (req,res)=>{
     
     try {  
@@ -466,7 +464,33 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       res.json({"success":false})
     }
   })
+  router.post("/getmemberdata",async (req,res)=>{
+    
+    try {  
+    const c_id = req.body.c_id
+    console.log(c_id);
+    const community = await Community.findById(c_id)
+     console.log(community.members);
+     const members = community.members
+     console.log(typeof(members))
+     const names = []
+     
+    for (let index = 0; index < members.length; index++) {
+      const result = await User.findById(members[index])
+      //console.log(result.username);
+      names.push(result.username)
+      console.log(`namessss`);
+      console.log(names);
+     }
+    res.json({ "success": true,"names":names});
+    } catch (error) {
+      console.log("error   ocuurred while loading community member data")
+      res.json({"success":false})
+    }
+  })
 
+
+  
 
   app.use('/',router)
  
