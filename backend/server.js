@@ -450,7 +450,17 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       res.json({"success":false})
     }
   })
-
+  
+  router.post("/getallgroupnames",async (req,res)=>{
+    
+    try {  
+    const groups = await Community.find()
+    res.json({ "success": true,"groups":groups});
+    } catch (error) {
+      console.log("error ocuurred while loading community names")
+      res.json({"success":false})
+    }
+  })
   router.post("/get_c_messages",async (req,res)=>{
     
     try {  
@@ -464,6 +474,28 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       res.json({"success":false})
     }
   })
+  
+
+  router.post("/checkjoinstatus",async (req,res)=>{
+    
+    try {  
+    const c_id = req.body.c_id
+    const u_id = req.body.u_id
+    console.log(c_id+"  "+u_id);
+    const community = await Community.findById(c_id)
+     if(community.members && community.members.includes(u_id)){
+       
+       res.json({ "success": true,"member":true});
+      }else{
+        res.json({ "success": true,"member":false});
+        
+    }
+    } catch (error) {
+      console.log(error);
+      res.json({"success":false})
+    }
+  })
+
   router.post("/getmemberdata",async (req,res)=>{
     
     try {  
