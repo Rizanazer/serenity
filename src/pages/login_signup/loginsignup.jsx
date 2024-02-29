@@ -80,10 +80,10 @@ const OTPInput = ({ actions }) =>
 
   <div className="box_login box center">
     <div className="center inputrow flexrow">
-    <input className='input_otp ' type='text' maxLength="1"/>
-    <input className='input_otp' type='text' maxLength="1"/>
-    <input className='input_otp' type='text' maxLength="1"/>
-    <input className='input_otp' type='text' maxLength="1"/>
+    <input className='input_otp ' type='text' maxLength="1" onChange={NumberCheck}/>
+    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
+    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
+    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
     </div>
     <button onClick={()=>{window.location="/dashboard"}}>VALIDATE</button>
     <button onClick={()=>actions.handleActionChange("GetOTP")}>BACK</button>
