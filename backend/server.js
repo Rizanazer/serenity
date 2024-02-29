@@ -237,7 +237,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         {new:true}
         );
      //console.log(updateTargetCommunity);
-      res.json({ "success": true});
+      res.json({ "success": true,"result":updateTargetCommunity});
     }catch{
       console.error(error);
     res.status(500).json({ "success": false });

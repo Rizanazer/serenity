@@ -11,6 +11,10 @@ import Nav from "./Nav/Nav";
 import axios from "axios";
 import CreateCommunity from "./Functions/createcommunity/createCommunity";
 const Home = () => {
+  var [ViewChat, setViewChat] = useState(false);
+
+  const [selectedCommunityName, setSelectedCommunityName] = useState(null)
+  const [selectedCommunity, setSelectedCommunity] = useState("")
   const [Screen, setScreen] = useState("PersonalMessage");
   const [CreateAlert,setCreateAlert]=useState(false);
   const [individualCommunity,setIndividualCommunity] = useState([])
@@ -43,8 +47,8 @@ const Home = () => {
       <Nav Screen={Screen} setScreen={setScreen} setSetting={()=>{setSetting(true)}}/>
       {Screen === "PersonalMessage" && <PersonalMsgScreen/>}
       {Screen === "Profile" && <ProfileScreen />}
-      {Screen === "CommunityMessage" && <CommunityMsgScreen screen={setScreen} create={setCreateAlert} individualCommunity={individualCommunity}/>}
-      {Screen === "SearchCommunity" && <SearchScreen setScreen={setScreen}/>}
+      {Screen === "CommunityMessage" && <CommunityMsgScreen ViewChat={ViewChat} setViewChat={setViewChat}setSelectedCommunityName={setSelectedCommunityName}selectedCommunityName={selectedCommunityName} setSelectedCommunity={setSelectedCommunity} selectedCommunity={selectedCommunity}screen={setScreen} create={setCreateAlert} individualCommunity={individualCommunity}/>}
+      {Screen === "SearchCommunity" && <SearchScreen setIndividualCommunity={setIndividualCommunity} setViewChat_C={setViewChat} setSelectedCommunityName={setSelectedCommunityName} setSelectedCommunity={setSelectedCommunity} setScreen={setScreen}/>}
       {Screen === "AddFriends" && <AddFriendsScreen/>}
       
 

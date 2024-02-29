@@ -5,7 +5,7 @@ import UpperChatInfo from "../Functions/UpperChatInfo";
 import "./SearchScreen.css"
 import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
 import axios from "axios";
-function SearchScreen({setScreen}) {
+function SearchScreen({setIndividualCommunity,setScreen,setSelectedCommunity,setSelectedCommunityName,setViewChat_C,ViewChat}) {
   const [Join, setJoin] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -33,6 +33,21 @@ function SearchScreen({setScreen}) {
   const send = async () => {
     if (text.length > 0) {
       setMessages([...messages, text])
+    }
+  }
+  async function joincommunity(){
+    const u_id = localStorage.getItem('userid')
+    try {
+      const response = await axios.post('/joincommunity',{u_id:u_id,c_id:selectedChat})
+      if(response.data.success === true){
+        setJoined(true);
+        console.log(response.data)
+        setIndividualCommunity((prev)=>[...prev,response.data.result])
+      }else{
+        console.log(`Joining Community fail`);
+      }
+    } catch (error) {
+      console.error(error)
     }
   }
   useEffect(()=>{
@@ -111,13 +126,11 @@ function SearchScreen({setScreen}) {
 
           {/* bottomchats component-chat_typing */}
           {
-            Joined ? <div className="box center pointer joinbtn" onClick={() => { }}>
-              <span className="bold" onClick={()=>{setScreen('CommunityMessage')}}>Enter Chat</span>
+            Joined ? <div className="box center pointer joinbtn" onClick={()=>{setScreen('CommunityMessage');setSelectedCommunity(selectedChat);setSelectedCommunityName(selectedChatName);setViewChat_C(true)}}>
+              <span className="bold" >Enter Chat</span>
             </div>
               :
-              <div className="box center pointer joinbtn" onClick={() => {
-                setJoin(true);
-              }}>
+              <div className="box center pointer joinbtn" onClick={joincommunity}>
                 <span className="bold">join</span>
               </div>
           }

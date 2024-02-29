@@ -153,6 +153,13 @@
     /* height: 10px; */
     width: auto;
 }
+.msg_main-rightside{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    /* height: 10px; */
+    width: auto;
+}
 .msg {
     padding: 10px;
     margin-left: 10px;
@@ -187,6 +194,13 @@
     width: 30px;
     height: 30px;
     cursor: pointer;
+}
+.icon_search-rightside{
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+
 }
 
 .menu_icon {
