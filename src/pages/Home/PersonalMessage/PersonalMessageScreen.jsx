@@ -13,14 +13,16 @@ import io from "socket.io-client";
 
 function PersonalMsgScreen() {
 
-  // const [scrollPosition, setScrollPosition] = useState(0);
-  // const chatAreaRef = useRef(null);
-  // useEffect(() => {
-  //   // Ensure chatAreaRef.current is not null before attempting to scroll
-  //   if (chatAreaRef.current) {
-  //     chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
-  //   }
-  // }, [messages, scrollPosition]);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const chatAreaRef = useRef(null);
+  useEffect(() => {
+    // Ensure chatAreaRef.current is not null before attempting to scroll
+    setTimeout(() => {
+      if (chatAreaRef.current) {
+        chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+      }
+    }, 100);
+  }, [messages, scrollPosition]);
 
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -113,7 +115,7 @@ function PersonalMsgScreen() {
     const senddata = { "fromname": username, "from": u_id, "toname": selectedChat.username, "to": selectedChat.userid, "message": trimmedText }
     mySocket.emit("send_p_message", senddata);
     setText("");
-    // setScrollPosition(1-scrollPosition);
+    setScrollPosition(scrollPosition + 1);
   }
 
 
@@ -238,8 +240,7 @@ function PersonalMsgScreen() {
           </div>
 
           {/* middlechats component-chat_area */}
-          <div className="box chat_area nopadding">
-           {/* ref={chatAreaRef}> */}
+          <div className="box chat_area nopadding" ref={chatAreaRef}>
             {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
               <div className="box nopadding more_items" onClick={() => {
                 toggleNeration()
