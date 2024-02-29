@@ -3,7 +3,7 @@ import { CgSearch } from "react-icons/cg";
 import { FaCircleDot } from "react-icons/fa6";
 import './personalMessage.css';
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
-import { MdDelete ,MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
+import { MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
@@ -20,8 +20,9 @@ function PersonalMsgScreen() {
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
+  const [ContactsOnline, setContactsOnline] = useState(true);
+  const [contacts, setContacts] = useState([]);
   const [Moreadj, setMoreadj] = useState(false);
-  const [contacts, setContacts] = useState([])
   const u_id = localStorage.getItem('userid')
   const [selectedUser, setSelectedUser] = useState(null)
   const alluserdatastring = localStorage.getItem('userdata')
@@ -31,7 +32,7 @@ function PersonalMsgScreen() {
   var [text, setText] = useState("");
   const hoverTimer = useRef(null);
   const [hoveredMessage, setHoveredMessage] = useState("");
-  const [Deletefn,setDeletefn]=useState(false);
+  const [Deletefn, setDeletefn] = useState(false);
 
   useEffect(() => {
     const socket = io('http://:3000');
@@ -58,7 +59,7 @@ function PersonalMsgScreen() {
     }
     fetchfriends()
 
-  }, []) 
+  }, [])
 
   //delete chat fn
   const toggleDeletefn = () => {
@@ -120,50 +121,60 @@ function PersonalMsgScreen() {
 
   return (
     <>
-      <div className="section1 section_margin box">
-        <div className="box searchbox flexrow">
-          <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
-          <MdDelete className="icon nobordershadow" color={Deletefn?"#5E4AE3":"#000"} onClick={()=>{toggleDeletefn();console.log("utasgduygeiyr");}}/>
+      <div className="section1 section_margin box spacebetween">
+
+        <div className="box nobordershadow nopadding chathistory">
+          <div className="box searchbox flexrow">
+            <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
+            <MdDelete className="icon nobordershadow" color={Deletefn ? "#5E4AE3" : "#000"} onClick={() => { toggleDeletefn(); console.log("utasgduygeiyr"); }} />
+          </div>
+          {Array.isArray(contacts) ? contacts.map((el, i) =>
+            <div className={Deletefn ? "flexrow swipe-container" : "flexrow"}>
+              <div className="box chat pointer word_shrink ">
+                <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
+                  <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                  <div className="profile_text">
+                    <span className="bold word_shrink">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
+                    <span className="light word_shrink">message</span>
+                  </div>
+                </div>
+                <div className="incomingchat circle center">
+                  1
+                </div>
+              </div>
+              {
+                Deletefn && <div className="swipe-actions ">
+                  <button onClick={() => handleDeleteChat(el)}>Delete</button>
+                </div>
+              }
+            </div>
+          ): 
+          <div className=" pointer center section1 section_margin box">No Requests</div>
+        }
         </div>
-        {Array.isArray(contacts) && contacts.map((el, i) =>
 
-          // <div key={i} {...handlers} className="box chat pointer word_shrink swipe-container" >
-          //   <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
-          //     <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
-          //     <div className=" profile_text ">
-          //       <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
-          //       <span className="light ">messaage</span>
-          //     </div>
-          //   </div>
-          //   {contacts && <FaCircleDot className="" color="#5e4ae3" />}
-          //   <div className="swipe-actions">
-          //     <button onClick={() => handleDeleteChat(el)}>Delete</button>
-          //   </div>
-          // </div>
+        <div className="box friends">
+          <div className=" searchbox friendstext spacebetween">
+            <span className="bold">friends</span>
+            <span className="bold">24</span>
+          </div>
+          <div className="box nopadding nobordershadow nogap friendslist">
+            {Array.isArray(contacts) && contacts.map((el, i) =>
 
-<div className={Deletefn?"flexrow swipe-container":"flexrow"}>
-  <div className="box chat pointer word_shrink ">
-    <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
-      <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
-      <div className="profile_text">
-        <span className="bold word_shrink">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
-        <span className="light word_shrink">message</span>
-      </div>
-    </div>
-    {contacts && <FaCircleDot className="" color="#5e4ae3" />}
-  </div>
-  {
-  Deletefn&&<div className="swipe-actions ">
-    <button onClick={() => handleDeleteChat(el)}>Delete</button>
-  </div>
-  }
-  
-</div>
+              <div className="box chat pointer nobordershadow">
+                <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
+                  <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                  <div className="profile_text">
+                    <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
+                    <span className="light">status</span>
+                  </div>
+                </div>
+                {ContactsOnline && <FaCircleDot className="" color="#5e4ae3" />}
+              </div>
 
-
-
-
-        )}
+            )}
+          </div>
+        </div>
 
       </div>
 

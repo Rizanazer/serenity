@@ -60,4 +60,26 @@
   .swipe-container:hover .swipe-actions {
     transform: translateX(-100%); /* Move swipe actions to the left */
   }
-  
+  .friends{
+    flex: 3;
+    padding: 20px 20px !important;
+    overflow-y: auto;
+  }
+  .friendslist{
+    overflow-y: auto;
+  }
+  .chathistory{
+    overflow-x: hidden;
+    flex: 7;
+    overflow-y: auto;
+  }
+  .incomingchat{
+    color: #fff;
+    background-color: #5E4AE3;
+    width: 20px;
+    height: 20px;
+  }
+  .friendstext{
+    display: flex;
+    padding: 0 10px !important;
+  }
