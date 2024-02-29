@@ -6,7 +6,7 @@ import "./SearchScreen.css"
 import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
 import axios from "axios";
 function SearchScreen({ setScreen }) {
-  const [Join, setJoin] = useState(false);
+  // const [Join, setJoin] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -15,6 +15,7 @@ function SearchScreen({ setScreen }) {
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
+  const [Joined, setJoined] = useState(true);
   const [Status, setStatus] = useState(false);
   const [Moreadj, setMoreadj] = useState(false);
   var [GroupName, setGroupName] = useState([]);
@@ -45,7 +46,6 @@ function SearchScreen({ setScreen }) {
     }
     checkjoin()
   }, [selectedChat])
-  const [Joined, setJoined] = useState(false)
 
 
   async function handleclick(c_id, c_name) {
@@ -111,12 +111,12 @@ function SearchScreen({ setScreen }) {
 
           {/* bottomchats component-chat_typing */}
           {
-            Joined ? <div className="box center pointer joinbtn" onClick={() => { }}>
-              <span className="bold" onClick={() => { setScreen('CommunityMessage') }}>Enter Chat</span>
+            Joined ? <div className="box center pointer joinbtn" onClick={() => { setScreen('CommunityMessage') }}>
+              <span className="bold" >Enter Chat</span>
             </div>
               :
               <div className="box center pointer joinbtn" onClick={() => {
-                setJoin(true);
+                setJoined(true);
               }}>
                 <span className="bold">join</span>
               </div>
