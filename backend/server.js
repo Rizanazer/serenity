@@ -477,10 +477,11 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
      
     for (let index = 0; index < members.length; index++) {
       const result = await User.findById(members[index])
-      //console.log(result.username);
-      names.push(result.username)
+      if(result){
+        names.push(result.username)
+      }
       console.log(`namessss`);
-      console.log(names);
+      //console.log(names);
      }
     res.json({ "success": true,"names":names});
     } catch (error) {
