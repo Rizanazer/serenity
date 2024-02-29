@@ -146,7 +146,7 @@ function GroupList_1({ userid, data, HandleClick, setViewChat }) {
           <div className="textlength_head ">
           <span className="bold ">{data.communityName}</span>
           </div>
-          <div className="textlength_para ">
+          <div className="textlength_para">
           <span className="light ">{data.description}</span>
           </div>
         </div>
