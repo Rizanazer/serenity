@@ -38,7 +38,7 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
                             <span className="bold alignself_center">{data.selectedCommunityName}</span>
                         </div>
                         <div className="textlength_para center">
-                            <span className="light">Group Discription</span>
+                            <span className="light">{data.description}</span>
                         </div>
                     </div>
 
