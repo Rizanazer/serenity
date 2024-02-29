@@ -1,27 +1,27 @@
-import { MdArrowBack, MdReport ,MdOutlinePersonAddAlt, MdMessage, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
+import { MdArrowBack, MdReport, MdOutlinePersonAddAlt, MdMessage, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
 import { IoMdHeartDislike } from "react-icons/io";
 import { useState } from "react";
 import axios from "axios";
 
 
 
-var SideScreenCommunityMemberFn = ({ handleClick, data,member,selectedUser }) => {
+var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) => {
     //status of anonymous :not used now but soon
-    const[AnonymsGps,setAnonymsGps]=useState(true);
+    const [AnonymsGps, setAnonymsGps] = useState(true);
     const u_id = localStorage.getItem('userid')
-    async function addfriend(){
-        if(u_id != selectedUser.userid){
-            const response = await axios.post('/addfriend',{userid:u_id,friendtobe:selectedUser.userid})
-        }else{
+    async function addfriend() {
+        if (u_id != selectedUser.userid) {
+            const response = await axios.post('/addfriend', { userid: u_id, friendtobe: selectedUser.userid })
+        } else {
             console.log(`both same users`);
         }
-            
+
     }
-    
+
     return (
         <>
             <div className="section3_back">
-                <MdArrowBack className="icon nobordershadow" onClick={() => { handleClick();member(); }} />
+                <MdArrowBack className="icon nobordershadow" onClick={() => { handleClick(); member(); }} />
             </div>
             <div className="section3_1">
                 <div className="section3_1_1">
@@ -30,15 +30,18 @@ var SideScreenCommunityMemberFn = ({ handleClick, data,member,selectedUser }) =>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}
                     <div className="section3_textArea profile_text">
-                    <span className="light">SerenityScore:<span className="bold">90.99</span></span>
-                        <span className="bold alignself_center">{selectedUser.username}</span>
-                        <span className="light alignself_center">status</span>
-                        
+                        <span className="light">SerenityScore:<span className="bold">90.99</span></span>
+                        <div className="textlength_head center">
+                            <span className="bold alignself_center">{selectedUser.username}</span>
+                        </div>
+                        <div className="textlength_para center">
+                            <span className="light alignself_center">status</span>
+                        </div>
                     </div>
                     <div className="section3_features">
-                        <MdOutlinePersonAddAlt className="icons_1" onClick={()=>addfriend(selectedUser.userid)}/>
-                        <MdMessage className="icons_1"/>
-                        <IoMdHeartDislike className="icons_2"/>
+                        <MdOutlinePersonAddAlt className="icons_1" onClick={() => addfriend(selectedUser.userid)} />
+                        <MdMessage className="icons_1" />
+                        <IoMdHeartDislike className="icons_2" />
                     </div>
                     <div className="section3_location flexrow center">
                         <MdLocationPin className="icon nobordershadow" />
@@ -47,7 +50,7 @@ var SideScreenCommunityMemberFn = ({ handleClick, data,member,selectedUser }) =>
 
                 </div>
             </div>
-            <div className={AnonymsGps?"section3_2 flexcolumn":"section3_2 flexcolumn blur"}>
+            <div className={AnonymsGps ? "section3_2 flexcolumn" : "section3_2 flexcolumn blur"}>
                 <div className="center spacebetween">
                     <span className="bold">Group Participations</span>
                     <MdGroups className="icon_search" />
@@ -58,21 +61,21 @@ var SideScreenCommunityMemberFn = ({ handleClick, data,member,selectedUser }) =>
                         <span className="bold">group1</span>
                     </div>
                     <div className="group_box flexrow">
-                    <img src="images/groupprofile.jpg" className="icon_search" />
+                        <img src="images/groupprofile.jpg" className="icon_search" />
                         <span className="bold">group2</span>
                     </div>
                     <div className="group_box flexrow">
-                    <img src="images/groupprofile.jpg" className="icon_search" />
+                        <img src="images/groupprofile.jpg" className="icon_search" />
                         <span className="bold">group3</span>
                     </div>
                     <div className="group_box flexrow">
-                    <img src="images/groupprofile.jpg" className="icon_search" />
+                        <img src="images/groupprofile.jpg" className="icon_search" />
                         <span className="bold">group4</span>
                     </div>
-                    
+
 
                 </div>
-                
+
 
             </div>
 

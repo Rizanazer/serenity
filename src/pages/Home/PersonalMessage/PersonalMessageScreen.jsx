@@ -155,12 +155,14 @@ function PersonalMsgScreen() {
                     }
                   >
                     <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
-                    <div className="profile_text">
-                      <span className="bold ">
-                        {el.users[0].username !== username ? el.users[0].username : el.users[1].username}
-                      </span>
-                      <span className="light ">message</span>
+                    <div className=" profile_text">
+                    <div className="textlength_head ">
+                      <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
                     </div>
+                    <div className="textlength_para ">
+                      <span className="light">messsage lorum ipsum la about the new era of time</span>
+                    </div>
+                  </div>
                   </div>
                   <div className="incomingchat circle center">1</div>
                 </div>
@@ -187,9 +189,13 @@ function PersonalMsgScreen() {
               <div className="box chat pointer nobordershadow">
                 <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
                   <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
-                  <div className="profile_text">
-                    <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
-                    <span className="light">status</span>
+                  <div className=" profile_text">
+                    <div className="textlength_head_friends ">
+                      <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
+                    </div>
+                    <div className="textlength_status ">
+                      <span className="light">status</span>
+                    </div>
                   </div>
                 </div>
                 {ContactsOnline && <FaCircleDot className="" color="#5e4ae3" />}

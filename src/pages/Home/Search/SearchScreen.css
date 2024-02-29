@@ -15,3 +15,15 @@
     overflow-y: auto;
     
 }
+.textlength_head{
+    inline-size: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.textlength_para{
+    inline-size: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

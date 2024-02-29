@@ -37,10 +37,10 @@ function CommunityMsgScreen({ screen, create, individualCommunity }) {
     // console.log(selectedCommunity);
     setSelectedCommunity(id)
     console.log(id);
-    
+
   }
-  useEffect(()=>{
-    async function get_c_messages(){
+  useEffect(() => {
+    async function get_c_messages() {
       try {
         const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
         console.log(response.data.chats.messages);
@@ -51,7 +51,7 @@ function CommunityMsgScreen({ screen, create, individualCommunity }) {
       }
     }
     get_c_messages()
-    },[selectedCommunity])
+  }, [selectedCommunity])
 
   useEffect(() => {
     const newSocket = io('http://:3000');
@@ -170,13 +170,16 @@ function CommunityMsgScreen({ screen, create, individualCommunity }) {
         {/* {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)} */}
         {individualCommunity.map((el, i) =>
           // <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>
-          <div className="box chat pointer word_shrink">
-
+          <div className="box chat pointer ">
             <div className="chat_info" onClick={() => onclick(el._id, el.communityName)}>
               <img className="icon profile_chat_img" alt="" />
               <div className=" profile_text">
-              <span className="bold ">{el.communityName}</span>
-                <span className="light ">{el.message}</span>
+                <div className="textlength_head ">
+                  <span className="bold ">{el.communityName}</span>
+                </div>
+                <div className="textlength_para ">
+                  <span className="light ">{el.message}</span>
+                </div>
               </div>
             </div>
             {/* {data.status && <span className="light">joined</span>} */}
