@@ -1,14 +1,15 @@
-import React, { useEffect, useState ,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
 import { FaCircleDot } from "react-icons/fa6";
 import './personalMessage.css';
-import { HiMiniSpeakerXMark,HiMiniSpeakerWave  } from "react-icons/hi2";
-import { MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
+import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
+import { MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
 import axios from "axios";
 import io from "socket.io-client";
+
 
 function PersonalMsgScreen() {
   var [ViewChat, setViewChat] = useState(false);
@@ -19,27 +20,31 @@ function PersonalMsgScreen() {
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
+  const [ContactsOnline, setContactsOnline] = useState(true);
+  const [contacts, setContacts] = useState([]);
   const [Moreadj, setMoreadj] = useState(false);
-  const [contacts, setContacts] = useState([])
   const u_id = localStorage.getItem('userid')
   const [selectedUser, setSelectedUser] = useState(null)
   const alluserdatastring = localStorage.getItem('userdata')
   const friends = JSON.parse(alluserdatastring).friends
   const username = localStorage.getItem('username')
-  const [mySocket,setMySocket] = useState(null)
+  const [mySocket, setMySocket] = useState(null)
   var [text, setText] = useState("");
   const hoverTimer = useRef(null);
   const [hoveredMessage, setHoveredMessage] = useState("");
-  useEffect(()=>{
+  const [Deletefn, setDeletefn] = useState(false);
+
+  useEffect(() => {
     const socket = io('http://:3000');
     setMySocket(socket)
-    socket.on('recieve_p_message',(message)=>{
+    socket.on('recieve_p_message', (message) => {
       // console.log(message);
       console.log(messages)
       const newmessage = message
-      setMessages((prev)=>[...prev,newmessage])
+      setMessages((prev) => [...prev, newmessage])
     })
-  },[])
+  }, [])
+
   useEffect(() => {
     async function fetchfriends(friends) {
       const u_id = localStorage.getItem('userid')
@@ -56,6 +61,17 @@ function PersonalMsgScreen() {
 
   }, [])
 
+  //delete chat fn
+  const toggleDeletefn = () => {
+    setDeletefn(prevState => !prevState);
+  };
+  const handleDeleteChat = () => {
+
+    // Implement delete chat functionality here
+
+    console.log("Delete chat button clicked");
+  };
+
   //speechtotext fn
   const [Neration, setNeration] = useState(false);
   const speakText = (message) => {
@@ -65,7 +81,7 @@ function PersonalMsgScreen() {
   const startHoverTimer = (message) => {
     hoverTimer.current = setTimeout(() => {
       setHoveredMessage(message);
-      speakText(message); 
+      speakText(message);
     }, 1000);
   };
 
@@ -75,54 +91,90 @@ function PersonalMsgScreen() {
   const toggleNeration = () => {
     setNeration(prevState => !prevState);
   };
-//texttospeech
+  //texttospeech
 
   var [messages, setMessages] = useState([]);
-  const [viewSelectedChat, setViewSelectedChat] = useState([])
+
 
 
   const send = async () => {
     console.log(selectedChat);
-    const senddata = {"fromname":username,"from":u_id,"toname":selectedChat.username,"to":selectedChat.userid,"message":text}
-    mySocket.emit("send_p_message",senddata)
+    const senddata = { "fromname": username, "from": u_id, "toname": selectedChat.username, "to": selectedChat.userid, "message": text }
+    mySocket.emit("send_p_message", senddata)
   }
 
-// useEffect(()=>{
-//   if(messages){
-//     messages.forEach((el)=>{
-//       console.log(el);
-//     })}
-// },[messages])
-  async function onclickfriend(friend){
+
+  async function onclickfriend(friend) {
     setViewChat(true)
     setSelectedChat(friend)
     console.log(friend);
     try {
-      const response = await axios.post('/fetchpersonal',{f_id:friend.userid,u_id:u_id})
+      const response = await axios.post('/fetchpersonal', { f_id: friend.userid, u_id: u_id })
       console.log(response.data.chats.messages);
-       setMessages(response.data.chats.messages) 
+      setMessages(response.data.chats.messages)
     } catch (error) {
       console.log('personal message fetch error')
     }
-    
+
   }
-  
-  
+
+
   return (
     <>
-      <div className="section1 section_margin box">
-        <div className="box searchbox">
-          <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
-        </div>
-        {Array.isArray(contacts) && contacts.map((el, i) => <div className="box chat pointer" >
-          <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
-            <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
-            <div className=" profile_text">
-              <span className="bold">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
-              <span className="light">messaage</span>
-            </div>
+      <div className="section1 section_margin box spacebetween">
+
+        <div className="box nobordershadow nopadding chathistory">
+          <div className="box searchbox flexrow">
+            <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
+            <MdDelete className="icon nobordershadow" color={Deletefn ? "#5E4AE3" : "#000"} onClick={() => { toggleDeletefn(); console.log("utasgduygeiyr"); }} />
           </div>
-          {contacts && <FaCircleDot className="" color="#5e4ae3" />}</div>)}
+          {Array.isArray(contacts) ? contacts.map((el, i) =>
+            <div className={Deletefn ? "flexrow swipe-container" : "flexrow"}>
+              <div className="box chat pointer word_shrink ">
+                <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
+                  <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                  <div className="profile_text">
+                    <span className="bold word_shrink">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
+                    <span className="light word_shrink">message</span>
+                  </div>
+                </div>
+                <div className="incomingchat circle center">
+                  1
+                </div>
+              </div>
+              {
+                Deletefn && <div className="swipe-actions ">
+                  <button onClick={() => handleDeleteChat(el)}>Delete</button>
+                </div>
+              }
+            </div>
+          ): 
+          <div className=" pointer center section1 section_margin box">No Requests</div>
+        }
+        </div>
+
+        <div className="box friends">
+          <div className=" searchbox friendstext spacebetween">
+            <span className="bold">friends</span>
+            <span className="bold">24</span>
+          </div>
+          <div className="box nopadding nobordershadow nogap friendslist">
+            {Array.isArray(contacts) && contacts.map((el, i) =>
+
+              <div className="box chat pointer nobordershadow">
+                <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
+                  <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                  <div className="profile_text">
+                    <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
+                    <span className="light">status</span>
+                  </div>
+                </div>
+                {ContactsOnline && <FaCircleDot className="" color="#5e4ae3" />}
+              </div>
+
+            )}
+          </div>
+        </div>
 
       </div>
 
@@ -167,21 +219,21 @@ function PersonalMsgScreen() {
           {/* middlechats component-chat_area */}
           <div className="box chat_area nopadding">
             {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
-              <div className="box nopadding more_items" onClick={()=>{
+              <div className="box nopadding more_items" onClick={() => {
                 toggleNeration()
-                }}>
-                <div className="bold">{Neration?
-                <div className="neration flexrow"><HiMiniSpeakerXMark className="icon_search"/>Narration OFF</div>
-                
-                : <div className="neration flexrow "><HiMiniSpeakerWave className="icon_search"/>Narration ON</div>
-                
+              }}>
+                <div className="bold">{Neration ?
+                  <div className="neration flexrow"><HiMiniSpeakerXMark className="icon_search" />Narration OFF</div>
+
+                  : <div className="neration flexrow "><HiMiniSpeakerWave className="icon_search" />Narration ON</div>
+
                 }</div>
               </div>
             </div>}
 
-            {messages.length>0 && messages.map((el, i) => <p className={el.from.username === username?"msg-rightside":"msg"} key={i} 
-            onMouseEnter={() => {Neration&&startHoverTimer(el.messageBody)}}
-                  onMouseLeave={cancelHoverTimer}>{el.messageBody}</p>)}
+            {messages.length > 0 && messages.map((el, i) => <p className={el.from.username === username ? "msg-rightside" : "msg"} key={i}
+              onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
+              onMouseLeave={cancelHoverTimer}>{el.messageBody}</p>)}
           </div>
 
           {/* bottomchats component-chat_typing */}

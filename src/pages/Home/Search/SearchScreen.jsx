@@ -51,7 +51,7 @@ function SearchScreen() {
           <div className=" searchbox">
             <span className="bold">Community Reccomendations</span>
           </div>
-          <div className="box nopadding nobordershadow reccomendationBoxContnt">
+          <div className="box nopadding nobordershadow reccomendationBoxContnt nogap">
           {GroupName.map((el, i) => <GroupList_2 data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
           </div>
 
@@ -132,7 +132,7 @@ function GroupList_2({ data ,HandleClick}) {
     
   return (
     <div  onClick= {()=>{data.viewchat();HandleClick();}}>
-      <div className="box chat pointer">
+      <div className="box chat pointer nobordershadow ">
 
       <div className="chat_info" >
         <img className="icon profile_chat_img" src={data.image} alt="" />

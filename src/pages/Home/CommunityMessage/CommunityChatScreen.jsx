@@ -159,7 +159,7 @@
           {/* {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)} */}
           {individualCommunity.map((el, i) => 
           // <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>
-          <div className="box chat pointer">
+          <div className="box chat pointer word_shrink">
 
           <div className="chat_info" onClick={()=>onclick(el._id,el.communityName)}>
             <img className="icon profile_chat_img"  alt="" />

@@ -5,6 +5,12 @@ import { FaGoogle, FaApple, FaTwitter, FaFacebook } from "react-icons/fa";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const NumberCheck = (event) => {
+  const inputValue = event.target.value;
+  const numbersOnly = inputValue.replace(/[^0-9]/g, ''); // Remove any non-numeric characters
+  event.target.value = numbersOnly; // Update the input value to contain only numbers
+}; 
+
 const Login = ({ actions ,userData }) =>
 (
 
@@ -63,7 +69,7 @@ const MobileNumberInput = ({ actions }) =>
 (
 
   <div className="box_login box center">
-    <input placeholder='MobileNumber' />
+    <input type='tel' placeholder='MobileNumber' maxLength="10" onChange={NumberCheck}/>
     <button onClick={()=>actions.handleActionChange("VALIDATE")}>GetOTP</button>
     <button onClick={()=>actions.handleActionChange("LOGIN")}>BACK</button>
   </div>
@@ -74,10 +80,10 @@ const OTPInput = ({ actions }) =>
 
   <div className="box_login box center">
     <div className="center inputrow flexrow">
-    <input className='input_otp ' type='text' maxLength="1"/>
-    <input className='input_otp' type='text' maxLength="1"/>
-    <input className='input_otp' type='text' maxLength="1"/>
-    <input className='input_otp' type='text' maxLength="1"/>
+    <input className='input_otp ' type='text' maxLength="1" onChange={NumberCheck}/>
+    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
+    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
+    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
     </div>
     <button onClick={()=>{window.location="/dashboard"}}>VALIDATE</button>
     <button onClick={()=>actions.handleActionChange("GetOTP")}>BACK</button>
