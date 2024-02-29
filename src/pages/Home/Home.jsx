@@ -44,7 +44,7 @@ const Home = () => {
       {Screen === "PersonalMessage" && <PersonalMsgScreen/>}
       {Screen === "Profile" && <ProfileScreen />}
       {Screen === "CommunityMessage" && <CommunityMsgScreen screen={setScreen} create={setCreateAlert} individualCommunity={individualCommunity}/>}
-      {Screen === "SearchCommunity" && <SearchScreen />}
+      {Screen === "SearchCommunity" && <SearchScreen setScreen={setScreen}/>}
       {Screen === "AddFriends" && <AddFriendsScreen/>}
       
 

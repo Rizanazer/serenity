@@ -37,15 +37,21 @@ function CommunityMsgScreen({ screen, create, individualCommunity }) {
     // console.log(selectedCommunity);
     setSelectedCommunity(id)
     console.log(id);
-    try {
-      const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
-      console.log(response.data.chats.messages);
-      setMessages(response.data.chats.messages)
-      console.log(messages);
-    } catch (error) {
-      console.log("error in fetching selected community messages")
-    }
+    
   }
+  useEffect(()=>{
+    async function get_c_messages(){
+      try {
+        const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
+        console.log(response.data.chats.messages);
+        setMessages(response.data.chats.messages)
+        console.log(messages);
+      } catch (error) {
+        console.log("error in fetching selected community messages")
+      }
+    }
+    get_c_messages()
+    },[selectedCommunity])
 
   useEffect(() => {
     const newSocket = io('http://:3000');

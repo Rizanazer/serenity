@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdArrowBack, MdMoreVert } from "react-icons/md";
 import GroupList from "../Functions/GroupList";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import "./SearchScreen.css"
 import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
-function SearchScreen() {
+import axios from "axios";
+function SearchScreen({setScreen}) {
   const [Join, setJoin] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -16,25 +17,42 @@ function SearchScreen() {
   };
   const [Status, setStatus] = useState(false);
   const [Moreadj, setMoreadj] = useState(false);
-  var [GroupName, setGroupName] = useState([
-    { "groupname": "Group 1", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "groupname": "Group 2", "image": "images/groupprofile.jpg", "message": "sed do eiusmod tempor incididunt", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "groupname": "Group 3", "image": "images/groupprofile.jpg", "message": "ut enim ad minim veniam", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "groupname": "Group 4", "image": "images/groupprofile.jpg", "message": "quis nostrud", "viewchat": () => { setViewChat(true) }, "status": true },
-    { "groupname": "Group 5", "image": "images/groupprofile.jpg", "message": "duis aute irure dolor in", "viewchat": () => { setViewChat(true) }, "status": false },
-    { "groupname": "Group 6", "image": "images/groupprofile.jpg", "message": "lorem ipsum dolor", "viewchat": () => { setViewChat(true) }, "status": true },
-
-
-  ]
-  );
+  var [GroupName, setGroupName] = useState([]);
+  const [selectedChatName,setSelectedChatName] = useState(null)
+  useEffect(()=>{
+    async function fetchgroups(){
+      const response = await axios.post('/getallgroupnames')
+      console.log(response.data);
+      setGroupName(response.data.groups)
+    }
+    fetchgroups()
+  },[])
   var [text, setText] = useState("");
   var [messages, setMessages] = useState([]);
-
+  const userid = localStorage.getItem('userid')
   const send = async () => {
     if (text.length > 0) {
       setMessages([...messages, text])
     }
   }
+  useEffect(()=>{
+    async function checkjoin(){
+
+      console.log(selectedChat)
+      console.log("chatt"+selectedChat);
+      const response = await axios.post('/checkjoinstatus',{c_id:selectedChat,u_id:userid})
+      setJoined(response.data.member)
+    }
+    checkjoin()
+  },[selectedChat])
+  const [Joined,setJoined] = useState(false)
+  
+  
+  async function handleclick(c_id,c_name){
+    setSelectedChat(c_id)
+    setSelectedChatName(c_name)
+  }
+
   return (
     <>
       <div className="section1 section_margin box gap20">
@@ -43,7 +61,7 @@ function SearchScreen() {
             <input type="text" placeholder="Search for New Communities" className="nobordershadow widthmax" />
           </div>
           <div className="box nopadding nobordershadow searchBoxContnt">
-            {GroupName.map((el, i) => <GroupList_1 data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
+            {GroupName.map((el, i) => <GroupList_1 setViewChat = {setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />)}
           </div>
         </div>
 
@@ -67,8 +85,12 @@ function SearchScreen() {
             <div className="center gap10">
 
               <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
-
-              {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.groupname, "status": () => { setSideScreen(true); setMoreadj(true); } }} />}
+              {<>
+              {/* <img className="icon profile_chat_img" src="uploads/img.png" alt="" onClick={sidescreen}/> */}
+              <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+              <span className="bold">{selectedChatName}</span>
+          </>}
+              {/* {<UpperChatInfo data={{ "image": "uploads/img.png", "username": "ddd", "status": () => { setSideScreen(true); setMoreadj(true); } }} />} */}
             </div>
 
             <div className="center gap10">
@@ -89,8 +111,8 @@ function SearchScreen() {
 
           {/* bottomchats component-chat_typing */}
           {
-            Join ? <div className="box center pointer joinbtn" onClick={() => { }}>
-              <span className="bold">Enter Chat</span>
+            Joined ? <div className="box center pointer joinbtn" onClick={() => { }}>
+              <span className="bold" onClick={()=>{setScreen('CommunityMessage')}}>Enter Chat</span>
             </div>
               :
               <div className="box center pointer joinbtn" onClick={() => {
@@ -110,20 +132,22 @@ function SearchScreen() {
     </>
   );
 }
-function GroupList_1({ data ,HandleClick}) {
-    
+function GroupList_1({ userid, data ,HandleClick,setViewChat}) {
+  const isJoined = data.members && data.members.includes(userid);
+  const stylenotjoined = {color:"red",border:'1px solid red',borderRadius:'10px',textAlign:'center'}
+  const stylejoined = {color:"green",border:'1px solid green',borderRadius:'10px',textAlign:'center'}
   return (
-    <div  onClick= {()=>{data.viewchat();HandleClick();}}>
-      <div className="box chat pointer">
+    <div  >
+    <div  className="box chat pointer" onClick= {()=>{setViewChat(true);HandleClick(data._id,data.communityName);}}>
 
       <div className="chat_info" >
         <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
         <div className=" profile_text">
-          <span className="bold">{data.groupname}</span>
-          <span className="light">{data.message}</span>
+          <span className="bold">{data.communityName}</span>
+          <span className="light">{data.description}</span>
+          {isJoined===true?<span className="light" style={stylejoined}>Joined</span>:<span className="light" style={stylenotjoined}>Not joined</span>}
         </div>
       </div>
-      {data.status && <span className="light">joined</span>}
     </div>
     </div>
   )
@@ -137,8 +161,8 @@ function GroupList_2({ data ,HandleClick}) {
       <div className="chat_info" >
         <img className="icon profile_chat_img" src={data.image} alt="" />
         <div className=" profile_text">
-          <span className="bold">{data.groupname}</span>
-          <span className="light">{data.message}</span>
+          <span className="bold">groupname</span>
+          <span className="light">messaga</span>
         </div>
       </div>
       {data.status && <span className="light">joined</span>}
