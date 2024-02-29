@@ -12,6 +12,16 @@ import io from "socket.io-client";
 
 
 function PersonalMsgScreen() {
+
+  // const [scrollPosition, setScrollPosition] = useState(0);
+  // const chatAreaRef = useRef(null);
+  // useEffect(() => {
+  //   // Ensure chatAreaRef.current is not null before attempting to scroll
+  //   if (chatAreaRef.current) {
+  //     chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+  //   }
+  // }, [messages, scrollPosition]);
+
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -98,9 +108,12 @@ function PersonalMsgScreen() {
 
 
   const send = async () => {
+    const trimmedText = text.trim();
     console.log(selectedChat);
-    const senddata = { "fromname": username, "from": u_id, "toname": selectedChat.username, "to": selectedChat.userid, "message": text }
-    mySocket.emit("send_p_message", senddata)
+    const senddata = { "fromname": username, "from": u_id, "toname": selectedChat.username, "to": selectedChat.userid, "message": trimmedText }
+    mySocket.emit("send_p_message", senddata);
+    setText("");
+    // setScrollPosition(1-scrollPosition);
   }
 
 
@@ -123,43 +136,43 @@ function PersonalMsgScreen() {
     <>
       <div className="section1 section_margin box spacebetween">
 
-      <div className="box nobordershadow nopadding chathistory">
-  <div className="box searchbox flexrow">
-    <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
-    <MdDelete className="icon nobordershadow" color={Deletefn ? "#5E4AE3" : "#000"} onClick={() => { toggleDeletefn(); console.log("utasgduygeiyr"); }} />
-  </div>
-  {Array.isArray(contacts) && contacts.length > 0 ? (
-    contacts.map((el, i) => (
-      <div className={Deletefn ? "flexrow swipe-container" : "flexrow"}>
-        <div className="box chat pointer word_shrink">
-          <div
-            className="chat_info"
-            key={i}
-            onClick={() =>
-              onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])
-            }
-          >
-            <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
-            <div className="profile_text">
-              <span className="bold word_shrink">
-                {el.users[0].username !== username ? el.users[0].username : el.users[1].username}
-              </span>
-              <span className="light word_shrink">message</span>
-            </div>
+        <div className="box nobordershadow nopadding chathistory">
+          <div className="box searchbox flexrow">
+            <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
+            <MdDelete className="icon nobordershadow" color={Deletefn ? "#5E4AE3" : "#000"} onClick={() => { toggleDeletefn(); console.log("utasgduygeiyr"); }} />
           </div>
-          <div className="incomingchat circle center">1</div>
+          {Array.isArray(contacts) && contacts.length > 0 ? (
+            contacts.map((el, i) => (
+              <div className={Deletefn ? "flexrow swipe-container" : "flexrow"}>
+                <div className="box chat pointer word_shrink">
+                  <div
+                    className="chat_info"
+                    key={i}
+                    onClick={() =>
+                      onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])
+                    }
+                  >
+                    <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                    <div className="profile_text">
+                      <span className="bold word_shrink">
+                        {el.users[0].username !== username ? el.users[0].username : el.users[1].username}
+                      </span>
+                      <span className="light word_shrink">message</span>
+                    </div>
+                  </div>
+                  <div className="incomingchat circle center">1</div>
+                </div>
+                {Deletefn && (
+                  <div className="swipe-actions">
+                    <button onClick={() => handleDeleteChat(el)}>Delete</button>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <span className=" light center ">No chats</span>
+          )}
         </div>
-        {Deletefn && (
-          <div className="swipe-actions">
-            <button onClick={() => handleDeleteChat(el)}>Delete</button>
-          </div>
-        )}
-      </div>
-    ))
-  ) : (
-    <span className=" light center ">No chats</span>
-  )}
-</div>
 
         <div className="box friends">
           <div className=" searchbox friendstext spacebetween">
@@ -226,6 +239,7 @@ function PersonalMsgScreen() {
 
           {/* middlechats component-chat_area */}
           <div className="box chat_area nopadding">
+           {/* ref={chatAreaRef}> */}
             {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
               <div className="box nopadding more_items" onClick={() => {
                 toggleNeration()
@@ -247,7 +261,7 @@ function PersonalMsgScreen() {
           {/* bottomchats component-chat_typing */}
           <div className="box center chat_typing flexrow spacebetween">
             <div className="type_message">
-              <input type="text" className="nobordershadow message_length" placeholder="type Here!!" onChange={(event) => { setText(event.target.value) }} />
+              <input type="text" className="nobordershadow message_length" placeholder="type Here!!" onChange={(event) => { setText(event.target.value) }} value={text} />
             </div>
             <div className="feature_with_send flexrow">
               <div className="chatfeature">
