@@ -9,7 +9,7 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
-function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity }) {
+function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity ,selectedCommunityStatus,setselectedCommunityStatus}) {
 
   const userdata = JSON.parse(localStorage.getItem('userdata'))
 
@@ -32,9 +32,10 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
   }, [messages, scrollPosition]);
 
 
-  async function onclick(id, name) {
+  async function onclick(id, name,desc) {
     setViewChat(true);
     setSelectedCommunityName(name);
+    setselectedCommunityStatus(desc);
     // console.log(selectedCommunity);
     setSelectedCommunity(id)
     console.log(id);
@@ -143,7 +144,7 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
           // <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>
 
           <div className="box chat pointer ">
-            <div className="chat_info" onClick={() => onclick(el._id, el.communityName)}>
+            <div className="chat_info" onClick={() => onclick(el._id, el.communityName, el.description)}>
               <img className="icon profile_chat_img" alt="" />
               <div className=" profile_text">
                 <div className="textlength_head ">
@@ -278,7 +279,7 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
       {SideScreen && <div className="section3 box nopadding nobordershadow">
         {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} data={{ "image": "images/profileimg_chat.jpg", "username": "arsif" }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
-          <SideScreenCommunityDetailsFn data={{ individualCommunity, selectedCommunityName, selectedCommunity }} actions={{ setSelectedCommunity }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
+          <SideScreenCommunityDetailsFn data={{ individualCommunity,"selectedCommunityName":selectedCommunityName,"description":selectedCommunityStatus, selectedCommunity  }} actions={{ setSelectedCommunity }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 
       </div>}
     </>
