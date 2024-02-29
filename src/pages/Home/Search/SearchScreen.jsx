@@ -5,7 +5,7 @@ import UpperChatInfo from "../Functions/UpperChatInfo";
 import "./SearchScreen.css"
 import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
 import axios from "axios";
-function SearchScreen() {
+function SearchScreen({setScreen}) {
   const [Join, setJoin] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
@@ -36,15 +36,21 @@ function SearchScreen() {
     }
   }
   useEffect(()=>{
-    console.log(selectedChat)
-  },[])
+    async function checkjoin(){
+
+      console.log(selectedChat)
+      console.log("chatt"+selectedChat);
+      const response = await axios.post('/checkjoinstatus',{c_id:selectedChat,u_id:userid})
+      setJoined(response.data.member)
+    }
+    checkjoin()
+  },[selectedChat])
   const [Joined,setJoined] = useState(false)
+  
+  
   async function handleclick(c_id,c_name){
     setSelectedChat(c_id)
     setSelectedChatName(c_name)
-    console.log("chatt"+selectedChat);
-    const response = await axios.post('/checkjoinstatus',{c_id:selectedChat,u_id:userid})
-    setJoined(response.data.member)
   }
 
   return (
@@ -106,7 +112,7 @@ function SearchScreen() {
           {/* bottomchats component-chat_typing */}
           {
             Joined ? <div className="box center pointer joinbtn" onClick={() => { }}>
-              <span className="bold">Enter Chat</span>
+              <span className="bold" onClick={()=>{setScreen('CommunityMessage')}}>Enter Chat</span>
             </div>
               :
               <div className="box center pointer joinbtn" onClick={() => {
