@@ -343,3 +343,6 @@
     background-color:var(--pink_A400);
     color: #fff;
 }
+.padding10{
+    padding: 10px 10px !important;
+}

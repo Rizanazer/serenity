@@ -35,7 +35,8 @@ function PersonalMsgScreen() {
   const [ContactsOnline, setContactsOnline] = useState(true);
   const [contacts, setContacts] = useState([]);
   const [Moreadj, setMoreadj] = useState(false);
-  const u_id = localStorage.getItem('userid')
+  const u_id = localStorage.getItem('userid');
+  const [Friends, setFriends] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null)
   const alluserdatastring = localStorage.getItem('userdata')
   const friends = JSON.parse(alluserdatastring).friends
@@ -58,6 +59,7 @@ function PersonalMsgScreen() {
   }, [])
 
   useEffect(() => {
+
     async function fetchfriends(friends) {
       const u_id = localStorage.getItem('userid')
 
@@ -65,6 +67,7 @@ function PersonalMsgScreen() {
         const response = await axios.post("/fetchfriends", { u_id: u_id })
         console.log(response.data.chats);
         setContacts(response.data.chats)
+      setFriends(response.data.chats.length);
       } catch (error) {
         console.log("error fetching friends")
       }
@@ -181,7 +184,7 @@ function PersonalMsgScreen() {
         <div className="box friends">
           <div className=" searchbox friendstext spacebetween">
             <span className="bold">friends</span>
-            <span className="bold">24</span>
+            <span className="bold">{Friends}</span>
           </div>
           <div className="box nopadding nobordershadow nogap friendslist">
             {Array.isArray(contacts) && contacts.map((el, i) =>
@@ -246,7 +249,7 @@ function PersonalMsgScreen() {
           </div>
 
           {/* middlechats component-chat_area */}
-          <div className="box chat_area nopadding" ref={chatAreaRef}>
+          <div className="box chat_area padding10" ref={chatAreaRef}>
             {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
               <div className="box nopadding more_items" onClick={() => {
                 toggleNeration()

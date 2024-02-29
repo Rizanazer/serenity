@@ -198,7 +198,7 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
 
             {/* middlechats component-chat_area */}
             {/* //onClick={()=>(console.log(allCommunityMessages.map(s=>s.messages.map(t=>t.message))))} */}
-            <div className="box chat_area nopadding" ref={chatAreaRef}>
+            <div className="box chat_area padding10" ref={chatAreaRef}>
               {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}></div>}
               {/* {messages.map((el, i) => <div className="msg_main">
                   <img src="images/profileimg_chat.jpg"className="icon_search circle" alt="" srcset="" onClick={()=>{setMember(true);setSideScreen(true)}}/>
