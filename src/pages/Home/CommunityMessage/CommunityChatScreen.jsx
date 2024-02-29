@@ -176,8 +176,8 @@ function CommunityMsgScreen({ setViewChat,ViewChat,screen, create, individualCom
             <div className="chat_info" onClick={() => onclick(el._id, el.communityName)}>
               <img className="icon profile_chat_img" alt="" />
               <div className=" profile_text">
-                <span className="bold">{el.communityName}</span>
-                <span className="light">{el.message}</span>
+              <span className="bold ">{el.communityName}</span>
+                <span className="light ">{el.message}</span>
               </div>
             </div>
             {/* {data.status && <span className="light">joined</span>} */}

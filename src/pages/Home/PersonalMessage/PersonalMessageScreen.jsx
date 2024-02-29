@@ -156,10 +156,10 @@ function PersonalMsgScreen() {
                   >
                     <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
                     <div className="profile_text">
-                      <span className="bold word_shrink">
+                      <span className="bold ">
                         {el.users[0].username !== username ? el.users[0].username : el.users[1].username}
                       </span>
-                      <span className="light word_shrink">message</span>
+                      <span className="light ">message</span>
                     </div>
                   </div>
                   <div className="incomingchat circle center">1</div>
