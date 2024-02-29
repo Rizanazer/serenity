@@ -8,28 +8,19 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
-
 function CommunityMsgScreen({ screen, create, individualCommunity }) {
-  const [selectedCommunityName, setSelectedCommunityName] = useState(null);
-  const [selectedCommunityStatus, setSelectedCommunityStatus] = useState(null);
+  const [selectedCommunityName, setSelectedCommunityName] = useState(null)
   const [selectedCommunity, setSelectedCommunity] = useState("")
-
-function CommunityMsgScreen({ setViewChat,ViewChat,screen, create, individualCommunity ,selectedCommunityName,setSelectedCommunityName,selectedCommunity,setSelectedCommunity}) {
-  // const [selectedCommunityName, setSelectedCommunityName] = useState(null)
-  // const [selectedCommunity, setSelectedCommunity] = useState("")
-
   const userdata = JSON.parse(localStorage.getItem('userdata'))
   // const [chatByCommunity,setChatByCommunity] = useState([]);
   // const [loadChatByCommunity,setLoadChatByCommunity] = useState(null)
   const [allCommunityMessages, setAllCommunityMessages] = useState([]);
   const [socket, setSocket] = useState(null);
-  // const [selectedCommunityMessages, setSelectedCommunityMessages] = useState([])
+  const [selectedCommunityMessages, setSelectedCommunityMessages] = useState([])
   const [selectedUser, setSelectedUser] = useState({ username: '', userid: '' })
-  const username = localStorage.getItem('username')
+
   const [scrollPosition, setScrollPosition] = useState(0);
   const chatAreaRef = useRef(null);
-  var [messages, setMessages] = useState([]);
-  console.log(individualCommunity)
   useEffect(() => {
     // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
@@ -40,10 +31,9 @@ function CommunityMsgScreen({ setViewChat,ViewChat,screen, create, individualCom
   }, [messages, scrollPosition]);
 
 
-  async function onclick(id, name,desc) {
+  async function onclick(id, name) {
     setViewChat(true);
     setSelectedCommunityName(name);
-    setSelectedCommunityStatus(desc);
     // console.log(selectedCommunity);
     setSelectedCommunity(id)
     console.log(id);
@@ -92,7 +82,7 @@ function CommunityMsgScreen({ setViewChat,ViewChat,screen, create, individualCom
     };
   }, [allCommunityMessages]);
   const [ChatSearch, SetChatSearch] = useState(false);
-  // var [ViewChat, setViewChat] = useState(false);
+  var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   var [selectedChat, setSelectedChat] = useState(null);
   const [More, setMore] = useState(false);
@@ -102,6 +92,7 @@ function CommunityMsgScreen({ setViewChat,ViewChat,screen, create, individualCom
   const [Moreadj, setMoreadj] = useState(false);
   var [Member, setMember] = useState(false);
   var [text, setText] = useState("");
+  var [messages, setMessages] = useState([]);
 
   const send = async () => {
     console.log(text);
@@ -168,7 +159,7 @@ function CommunityMsgScreen({ setViewChat,ViewChat,screen, create, individualCom
         {individualCommunity.map((el, i) =>
           // <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>
           <div className="box chat pointer ">
-            <div className="chat_info" onClick={() => onclick(el._id, el.communityName,el.description)}>
+            <div className="chat_info" onClick={() => onclick(el._id, el.communityName)}>
               <img className="icon profile_chat_img" alt="" />
               <div className=" profile_text">
                 <div className="textlength_head ">
@@ -232,15 +223,9 @@ function CommunityMsgScreen({ setViewChat,ViewChat,screen, create, individualCom
 
               {messages && messages.map((el, i) => (
                 <div className="msg_main" key={i}>
-                  {el.u_name !== username ?<>
                   <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcset="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                   <p className="uname-msg">{el.u_name}</p>
-                  <p className={ el.u_name === username?"msg-rightside":"msg"}>{el.message}</p></>:
-                  <>
-                  <p className="msg-rightside" style={{marginRight:'5px'}}>{el.message}</p>
-                  <p className="uname-msg">{el.u_name}</p>
-                  <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcset="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
-                  </>}
+                  <p className="msg">{el.message}</p>
                 </div>
               ))}
 
@@ -303,7 +288,7 @@ function CommunityMsgScreen({ setViewChat,ViewChat,screen, create, individualCom
       {SideScreen && <div className="section3 box nopadding nobordershadow">
         {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} data={{ "image": "images/profileimg_chat.jpg", "username": "arsif" }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
-          <SideScreenCommunityDetailsFn data={{ "selectedCommunityName":selectedCommunityName,"description":selectedCommunityStatus }} actions={{ setSelectedCommunity }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
+          <SideScreenCommunityDetailsFn data={{ individualCommunity, selectedCommunityName, selectedCommunity }} actions={{ setSelectedCommunity }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 
       </div>}
     </>
