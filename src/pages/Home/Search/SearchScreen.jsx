@@ -5,17 +5,15 @@ import UpperChatInfo from "../Functions/UpperChatInfo";
 import "./SearchScreen.css"
 import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
 import axios from "axios";
-function SearchScreen({ setScreen }) {
-  // const [Join, setJoin] = useState(false);
+function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity, setSelectedCommunityName, setViewChat_C, ViewChat }) {
+  const [Joined, setJoined] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
-  const [ChatSearch, SetChatSearch] = useState(false);
   const [More, setMore] = useState(false);
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
-  const [Joined, setJoined] = useState(true);
   const [Status, setStatus] = useState(false);
   const [Moreadj, setMoreadj] = useState(false);
   var [GroupName, setGroupName] = useState([]);
@@ -36,20 +34,32 @@ function SearchScreen({ setScreen }) {
       setMessages([...messages, text])
     }
   }
+  async function joincommunity() {
+    const u_id = localStorage.getItem('userid')
+    try {
+      const response = await axios.post('/joincommunity', { u_id: u_id, c_id: selectedChat })
+      if (response.data.success === true) {
+        setJoined(true);
+        console.log(response.data)
+        setIndividualCommunity((prev) => [...prev, response.data.result])
+      } else {
+        { console.log("Joining Community fail"); }
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
   useEffect(() => {
     async function checkjoin() {
 
       console.log(selectedChat)
       console.log("chatt" + selectedChat);
       const response = await axios.post('/checkjoinstatus', { c_id: selectedChat, u_id: userid })
-      setJoined(response.data.member);
-      console.log('====================================');
-      console.log(response.data.member);
-      console.log('====================================');
-      
+      setJoined(response.data.member)
     }
     checkjoin()
   }, [selectedChat])
+  
 
 
   async function handleclick(c_id, c_name) {
@@ -115,13 +125,16 @@ function SearchScreen({ setScreen }) {
 
           {/* bottomchats component-chat_typing */}
           {
-            Joined ? <div className="box center pointer joinbtn" onClick={() => { setScreen('CommunityMessage') }}>
+            Joined ? <div className="box center pointer joinbtn" onClick={() => {
+              setScreen('CommunityMessage');
+              setSelectedCommunity(selectedChat);
+              setSelectedCommunityName(selectedChatName);
+              setViewChat_C(true)
+            }}>
               <span className="bold" >Enter Chat</span>
             </div>
               :
-              <div className="box center pointer joinbtn" onClick={() => {
-                setJoined(true);
-              }}>
+              <div className="box center pointer joinbtn" onClick={joincommunity}>
                 <span className="bold">join</span>
               </div>
           }
@@ -148,10 +161,10 @@ function GroupList_1({ userid, data, HandleClick, setViewChat }) {
         <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
         <div className=" profile_text">
           <div className="textlength_head ">
-          <span className="bold ">{data.communityName}</span>
+            <span className="bold ">{data.communityName}</span>
           </div>
           <div className="textlength_para">
-          <span className="light ">{data.description}</span>
+            <span className="light ">{data.description}</span>
           </div>
         </div>
       </div>

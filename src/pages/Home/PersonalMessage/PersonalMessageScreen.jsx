@@ -12,7 +12,11 @@ import io from "socket.io-client";
 
 
 function PersonalMsgScreen() {
-
+  const userdata = JSON.parse(localStorage.getItem('userdata'))
+  console.log('================user====================');
+  console.log(userdata);
+  console.log('====================================');
+  
   const [scrollPosition, setScrollPosition] = useState(0);
   const chatAreaRef = useRef(null);
   useEffect(() => {
@@ -67,7 +71,7 @@ function PersonalMsgScreen() {
         const response = await axios.post("/fetchfriends", { u_id: u_id })
         console.log(response.data.chats);
         setContacts(response.data.chats)
-      setFriends(response.data.chats.length);
+      setFriends(userdata.friends.length);
       } catch (error) {
         console.log("error fetching friends")
       }
