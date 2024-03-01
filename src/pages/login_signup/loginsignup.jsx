@@ -41,10 +41,11 @@ const CreateAccount = ({ actions  }) =>
 (
 
   <div className="box_login box center">
-    <input placeholder='Email' onChange={actions.handleInputChange} />
-    <input placeholder='Password' onChange={actions.handleInputChange} />
-    <input placeholder='Re-Password' onChange={actions.handleInputChange} />
-    <input placeholder='MobileNumber' onChange={actions.handleInputChange}/>
+    <input placeholder='Username' name="username" onChange={actions.handeleregchange} />
+    <input placeholder='Email' name="email" onChange={actions.handeleregchange} />
+    <input placeholder='Password' name="password" onChange={actions.handeleregchange} />
+    <input placeholder='Re-Password' name="re_pass" onChange={actions.handeleregchange} />
+    <input placeholder='MobileNumber' name="phone"onChange={actions.handeleregchange}/>
     <div className='viewerror'>
     {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
     </div>
@@ -76,7 +77,7 @@ const CreateAccount_details = ({ actions  }) =>
     <div className='viewerror'>
     {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
     </div>
-    <button onClick={()=>{actions.handleActionChange("VALIDATE")}}>Create Account</button>
+    <button onClick={actions.register}>Create Account</button>
     {/* <div className="horiz">
       <hr className='line' />or<hr className='line' />
     </div>
@@ -137,7 +138,33 @@ const handleInputChange = (event) =>{
   const {name, value} = event.target
   setUserData({...userData,[name]:value})
 };
+  const [regData, setRegData] = useState({
+      username: '',
+      password:'',
+      age: '',
+      email:'',
+      phone:'',
+      gender:'',
 
+      });
+      const handeleregchange = (event) =>{
+        const {name, value} = event.target
+        setRegData({...regData,[name]:value})
+        console.log(regData);
+      };
+        async function register(){
+          console.log("register")
+          try {
+            handleActionChange("VALIDATE")
+            const response = await axios.post('/register',{newData:regData})
+            if(response.data.success === true){
+              handleActionChange("VALIDATE")
+            }
+          } catch (error) {
+            console.error(error)
+          }
+        }
+        
 const handleClick = async () => {
   console.log('Button clicked!');
   console.log(userData);
@@ -178,8 +205,8 @@ return (
     {action === "LOGIN" && <Login actions={{handleActionChange, handleInputChange, handleClick,handlereg,setViewError}} userData={{userData,viewError}} />}
     {action === "GetOTP" && <MobileNumberInput actions={{handleActionChange}} />}
     {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} />}
-    {action === "More_Details"&&<CreateAccount_details actions={{handleActionChange}} />}
-    {action === "Create_Account"&&<CreateAccount actions={{handleActionChange}} />}
+    {action === "More_Details"&&<CreateAccount_details actions={{handleActionChange,register}} />}
+    {action === "Create_Account"&&<CreateAccount actions={{handleActionChange,handeleregchange}} />}
   </div>
 );
 };
