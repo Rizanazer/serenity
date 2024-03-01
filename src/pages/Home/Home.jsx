@@ -61,12 +61,17 @@ const Home = () => {
         selectedCommunityStatus={selectedCommunityStatus}
         setselectedCommunityStatus={setSelectedCommunityStatus}
       />}
-      {Screen === "SearchCommunity" && <SearchScreen setIndividualCommunity={setIndividualCommunity} setViewChat_C={setViewChat} setSelectedCommunityName={setSelectedCommunityName} setSelectedCommunity={setSelectedCommunity} setScreen={setScreen} />}
+      {Screen === "SearchCommunity" && <SearchScreen
+        setIndividualCommunity={setIndividualCommunity}
+        setViewChat_C={setViewChat}
+        setSelectedCommunityName={setSelectedCommunityName}
+        setSelectedCommunity={setSelectedCommunity}
+        setScreen={setScreen} />}
       {Screen === "AddFriends" && <AddFriendsScreen />}
 
 
       {CreateAlert && <CreateCommunity setCreateAlert={setCreateAlert} fetchCommunityDetails={fetchCommunityDetails} />}
-      {Setting ? <SettingsScreen handleClick={() => { setSetting(false) }} /> : null}
+      {Setting ? <SettingsScreen handleClick={() => { setSetting(false) }} setscreen={()=>setScreen("Profile")} /> : null}
     </div>
   );
 };

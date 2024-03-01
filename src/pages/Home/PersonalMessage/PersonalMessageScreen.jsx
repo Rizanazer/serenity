@@ -12,13 +12,15 @@ import io from "socket.io-client";
 
 
 function PersonalMsgScreen() {
+  
   const userdata = JSON.parse(localStorage.getItem('userdata'))
-  console.log('================user====================');
-  console.log(userdata);
-  console.log('====================================');
   
   const [scrollPosition, setScrollPosition] = useState(0);
   const chatAreaRef = useRef(null);
+  useEffect(()=>{
+    console.log('----------------chats----------------')
+    console.log(chats);
+  })
   useEffect(() => {
     // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
@@ -36,6 +38,7 @@ function PersonalMsgScreen() {
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
+  const userid = localStorage.getItem('userid')
   const [ContactsOnline, setContactsOnline] = useState(true);
   const [contacts, setContacts] = useState([]);
   const [Moreadj, setMoreadj] = useState(false);
@@ -48,9 +51,15 @@ function PersonalMsgScreen() {
   const [mySocket, setMySocket] = useState(null)
   var [text, setText] = useState("");
   const hoverTimer = useRef(null);
+  const [chats,setChats] = useState([])
   const [hoveredMessage, setHoveredMessage] = useState("");
   const [Deletefn, setDeletefn] = useState(false);
-
+  const [selectedFriend,setSelectedFriend] = useState(null)
+  const [selectedFriendName,setSelectedFriendName] = useState(null)
+  useEffect(()=>{
+    console.log("selectedChat")
+    console.log(selectedChat)
+  },[selectedChat])
   useEffect(() => {
     const socket = io('http://:3000');
     setMySocket(socket)
@@ -64,14 +73,14 @@ function PersonalMsgScreen() {
 
   useEffect(() => {
 
-    async function fetchfriends(friends) {
+    async function fetchfriends() {
       const u_id = localStorage.getItem('userid')
 
       try {
-        const response = await axios.post("/fetchfriends", { u_id: u_id })
-        console.log(response.data.chats);
-        setContacts(response.data.chats)
-      setFriends(userdata.friends.length);
+        const response = await axios.post("/fetchfriends", { u_id: u_id ,friendids:userdata.friends})
+        setContacts(response.data.frienddata.flat())
+        setChats(response.data.chats)
+        setFriends(userdata.friends.length);
       } catch (error) {
         console.log("error fetching friends")
       }
@@ -101,7 +110,7 @@ function PersonalMsgScreen() {
     hoverTimer.current = setTimeout(() => {
       setHoveredMessage(message);
       speakText(message);
-    }, 1000);
+    }, 500);
   };
 
   const cancelHoverTimer = () => {
@@ -114,10 +123,26 @@ function PersonalMsgScreen() {
 
   var [messages, setMessages] = useState([]);
 
+  async function onclickfriendchat(friend,friendname){
+    console.log(friend)
+    setViewChat(true)
+    setSelectedFriend(friend)
+    setSelectedFriendName(friendname)
+    try {
+      const response = await axios.post('/fetchpersonal', { f_id: friend, u_id: u_id,f_name:friendname })
+      console.log(friend);
+      console.log(response.data.chats.messages);
+      setMessages(response.data.chats.messages)
+    } catch (error) {
+      setMessages([])
+      console.log('personal message fetch error')
+    }
 
+  }
 
-  const send = async () => {
+  const send1 = async () => {
     const trimmedText = text.trim();
+    console.log("selectedChat");
     console.log(selectedChat);
     const senddata = { "fromname": username, "from": u_id, "toname": selectedChat.username, "to": selectedChat.userid, "message": trimmedText }
     mySocket.emit("send_p_message", senddata);
@@ -125,16 +150,30 @@ function PersonalMsgScreen() {
     setScrollPosition(scrollPosition + 1);
   }
 
+  const send = async () => {
+    const trimmedText = text.trim();
+    console.log("selectedChat");
+    console.log(selectedChat);
+    const senddata = { "fromname": username, "from": u_id, "toname": selectedFriendName, "to": selectedFriend, "message": trimmedText }
+    mySocket.emit("send_p_message", senddata);
+    setText("");
+    setScrollPosition(scrollPosition + 1);
+  }
+
 
   async function onclickfriend(friend) {
+    console.log(friend)
     setViewChat(true)
     setSelectedChat(friend)
-    console.log(friend);
+    setSelectedFriend(friend)
+    setSelectedFriendName(friend.username)
     try {
-      const response = await axios.post('/fetchpersonal', { f_id: friend.userid, u_id: u_id })
+      const response = await axios.post('/fetchpersonal', { f_id: friend, u_id: u_id })
+      console.log(friend);
       console.log(response.data.chats.messages);
       setMessages(response.data.chats.messages)
     } catch (error) {
+      setMessages([])
       console.log('personal message fetch error')
     }
 
@@ -150,21 +189,22 @@ function PersonalMsgScreen() {
             <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
             <MdDelete className="icon nobordershadow" color={Deletefn ? "#5E4AE3" : "#000"} onClick={() => { toggleDeletefn(); console.log("utasgduygeiyr"); }} />
           </div>
-          {Array.isArray(contacts) && contacts.length > 0 ? (
-            contacts.map((el, i) => (
+          {Array.isArray(chats) && chats.length > 0 ? (
+            chats.map((el, i) => (
               <div className={Deletefn ? "flexrow swipe-container" : "flexrow"}>
                 <div className="box chat pointer word_shrink">
                   <div
                     className="chat_info"
                     key={i}
                     onClick={() =>
-                      onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])
+                      onclickfriendchat(el.users[0].userid === userid?el.users[1].userid:el.users[0].userid,el.users[0].userid === userid?el.users[1].username:el.users[0].username)
                     }
                   >
                     <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
                     <div className=" profile_text">
                     <div className="textlength_head ">
-                      <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
+                      <span className="bold ">{el.users[0].username === username?el.users[1].username:el.users[0].username}</span>
+                      {/* <span className="bold ">{el.username}sssssss</span> */}
                     </div>
                     <div className="textlength_para ">
                       <span className="light">messsage lorum ipsum la about the new era of time</span>
@@ -188,17 +228,18 @@ function PersonalMsgScreen() {
         <div className="box friends">
           <div className=" searchbox friendstext spacebetween">
             <span className="bold">friends</span>
-            <span className="bold">{Friends}</span>
+            <span className="bold">{Friends}d</span>
           </div>
           <div className="box nopadding nobordershadow nogap friendslist">
             {Array.isArray(contacts) && contacts.map((el, i) =>
 
               <div className="box chat pointer nobordershadow">
-                <div className="chat_info" key={i} onClick={() => onclickfriend(el.users[0].userid !== u_id ? el.users[0] : el.users[1])}>
+                <div className="chat_info" key={i} onClick={() => onclickfriend(el)}>
                   <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
                   <div className=" profile_text">
                     <div className="textlength_head_friends ">
-                      <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span>
+                      {/* <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span> */}
+                      <span className="bold ">{el.username}xx</span>
                     </div>
                     <div className="textlength_status ">
                       <span className="light">status</span>
@@ -225,7 +266,7 @@ function PersonalMsgScreen() {
               {/* {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.username, "status": () => { setSideScreen(true);setMoreadj(true);} }} />} */}
               {<div className="center inputrow" onClick={() => { setSideScreen(true); setMoreadj(true); }}>
                 <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
-                <span className="bold">{selectedChat.username}</span>
+                <span className="bold">{selectedFriendName}</span>
               </div>}
             </div>
 

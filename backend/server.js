@@ -26,9 +26,10 @@
   connectDB();
   router.route("/register").post(async (req, res) => {
     try {
-      const newData = req.body;
+      const {newData} = req.body;
       newData.friends = []
       newData.communities = []
+      console.log(newData);
       const result = await User.create(newData);
       console.log('Data inserted Succesfully');
       res.json({"success":true})
@@ -423,9 +424,23 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     
     try {  
     const u_id = req.body.u_id;
+    const friendids = req.body.friendids
+    console.log(friendids);
+    
     const chats = await DirectChats.find({ $or: [{ "users.userid": u_id }, { "users.userid": u_id }] }).sort({ dateAdded: -1 });
+    const frienddata = []
+    for(let i=0;i < friendids.length;i++){
+      const friendquery = await User.find({_id:friendids[i]})
+      if(friendquery){
+        frienddata.push(friendquery)
+      }else{
+        
+        frienddata.push("friendquery")
+      }
+
+    }
     //console.log(chats + "sdsds");
-    res.json({ "success": true, "chats":chats });
+    res.json({ "success": true, "chats":chats ,"frienddata":frienddata.flat()});
     } catch (error) {
       console.log("error ocuurred while loading friends")
       res.json({"success":false})
@@ -442,7 +457,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     const {f_id,u_id} = req.body
         const chats = await DirectChats.findOne({
             'users.userid': { $all: [f_id, u_id] }
-        }).sort({ dateAdded: -1 });
+        });
     console.log(chats);
     res.json({ "success": true,"chats":chats});
     } catch (error) {
@@ -496,6 +511,17 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
   })
 
+  router.post('/clear_p_chat',async(req,res)=>{
+    const {f_id,u_id} = req.body
+    const chats = await DirectChats.findOneAndDelete({'users.userid': { $all: [f_id, u_id] }});
+    if(chats){
+      res.json({"success":true})
+    }else{
+      res.json({"success":false})
+    }
+    console.log(chats);
+  })
+
   router.post("/getmemberdata",async (req,res)=>{
     
     try {  
@@ -530,17 +556,9 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   io.on('connection', (socket) => {
     console.log('Socket Client connected');
 
-
     socket.on('send_p_message', async (msg) => {
-      //console.log(msg);
       const { from, to, fromname, toname, message } = msg;
-      // console.log(toname+" "+to);
-      // const existingChat = await DirectChats.findOne({
-      //   $or: [
-      //     { "users.userid": from, "users.userid": to },
-      //     { "users.userid": to, "users.userid": from }
-      //   ]
-      // });
+   
       const existingChat = await DirectChats.findOne({
         users: {
             $all: [
@@ -559,8 +577,29 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
           messageType: "text"
         });
       await existingChat.save();
+      }else{
+        console.log(`to `+ to +`fr` + from);
+        // console.log(to);
+        const savedDirectChat = await DirectChats.create({
+          users: [
+            { userid: from, username: fromname },
+            { userid: to, username: toname }
+          ],
+          messages: [{
+            from: {
+              userid: to,
+              username: toname
+            },
+            to: {
+              userid: from,
+              username: fromname
+            },
+            messageBody: message,
+            messageType: "text"
+          }]
+        });
       }
-      console.log(existingChat.users);
+      // console.log(existingChat.users);
       io.emit("recieve_p_message",{"to":to,"from":from,"toname":toname,"fromname":fromname,"messageBody": message,"messageType": "text"});
     });
     
