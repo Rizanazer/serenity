@@ -1,0 +1,58 @@
+.triangle {
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0 50px 100px 50px;
+    border-color: transparent transparent var(--gray_100) transparent;
+    transform: rotate(270deg);
+    align-self: center;
+    margin-bottom: 38px;
+ }
+.h_w_full{
+    height: 100%;
+    width: 100%;
+ }
+ .absolute{
+    position: absolute;
+ }
+ .zindex2{
+    z-index: 2;
+ }
+ .profilesection{
+    align-self: center;
+    width: 60%;
+    height: 90%;
+    background: var(--gray_100) !important;
+    padding: 30px 30px !important;
+ }
+.profile_whole{
+    align-items: baseline !important;
+    justify-content: none !important;
+}
+ .set1{
+    flex:2;
+    align-items: flex-end;
+ }
+ .set2{
+    flex:7;
+    
+ }
+ .profilesection1{
+    flex: 6 !important;
+    background-color: transparent !important;
+ }
+ .profile_photosection{
+    display: flex;
+    flex: 3.5;
+ }
+ .profilemain_photo{
+    width: 190px;
+    height: 190px;
+ }
+ .profile_postsection{
+    display: flex;
+    flex: 7;
+ }
+ .profilesection2{
+    flex: 4 !important;
+ }

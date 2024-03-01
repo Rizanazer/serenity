@@ -12,6 +12,7 @@ import axios from "axios";
 import CreateCommunity from "./Functions/createcommunity/createCommunity";
 const Home = () => {
   var [ViewChat, setViewChat] = useState(false);
+  var [Profile, setProfile] = useState(false);
 
   const [selectedCommunityName, setSelectedCommunityName] = useState(null)
   const [selectedCommunity, setSelectedCommunity] = useState("")
@@ -42,37 +43,48 @@ const Home = () => {
 
   console.log(individualCommunity);
   return (
+    <>
+      <div className="container center ">
+        {/* settings */}
+        {Setting && <div className="overlay">
+          <div className="flex flexrow h_w_full">
+            <div className="flex set1 h_w_full">
+            <SettingsScreen handleClick={() => { setSetting(false) }} setscreen={() => setProfile(true)} />
+            </div>
+            <div className="flex set2 h_w_full">
+            {Profile&&<ProfileScreen/>}
+            </div>
+          </div>
+          
+          
+        </div>}
+        <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} />
+        {Screen === "PersonalMessage" && <PersonalMsgScreen />}
+        {Screen === "CommunityMessage" && <CommunityMsgScreen
+          ViewChat={ViewChat}
+          setViewChat={setViewChat}
+          setSelectedCommunityName={setSelectedCommunityName}
+          selectedCommunityName={selectedCommunityName}
+          setSelectedCommunity={setSelectedCommunity}
+          selectedCommunity={selectedCommunity}
+          screen={setScreen}
+          create={setCreateAlert}
+          individualCommunity={individualCommunity}
+          selectedCommunityStatus={selectedCommunityStatus}
+          setselectedCommunityStatus={setSelectedCommunityStatus}
+        />}
+        {Screen === "SearchCommunity" && <SearchScreen
+          setIndividualCommunity={setIndividualCommunity}
+          setViewChat_C={setViewChat}
+          setSelectedCommunityName={setSelectedCommunityName}
+          setSelectedCommunity={setSelectedCommunity}
+          setScreen={setScreen} />}
+        {Screen === "AddFriends" && <AddFriendsScreen />}
+        {CreateAlert && <CreateCommunity setCreateAlert={setCreateAlert} fetchCommunityDetails={fetchCommunityDetails} />}
+      </div>
 
-    <div className="container center">
+    </>
 
-      <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} />
-      {Screen === "PersonalMessage" && <PersonalMsgScreen />}
-      {Screen === "Profile" && <ProfileScreen />}
-      {Screen === "CommunityMessage" && <CommunityMsgScreen
-        ViewChat={ViewChat}
-        setViewChat={setViewChat}
-        setSelectedCommunityName={setSelectedCommunityName}
-        selectedCommunityName={selectedCommunityName}
-        setSelectedCommunity={setSelectedCommunity}
-        selectedCommunity={selectedCommunity}
-        screen={setScreen}
-        create={setCreateAlert}
-        individualCommunity={individualCommunity}
-        selectedCommunityStatus={selectedCommunityStatus}
-        setselectedCommunityStatus={setSelectedCommunityStatus}
-      />}
-      {Screen === "SearchCommunity" && <SearchScreen
-        setIndividualCommunity={setIndividualCommunity}
-        setViewChat_C={setViewChat}
-        setSelectedCommunityName={setSelectedCommunityName}
-        setSelectedCommunity={setSelectedCommunity}
-        setScreen={setScreen} />}
-      {Screen === "AddFriends" && <AddFriendsScreen />}
-
-
-      {CreateAlert && <CreateCommunity setCreateAlert={setCreateAlert} fetchCommunityDetails={fetchCommunityDetails} />}
-      {Setting ? <SettingsScreen handleClick={() => { setSetting(false) }} setscreen={()=>setScreen("Profile")} /> : null}
-    </div>
   );
 };
 export default Home;
