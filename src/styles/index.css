@@ -125,6 +125,9 @@ body {
 .spacebetween {
   justify-content: space-between;
 }
+.stretch {
+  justify-content: stretch !important;
+}
 
 .nopadding {
   padding: 0px 0px !important;
@@ -235,4 +238,7 @@ color: #5E4AE3;
 }
 .flex{
   display: flex;
+}
+.white{
+  color: #fff !important;
 }

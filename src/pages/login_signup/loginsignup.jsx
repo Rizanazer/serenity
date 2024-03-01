@@ -48,7 +48,7 @@ const CreateAccount = ({ actions  }) =>
     <div className='viewerror'>
     {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
     </div>
-    <button onClick={()=>{actions.handleActionChange("VALIDATE")}}>Create Account</button>
+    <button onClick={()=>{actions.handleActionChange("More_Details")}}>Enter More</button>
     <div className="horiz">
       <hr className='line' />or<hr className='line' />
     </div>
@@ -62,6 +62,34 @@ const CreateAccount = ({ actions  }) =>
       <span>have an account?</span>
       <span className='text_btn' onClick={()=>{actions.handleActionChange("LOGIN")}}>Login Now!!!</span>
     </div>
+  </div>
+
+);
+const CreateAccount_details = ({ actions  }) =>
+(
+
+  <div className="box_login box center">
+    <input placeholder='dateofbirth' onChange={actions.handleInputChange} />
+    <input placeholder='gender' onChange={actions.handleInputChange} />
+    <input placeholder='likes' onChange={actions.handleInputChange} />
+    <input placeholder='dislikes' onChange={actions.handleInputChange}/>
+    <div className='viewerror'>
+    {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
+    </div>
+    <button onClick={()=>{actions.handleActionChange("VALIDATE")}}>Create Account</button>
+    {/* <div className="horiz">
+      <hr className='line' />or<hr className='line' />
+    </div>
+    <div className="horiz">
+      <FaGoogle className='icon' />
+      <FaTwitter className='icon' />
+      <FaFacebook className='icon' />
+      <FaApple className='icon' />
+    </div> */}
+    {/* <div className="create_account">
+      <span>have an account?</span>
+      <span className='text_btn' onClick={()=>{actions.handleActionChange("LOGIN")}}>Login Now!!!</span>
+    </div> */}
   </div>
 
 );
@@ -150,6 +178,7 @@ return (
     {action === "LOGIN" && <Login actions={{handleActionChange, handleInputChange, handleClick,handlereg,setViewError}} userData={{userData,viewError}} />}
     {action === "GetOTP" && <MobileNumberInput actions={{handleActionChange}} />}
     {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} />}
+    {action === "More_Details"&&<CreateAccount_details actions={{handleActionChange}} />}
     {action === "Create_Account"&&<CreateAccount actions={{handleActionChange}} />}
   </div>
 );

@@ -10,7 +10,11 @@
 }
 .settings_back{
     width: 100%;
+    background-color: #745ffb !important;
 }
 .settings_content{
 padding: 0px 20px !important;
+}
+.profile_box{
+    padding: 10px 10px !important;
 }

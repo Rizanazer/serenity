@@ -101,7 +101,7 @@ function PersonalMsgScreen() {
     hoverTimer.current = setTimeout(() => {
       setHoveredMessage(message);
       speakText(message);
-    }, 1000);
+    }, 500);
   };
 
   const cancelHoverTimer = () => {
