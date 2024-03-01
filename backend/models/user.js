@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     phone:Number,
     gender:String,
     password:String,
+    serenityscore:{type:Number,default:100},
     friends:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
     friendrequests:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
     friendrequestssent:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],

@@ -11,6 +11,9 @@ const NumberCheck = (event) => {
   event.target.value = numbersOnly; // Update the input value to contain only numbers
 }; 
 
+  
+  
+
 const Login = ({ actions ,userData }) =>
 (
 
@@ -38,17 +41,18 @@ const Login = ({ actions ,userData }) =>
 
 );
 const CreateAccount = ({ actions  }) =>
-(
 
+(
+ 
   <div className="box_login box center">
-    <input placeholder='Email' onChange={actions.handleInputChange} />
-    <input placeholder='Password' onChange={actions.handleInputChange} />
-    <input placeholder='Re-Password' onChange={actions.handleInputChange} />
-    <input placeholder='MobileNumber' onChange={actions.handleInputChange}/>
+    <input placeholder='Email' name="mail" onChange={actions.handeleregchange} />
+    <input placeholder='Password' name="pass" onChange={actions.handeleregchange} />
+    <input placeholder='Re-Password' name="re_pass" onChange={actions.handeleregchange} />
+    <input placeholder='MobileNumber' name="phone"  onChange={actions.handeleregchange}/>
     <div className='viewerror'>
     {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
     </div>
-    <button onClick={()=>{actions.handleActionChange("VALIDATE")}}>Create Account</button>
+    <button onClick={actions.register}>Create Account</button>
     <div className="horiz">
       <hr className='line' />or<hr className='line' />
     </div>
@@ -96,7 +100,12 @@ const Loginsignup = (props) => {
   const handleActionChange = (newAction) => {
     setAction(newAction);
   };
-
+  const [regData, setRegData] = useState({
+    mail: '',
+    pass: '',
+    re_pass:'',
+    phone:''
+    });
   ////////////////////////////////////////////////////////
 const navigate = useNavigate()
 const [viewError, setViewError] = useState(false);
@@ -105,11 +114,26 @@ const [userData, setUserData] = useState({
   mail: '',
   pass: ''
 });
+
 const handleInputChange = (event) =>{
   const {name, value} = event.target
   setUserData({...userData,[name]:value})
 };
-
+const handeleregchange = (event) =>{
+  const {name, value} = event.target
+  setRegData({...regData,[name]:value})
+  console.log(regData);
+};
+  async function register(){
+    try {
+      const response = await axios.post('/register',{newData:regData})
+      if(response.data.success === true){
+        handleActionChange("VALIDATE")
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 const handleClick = async () => {
   console.log('Button clicked!');
   console.log(userData);
@@ -150,7 +174,7 @@ return (
     {action === "LOGIN" && <Login actions={{handleActionChange, handleInputChange, handleClick,handlereg,setViewError}} userData={{userData,viewError}} />}
     {action === "GetOTP" && <MobileNumberInput actions={{handleActionChange}} />}
     {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} />}
-    {action === "Create_Account"&&<CreateAccount actions={{handleActionChange}} />}
+    {action === "Create_Account"&&<CreateAccount actions={{handleActionChange,handeleregchange,register}} />}
   </div>
 );
 };
