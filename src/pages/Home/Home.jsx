@@ -24,6 +24,9 @@ const Home = () => {
   const [Setting, setSetting] = useState(false);
   const [selectedCommunityStatus, setSelectedCommunityStatus] = useState(null);
 
+  const toggleProfile = () => {
+    setProfile(prevState => !prevState);
+  };
   async function fetchCommunityDetails() {
     try {
       const response = await axios.post('/getUsersCommunities', { id: userdata._id });
@@ -49,7 +52,7 @@ const Home = () => {
         {Setting && <div className="overlay">
           <div className="flex flexrow h_w_full">
             <div className="flex set1 h_w_full">
-            <SettingsScreen handleClick={() => { setSetting(false) }} setscreen={() => setProfile(true)} />
+            <SettingsScreen handleClick={() => { setSetting(false) }} setscreen={() => toggleProfile()} profileView={Profile}/>
             </div>
             <div className="flex set2 h_w_full">
             {Profile&&<ProfileScreen/>}

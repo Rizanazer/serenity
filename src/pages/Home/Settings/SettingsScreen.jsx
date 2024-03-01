@@ -1,7 +1,7 @@
 import "./SettingsScreen.css"
-import { MdArrowBack,MdArrowForwardIos, MdReport, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
+import { MdArrowBack,MdArrowForwardIos, MdArrowBackIos ,MdReport, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-function SettingsScreen({ handleClick,setscreen }) {
+function SettingsScreen({ handleClick,setscreen,profileView }) {
 
   const navigate = useNavigate()
 
@@ -22,7 +22,9 @@ function SettingsScreen({ handleClick,setscreen }) {
                 <img src="images/profilepic.jpg" alt="image" className="icon profile_chat_img"/>
                 <span className="bold white">username</span>
               </div>
-              <MdArrowForwardIos className="icon nobordershadow white"/>
+              {profileView?<MdArrowBackIos className="icon nobordershadow white"/>:<MdArrowForwardIos className="icon nobordershadow white"/>}
+              
+              
             </div>
           </div>
         </div>

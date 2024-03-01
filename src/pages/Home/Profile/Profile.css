@@ -56,3 +56,115 @@
  .profilesection2{
     flex: 4 !important;
  }
+ .profilemain_name{
+    width: 100%;
+ }
+ .main_name{
+    font-size: xx-large;
+    font-weight: bolder;
+ }
+
+ /* button-rounded */
+ .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: background-color 0.4s, box-shadow 0.4s;
+  }
+  
+  .slider:before {
+    content: "";
+    position: absolute;
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: transform 0.4s;
+  }
+  
+  input:checked + .slider {
+    background-color: var(--navclr);
+    box-shadow: 0 0 1px var(--navclr);
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  
+  /* Responsive Styles */
+  @media screen and (max-width: 768px) {
+    .switch {
+      width: 50px;
+    }
+    
+    .slider {
+      height: 28px;
+    }
+    
+    .slider:before {
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .switch {
+      width: 40px;
+    }
+    
+    .slider {
+      height: 24px;
+    }
+    
+    .slider:before {
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+    }
+  }
+  
+  
+  /* basic info */
+  .basicprofileinfo{
+    display: flex;
+  }
+  /* preferences */
+  .profile_preferences{
+    max-width: 85%;
+    flex-wrap: wrap;
+  }
+  .preference_item{
+    width: fit-content;
+  }
+  .profile_friends{
+    flex-wrap: wrap;
+  }
