@@ -61,10 +61,14 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
                 </div>
                 {memberNames && memberNames.map((elem, i) => (
                     <div className="Group_Participations box nobordershadow" key={i}>
-                        <div className="group_box flexrow" onClick={() => { member() }}>
+                        <div className="flexrow spacebetween flex">
+                        <div className="group_box " onClick={() => { member() }}>
                             <img src="images/profileimg_chat.jpg" className="icon_search" />
                             <span className="bold pointer">{elem}</span>
                         </div>
+                        <span className="light">active</span>
+                        </div>
+                        
                     </div>
                 ))}
 

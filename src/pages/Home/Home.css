@@ -293,7 +293,7 @@
 .Group_Participations{
     overflow-y: scroll;
     height: max-content;
-    padding:10px 0px !important;
+    padding:0px 0px !important;
     border-radius: 0 !important;
 }
 .group_box{
