@@ -511,7 +511,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
   })
 
-  router.post('/clear_p_chat',async(req,res)=>{
+  router.post('/delete_p_chat',async(req,res)=>{
     const {f_id,u_id} = req.body
     const chats = await DirectChats.findOneAndDelete({'users.userid': { $all: [f_id, u_id] }});
     if(chats){

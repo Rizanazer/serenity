@@ -93,9 +93,13 @@ function PersonalMsgScreen() {
   const toggleDeletefn = () => {
     setDeletefn(prevState => !prevState);
   };
-  const handleDeleteChat = () => {
+  const handleDeleteChat = async(f_id) => {
 
-    // Implement delete chat functionality here
+    try {
+      const response = await axios.post('/delete_p_chat',{u_id:u_id,f_id:f_id})
+    } catch (error) {
+      console.log("error deleting")
+    }
 
     console.log("Delete chat button clicked");
   };
@@ -215,7 +219,7 @@ function PersonalMsgScreen() {
                 </div>
                 {Deletefn && (
                   <div className="swipe-actions">
-                    <button onClick={() => handleDeleteChat(el)}>Delete</button>
+                    <button onClick={() => handleDeleteChat(el.users[0].userid === userid?el.users[1].userid:el.users[0].userid)}>Delete</button>
                   </div>
                 )}
               </div>
