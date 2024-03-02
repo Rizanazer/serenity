@@ -12,12 +12,12 @@ import io from "socket.io-client";
 
 
 function PersonalMsgScreen() {
-  
+
   const userdata = JSON.parse(localStorage.getItem('userdata'))
-  
+
   const [scrollPosition, setScrollPosition] = useState(0);
   const chatAreaRef = useRef(null);
-  useEffect(()=>{
+  useEffect(() => {
     console.log('----------------chats----------------')
     console.log(chats);
   })
@@ -51,15 +51,15 @@ function PersonalMsgScreen() {
   const [mySocket, setMySocket] = useState(null)
   var [text, setText] = useState("");
   const hoverTimer = useRef(null);
-  const [chats,setChats] = useState([])
+  const [chats, setChats] = useState([])
   const [hoveredMessage, setHoveredMessage] = useState("");
   const [Deletefn, setDeletefn] = useState(false);
-  const [selectedFriend,setSelectedFriend] = useState(null)
-  const [selectedFriendName,setSelectedFriendName] = useState(null)
-  useEffect(()=>{
+  const [selectedFriend, setSelectedFriend] = useState(null)
+  const [selectedFriendName, setSelectedFriendName] = useState(null)
+  useEffect(() => {
     console.log("selectedChat")
     console.log(selectedChat)
-  },[selectedChat])
+  }, [selectedChat])
   useEffect(() => {
     const socket = io('http://:3000');
     setMySocket(socket)
@@ -71,32 +71,32 @@ function PersonalMsgScreen() {
     })
   }, [])
 
-  useEffect(() => {
+  async function fetchfriends() {
+    const u_id = localStorage.getItem('userid')
 
-    async function fetchfriends() {
-      const u_id = localStorage.getItem('userid')
-
-      try {
-        const response = await axios.post("/fetchfriends", { u_id: u_id ,friendids:userdata.friends})
-        setContacts(response.data.frienddata.flat())
-        setChats(response.data.chats)
-        setFriends(userdata.friends.length);
-      } catch (error) {
-        console.log("error fetching friends")
-      }
+    try {
+      const response = await axios.post("/fetchfriends", { u_id: u_id, friendids: userdata.friends })
+      setContacts(response.data.frienddata.flat())
+      setChats(response.data.chats)
+      setFriends(userdata.friends.length);
+    } catch (error) {
+      console.log("error fetching friends")
     }
+  }
+  useEffect(() => {
     fetchfriends()
-
   }, [])
 
   //delete chat fn
   const toggleDeletefn = () => {
     setDeletefn(prevState => !prevState);
   };
-  const handleDeleteChat = async(f_id) => {
+  const handleDeleteChat = async (f_id) => {
 
     try {
-      const response = await axios.post('/delete_p_chat',{u_id:u_id,f_id:f_id})
+      const response = await axios.post('/delete_p_chat', { u_id: u_id, f_id: f_id });
+      fetchfriends();
+      setViewChat(false);
     } catch (error) {
       console.log("error deleting")
     }
@@ -127,13 +127,13 @@ function PersonalMsgScreen() {
 
   var [messages, setMessages] = useState([]);
 
-  async function onclickfriendchat(friend,friendname){
+  async function onclickfriendchat(friend, friendname) {
     console.log(friend)
     setViewChat(true)
     setSelectedFriend(friend)
     setSelectedFriendName(friendname)
     try {
-      const response = await axios.post('/fetchpersonal', { f_id: friend, u_id: u_id,f_name:friendname })
+      const response = await axios.post('/fetchpersonal', { f_id: friend, u_id: u_id, f_name: friendname })
       console.log(friend);
       console.log(response.data.chats.messages);
       setMessages(response.data.chats.messages)
@@ -144,17 +144,17 @@ function PersonalMsgScreen() {
 
   }
 
-  const send1 = async () => {
-    const trimmedText = text.trim();
-    console.log("selectedChat");
-    console.log(selectedChat);
-    const senddata = { "fromname": username, "from": u_id, "toname": selectedChat.username, "to": selectedChat.userid, "message": trimmedText }
-    mySocket.emit("send_p_message", senddata);
-    setText("");
-    setScrollPosition(scrollPosition + 1);
-  }
+  // const send1 = async () => {
+  //   const trimmedText = text.trim();
+  //   console.log("selectedChat");
+  //   console.log(selectedChat);
+  //   const senddata = { "fromname": username, "from": u_id, "toname": selectedChat.username, "to": selectedChat.userid, "message": trimmedText }
+  //   mySocket.emit("send_p_message", senddata);
+  //   setText("");
+  //   setScrollPosition(scrollPosition + 1);
+  // }
 
-  const send = async () => {
+  const send =async () => {
     const trimmedText = text.trim();
     console.log("selectedChat");
     console.log(selectedChat);
@@ -162,6 +162,9 @@ function PersonalMsgScreen() {
     mySocket.emit("send_p_message", senddata);
     setText("");
     setScrollPosition(scrollPosition + 1);
+    if (messages.length <= 1) {
+      fetchfriends();
+    }
   }
 
 
@@ -180,7 +183,6 @@ function PersonalMsgScreen() {
       setMessages([])
       console.log('personal message fetch error')
     }
-
   }
 
 
@@ -201,25 +203,25 @@ function PersonalMsgScreen() {
                     className="chat_info"
                     key={i}
                     onClick={() =>
-                      onclickfriendchat(el.users[0].userid === userid?el.users[1].userid:el.users[0].userid,el.users[0].userid === userid?el.users[1].username:el.users[0].username)
+                      onclickfriendchat(el.users[0].userid === userid ? el.users[1].userid : el.users[0].userid, el.users[0].userid === userid ? el.users[1].username : el.users[0].username)
                     }
                   >
                     <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
                     <div className=" profile_text">
-                    <div className="textlength_head ">
-                      <span className="bold ">{el.users[0].username === username?el.users[1].username:el.users[0].username}</span>
-                      {/* <span className="bold ">{el.username}sssssss</span> */}
+                      <div className="textlength_head ">
+                        <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username}</span>
+                        {/* <span className="bold ">{el.username}sssssss</span> */}
+                      </div>
+                      <div className="textlength_para ">
+                        <span className="light">messsage lorum ipsum la about the new era of time</span>
+                      </div>
                     </div>
-                    <div className="textlength_para ">
-                      <span className="light">messsage lorum ipsum la about the new era of time</span>
-                    </div>
-                  </div>
                   </div>
                   <div className="incomingchat circle center">1</div>
                 </div>
                 {Deletefn && (
                   <div className="swipe-actions">
-                    <button onClick={() => handleDeleteChat(el.users[0].userid === userid?el.users[1].userid:el.users[0].userid)}>Delete</button>
+                    <button onClick={() => handleDeleteChat(el.users[0].userid === userid ? el.users[1].userid : el.users[0].userid)}>Delete</button>
                   </div>
                 )}
               </div>
