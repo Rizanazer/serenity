@@ -9,6 +9,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
     setProfileStatus(prev => !prev);
     setLocation(false);
   }
+  const userdata = JSON.parse(localStorage.getItem('userdata'))
   return (
     <>
       <div className="h_w_full flex flexrow  zindex2 profile_whole">
