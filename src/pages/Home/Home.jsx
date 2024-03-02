@@ -16,6 +16,16 @@ const Home = () => {
   var [Profile, setProfile] = useState(false);
   var [Account, setAccount] = useState(false);
 
+  //accounts
+  const [Edit_Pass, setEdit_Pass] = useState(false);
+  const [Edit_DOB, setEdit_DOB] = useState(false);
+  const [Edit_Gender, setEdit_Gender] = useState(true);
+  //
+  //profile
+  const [Edit_profStatus, setEdit_profStatus] = useState(false);
+  const [Edit_profLocation, setEdit_profLocation] = useState(false);
+  //
+
   const [selectedCommunityName, setSelectedCommunityName] = useState(null)
   const [selectedCommunity, setSelectedCommunity] = useState("")
   const [Screen, setScreen] = useState("PersonalMessage");
@@ -68,8 +78,21 @@ const Home = () => {
                 accounts={() => { toggleAccount() }} />
             </div>
             <div className="flex set2 h_w_full">
-              {Profile && <ProfileScreen />}
-              {Account && <AccountSettings />}
+              {Profile && <ProfileScreen
+                Location={Edit_profLocation}
+                setLocation={setEdit_profLocation}
+                ProfileStatus={Edit_profStatus}
+                setProfileStatus={setEdit_profStatus}
+              />}
+              {Account && <AccountSettings
+                DOB={Edit_DOB}
+                Gender={Edit_Gender}
+                Password={Edit_Pass}
+                setDOB={setEdit_DOB}
+                setGender={setEdit_Gender}
+                setPassword={setEdit_Pass}
+              />
+              }
             </div>
           </div>
 

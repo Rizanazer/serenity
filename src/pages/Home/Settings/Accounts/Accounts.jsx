@@ -1,6 +1,23 @@
+import { useState } from "react/cjs/react.production.min";
 import "./Accounts.css";
-import { MdEdit } from "react-icons/md";
-function AccountSettings() {
+import { MdEdit,MdEditOff  } from "react-icons/md";
+function AccountSettings({Gender,DOB,Password,setGender,setDOB,setPassword}) {
+   function ToggleGenderEdit(){
+        setGender(prev=>!prev);
+        setDOB(false);
+        setPassword(false);
+    }
+   function ToggleDOBEdit(){
+        setDOB(prev=>!prev);
+        setGender(false);
+        setPassword(false);
+    }
+   function TogglePasswordEdit(){
+        setPassword(prev=>!prev);
+        setDOB(false);
+        setGender(false);
+    }
+
     return (
         <>
             <div className="h_w_full flex flexrow  zindex2 profile_whole">
@@ -20,28 +37,56 @@ function AccountSettings() {
                           <div className="flex flexrow gap10 center">
                                 <span className="light">Email :</span>
                                 <span className="bold">email@email.com</span>
-                                <MdEdit className="violetHover"/>
+                                {/* <MdEdit className="violetHover"/> */}
                             </div>
                             <div className="flex flexrow gap10 center">
                                 <span className="light">Mobile No :</span>
                                 <span className="bold">9544914457</span>
-                                <MdEdit className="violetHover"/>
+                                {/* <MdEdit className="violetHover"/> */}
                             </div>
                             <div className="flex flexrow gap10 center">
                                 <span className="light">Password :</span>
-                                <span className="bold">****</span>
-                                <MdEdit className="violetHover"/>
+                                {Password?
+                                <>
+                                <input type="text" className="bold edit_account_elmt padding10"/>
+                                <MdEditOff  className="violetHover" onClick={()=>{TogglePasswordEdit()}}/>
+                                </>
+                                :
+                                <>
+                                 <span className="bold">****</span>
+                                <MdEdit className="violetHover" onClick={()=>{TogglePasswordEdit()}}/>
+                                </>}
+                               
+                              
                             </div>
                             <hr className='line' />
                             <div className="flex flexrow gap10 center">
                                 <span className="light">Gender :</span>
+                                {Gender?
+                                <>
+                                <input type="text" className="bold edit_account_elmt padding10"/>
+                                <MdEditOff  className="violetHover" onClick={()=>{ToggleGenderEdit()}}/>
+                                </>
+                                :
+                                <>
                                 <span className="bold">Male</span>
-                                <MdEdit className="violetHover"/>
+                                <MdEdit className="violetHover" onClick={()=>{ToggleGenderEdit()}}/>
+                                </>}
+                                
                             </div>
                             <div className="flex flexrow gap10 center">
                                 <span className="light">Date of Birth :</span>
-                                <span className="bold">23/04/2001</span>
-                                <MdEdit className="violetHover"/>
+                                {DOB?
+                                <>
+                                <input type="text" className="bold edit_account_elmt padding10"/>
+                                <MdEditOff  className="violetHover" onClick={()=>{ToggleDOBEdit()}}/>
+                                </>
+                                :
+                                <>
+                                  <span className="bold">23/04/2001</span>
+                                <MdEdit className="violetHover" onClick={()=>{ToggleDOBEdit()}}/>
+                                </>}
+                                    
                             </div>
                             <hr className='line' />
                         </div>

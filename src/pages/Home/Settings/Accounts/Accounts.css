@@ -10,3 +10,6 @@
 .violetHover:hover{
     color: var(--navclr) !important;
 }
+.edit_account_elmt{
+    width: 50%;
+}

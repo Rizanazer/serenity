@@ -1,5 +1,14 @@
-import "./Profile.css"
-function ProfileScreen() {
+import "./Profile.css";
+import { MdEdit, MdEditOff } from "react-icons/md";
+function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation }) {
+  function ToggleLocationEdit() {
+    setLocation(prev => !prev);
+    setProfileStatus(false);
+  }
+  function ToggleStatusEdit() {
+    setProfileStatus(prev => !prev);
+    setLocation(false);
+  }
   return (
     <>
       <div className="h_w_full flex flexrow  zindex2 profile_whole">
@@ -31,12 +40,30 @@ function ProfileScreen() {
             <div className="basicprofileinfo flex flexcolumn gap10">
               <div className="flex flexrow gap10 center">
                 <span className="light">Status :</span>
-                <span className="bold">lyf sucks!!</span>
+                {ProfileStatus ?
+                  <>
+                    <input type="text" className="bold edit_account_elmt padding10" />
+                    <MdEditOff className="violetHover" onClick={() => { ToggleStatusEdit() }} />
+                  </>
+                  :
+                  <>
+                    <span className="bold violetHover" onClick={() => { ToggleStatusEdit() }}>lyf sucks!!</span>
+                  </>}
               </div>
-          
+
               <div className="flex flexrow gap10 center">
                 <span className="light">Location :</span>
-                <span className="bold">Wayanad,Kerala</span>
+                {Location ?
+                  <>
+                    <input type="text" className="bold edit_account_elmt padding10" />
+                    <MdEditOff className="violetHover" onClick={() => { ToggleLocationEdit() }} />
+                  </>
+                  :
+                  <>
+                    <span className="bold violetHover" onClick={() => { ToggleLocationEdit() }}>Wayanad,Kerala</span>
+                  </>}
+
+
               </div>
               <hr className='line' />
               <div className="flex flexrow gap10 center">
