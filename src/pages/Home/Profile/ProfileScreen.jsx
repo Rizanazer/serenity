@@ -17,7 +17,7 @@ function ProfileScreen() {
             </div>
 
           </div>
-          <div className="section1 profilesection2 flex flexcolumn gap20">
+          <div className="section1 profilesection2 flex flexcolumn center gap20">
             <div className="profilemain_name">
               <span className="main_name center">username</span>
             </div>
@@ -33,14 +33,7 @@ function ProfileScreen() {
                 <span className="light">Status :</span>
                 <span className="bold">lyf sucks!!</span>
               </div>
-              <div className="flex flexrow gap10 center">
-                <span className="light">Email :</span>
-                <span className="bold">email@email.com</span>
-              </div>
-              <div className="flex flexrow gap10 center">
-                <span className="light">Mobile No :</span>
-                <span className="bold">9544914457</span>
-              </div>
+          
               <div className="flex flexrow gap10 center">
                 <span className="light">Location :</span>
                 <span className="bold">Wayanad,Kerala</span>

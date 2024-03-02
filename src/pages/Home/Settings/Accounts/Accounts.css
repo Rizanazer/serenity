@@ -1,3 +1,12 @@
 .account_triangle_position{
     margin-top: 115px;
 }
+.delete_self{
+    background: transparent !important;
+}
+.redHover:hover{
+    background: var(--pink_A400) !important;
+}
+.violetHover:hover{
+    color: var(--navclr) !important;
+}
