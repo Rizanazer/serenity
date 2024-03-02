@@ -73,6 +73,7 @@ const CreateAccount_details = ({ actions  }) =>
     <input placeholder='dateofbirth' onChange={actions.handleInputChange} />
     <input placeholder='gender' onChange={actions.handleInputChange} />
     <input placeholder='likes' onChange={actions.handleInputChange} />
+    <input placeholder='hobbies' onChange={actions.handleInputChange}/>
     <input placeholder='dislikes' onChange={actions.handleInputChange}/>
     <div className='viewerror'>
     {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
