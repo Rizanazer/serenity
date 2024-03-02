@@ -39,9 +39,19 @@ const Home = () => {
   const toggleProfile = () => {
     setProfile(prevState => !prevState);
     setAccount(false);
+    setEdit_DOB(false);
+    setEdit_Gender(false);
+    setEdit_Pass(false);
+    setEdit_profLocation(false);
+    setEdit_profStatus(false);
   };
   const toggleAccount = () => {
     setAccount(prevState => !prevState);
+    setEdit_DOB(false);
+    setEdit_Gender(false);
+    setEdit_Pass(false);
+    setEdit_profLocation(false);
+    setEdit_profStatus(false);
     setProfile(false);
   };
   async function fetchCommunityDetails() {
@@ -70,8 +80,8 @@ const Home = () => {
           <div className="flex flexrow h_w_full">
             <div className="flex set1 h_w_full">
               <SettingsScreen
-                handleClick={() => { setSetting(false); setProfile(false); }}
-                closeother={() => { setProfile(false); setAccount(false); }}
+                handleClick={() => { setSetting(false); setProfile(false); setEdit_DOB(false);setEdit_Gender(false);setEdit_Pass(false);setEdit_profLocation(false);setEdit_profStatus(false);}}
+                closeother={() => { setProfile(false); setAccount(false);setEdit_DOB(false);setEdit_Gender(false);setEdit_Pass(false);setEdit_profLocation(false);setEdit_profStatus(false); }}
                 setscreen={() => toggleProfile()}
                 profileView={Profile}
                 accountcheck={Account}
