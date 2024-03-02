@@ -10,9 +10,11 @@ import SettingsScreen from "./Settings/SettingsScreen";
 import Nav from "./Nav/Nav";
 import axios from "axios";
 import CreateCommunity from "./Functions/createcommunity/createCommunity";
+import AccountSettings from "./Settings/Accounts/Accounts";
 const Home = () => {
   var [ViewChat, setViewChat] = useState(false);
   var [Profile, setProfile] = useState(false);
+  var [Account, setAccount] = useState(false);
 
   const [selectedCommunityName, setSelectedCommunityName] = useState(null)
   const [selectedCommunity, setSelectedCommunity] = useState("")
@@ -26,6 +28,11 @@ const Home = () => {
 
   const toggleProfile = () => {
     setProfile(prevState => !prevState);
+    setAccount(false);
+  };
+  const toggleAccount = () => {
+    setAccount(prevState => !prevState);
+    setProfile(false);
   };
   async function fetchCommunityDetails() {
     try {
@@ -52,14 +59,21 @@ const Home = () => {
         {Setting && <div className="overlay">
           <div className="flex flexrow h_w_full">
             <div className="flex set1 h_w_full">
-            <SettingsScreen handleClick={() => { setSetting(false) }} setscreen={() => toggleProfile()} profileView={Profile}/>
+              <SettingsScreen
+                handleClick={() => { setSetting(false); setProfile(false); }}
+                closeother={() => { setProfile(false); setAccount(false); }}
+                setscreen={() => toggleProfile()}
+                profileView={Profile}
+                accountcheck={Account}
+                accounts={() => { toggleAccount() }} />
             </div>
             <div className="flex set2 h_w_full">
-            {Profile&&<ProfileScreen/>}
+              {Profile && <ProfileScreen />}
+              {Account && <AccountSettings />}
             </div>
           </div>
-          
-          
+
+
         </div>}
         <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} />
         {Screen === "PersonalMessage" && <PersonalMsgScreen />}

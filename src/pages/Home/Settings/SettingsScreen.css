@@ -18,3 +18,7 @@ padding: 0px 20px !important;
 .profile_box{
     padding: 10px 15px !important;
 }
+.selectedBtn{
+    background: var(--navclr) !important;
+    color: #fff;
+}

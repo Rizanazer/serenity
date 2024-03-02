@@ -1,7 +1,7 @@
 import "./SettingsScreen.css"
 import { MdArrowBack,MdArrowForwardIos, MdArrowBackIos ,MdReport, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-function SettingsScreen({ handleClick,setscreen,profileView }) {
+function SettingsScreen({ handleClick,setscreen,profileView,accounts,accountcheck,closeother }) {
 
   const navigate = useNavigate()
 
@@ -29,10 +29,10 @@ function SettingsScreen({ handleClick,setscreen,profileView }) {
           </div>
         </div>
         <div className="box nobordershadow settings_content">
-          <div className=" box joinbtn" onClick={()=>{}}>
+          <div className={accountcheck?" box joinbtn selectedBtn":" box joinbtn"} onClick={accounts}>
             Accounts
           </div>
-          <div className=" box joinbtn" onClick={logout}>
+          <div className=" box joinbtn" onClick={()=>{logout();closeother()}}>
             LogOut
           </div>
         </div>

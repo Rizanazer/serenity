@@ -3,7 +3,7 @@ function ProfileScreen() {
   return (
     <>
       <div className="h_w_full flex flexrow  zindex2 profile_whole">
-        <div className="triangle flex"></div>
+        <div className="triangle profile_triangle_position flex"></div>
         <div className="box profilesection flex flexrow center">
 
           <div className="section2 profilesection1 flex flexcolumn">
@@ -56,7 +56,7 @@ function ProfileScreen() {
               </div>
               <hr className='line' />
             </div>
-            <div className="profile_preferences alignself_cntr flex flexrow gap10">
+            <div className="profile_preferences alignself_cntr flex flexrow gap10 scroll">
               <div className="box padding5 preference_item">
                 <span className="light">#likes_cats</span>
               </div>
@@ -73,11 +73,11 @@ function ProfileScreen() {
             </div>
             <div className="bbf_section flex gap10 flexcolumn">
               <span className="light">BFF :</span>
-              <div className="profile_friends flex flexrow center gap10">
-                <div className="box padding20">friend1</div>
-                <div className="box padding20">friend2</div>
-                <div className="box padding20">friend3</div>
-                <div className="box padding20">friend4</div>
+              <div className="profile_friends flex flexrow center gap10 scroll">
+                <div className="box padding30">friend1</div>
+                <div className="box padding30">friend2</div>
+                <div className="box padding30">friend3</div>
+                <div className="box padding30">friend4</div>
               </div>
             </div>
           </div>
