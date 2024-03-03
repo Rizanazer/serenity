@@ -164,8 +164,7 @@ const handleInputChange = (event) =>{
               handleActionChange("VALIDATE")
               localStorage.setItem('userdata', JSON.stringify(response.data.result));
               localStorage.setItem('username', response.data.result.username);
-              localStorage.setItem('userid', respons
-            e.data.result._id)
+              localStorage.setItem('userid', response.data.result._id)
             }
           } catch (error) {
             console.error(error)
