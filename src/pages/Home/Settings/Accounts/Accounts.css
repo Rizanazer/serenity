@@ -7,6 +7,9 @@
 .redHover:hover{
     background: var(--pink_A400) !important;
 }
+.redHover_elmt:hover{
+    color: var(--pink_A400) !important;
+}
 .violetHover:hover{
     color: var(--navclr) !important;
 }

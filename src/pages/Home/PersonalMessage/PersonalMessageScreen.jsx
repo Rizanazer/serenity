@@ -341,8 +341,8 @@ function PersonalMsgScreen() {
                   {rightclk && selectedMessage === el && ( // Render delete box for the selected message
                   <div className="box padding10 center nobordershadow">
                     <div className="box nopadding nocircleradius" onClick={() => deleteMessage(el)}>
-                      <div className="bold">
-                        <div className="neration flexrow"><MdDelete className="icon_search" /><span className="bold padding5">delete</span> </div>
+                      <div className="bold ">
+                        <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" /><span className="bold padding5">delete</span> </div>
                       </div>
                     </div>
                   </div>
