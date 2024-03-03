@@ -255,21 +255,21 @@ function PersonalMsgScreen() {
           )}
         </div>
 
-        <div className="box friends">
+        <div className="box friends scrollbehaiviour_smooth">
           <div className=" searchbox friendstext spacebetween">
             <span className="bold">friends</span>
-            <span className="bold">{Friends}d</span>
+            <span className="bold">{Friends}</span>
           </div>
           <div className="box nopadding nobordershadow nogap friendslist">
             {Array.isArray(contacts) && contacts.map((el, i) =>
 
-              <div className="box chat pointer nobordershadow">
+              <div className="box chat pointer nobordershadow ">
                 <div className="chat_info" key={i} onClick={() => onclickfriend(el)}>
                   <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
                   <div className=" profile_text">
                     <div className="textlength_head_friends ">
                       {/* <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span> */}
-                      <span className="bold ">{el.username}xx</span>
+                      <span className="bold ">{el.username}</span>
                     </div>
                     <div className="textlength_status ">
                       <span className="light">status</span>

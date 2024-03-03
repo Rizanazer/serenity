@@ -254,3 +254,27 @@ color: #5E4AE3;
 .alignself_cntr{
   align-self: center;
 }
+
+.scrollbehaiviour_smooth {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* For Firefox */
+
+  /* For Webkit based browsers (Chrome, Safari, etc.) */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  /* Optional: Change scrollbar color on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
