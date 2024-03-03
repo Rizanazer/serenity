@@ -194,14 +194,21 @@ function PersonalMsgScreen() {
     setSelectedMessage(message); // Set the selected message
   };
   //delete message individual
-  const deleteMessage=(message)=>{
+  const deleteMessage = (message) => {
     console.log('====================================');
-    console.log("deleted msg : ",message);
+    console.log("deleted msg : ", message);
     console.log('====================================');
     setrightclk(false);
   }
   const togglerightclick = () => {
     setrightclk(prevState => !prevState);
+  };
+  //enter key for send
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent the default form submission behavior
+      send();
+    }
   };
   return (
     <>
@@ -342,16 +349,16 @@ function PersonalMsgScreen() {
                     {el.messageBody}
                   </p>
                   {rightclk && selectedMessage === el && ( // Render delete box for the selected message
-                  <div className="box padding10 center nobordershadow">
-                    <div className="box nopadding nocircleradius" onClick={() => deleteMessage(el)}>
-                      <div className="bold ">
-                        <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" /><span className="bold padding5">delete</span> </div>
+                    <div className="box padding10 center nobordershadow">
+                      <div className="box nopadding nocircleradius" onClick={() => deleteMessage(el)}>
+                        <div className="bold ">
+                          <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" /><span className="bold padding5">delete</span> </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 </div>
-                
+
               </React.Fragment>
             ))}
 
@@ -361,7 +368,14 @@ function PersonalMsgScreen() {
           {/* bottomchats component-chat_typing */}
           <div className="box center chat_typing flexrow spacebetween">
             <div className="type_message">
-              <input type="text" className="nobordershadow message_length" placeholder="type Here!!" onChange={(event) => { setText(event.target.value) }} value={text} />
+              <input
+                type="text"
+                className="nobordershadow message_length"
+                onKeyPress={handleKeyPress}
+                placeholder="Type Here!!"
+                onChange={(event) => setText(event.target.value)}
+                value={text}
+              />
             </div>
             <div className="feature_with_send flexrow">
               <div className="chatfeature">
