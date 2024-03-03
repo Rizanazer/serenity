@@ -9,7 +9,7 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
-function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity ,selectedCommunityStatus,setselectedCommunityStatus}) {
+function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
 
   const userdata = JSON.parse(localStorage.getItem('userdata'))
 
@@ -32,7 +32,7 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
   }, [messages, scrollPosition]);
 
 
-  async function onclick(id, name,desc) {
+  async function onclick(id, name, desc) {
     setViewChat(true);
     setSelectedCommunityName(name);
     setselectedCommunityStatus(desc);
@@ -129,7 +129,13 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
     }
   };
 
-
+  //enter key for send
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent the default form submission behavior
+      send();
+    }
+  };
 
 
   return (
@@ -257,8 +263,14 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
             {/* bottomchats component-chat_typing */}
             <div className="box center chat_typing flexrow spacebetween">
               <div className="type_message">
-                <input type="text" className="nobordershadow message_length" placeholder="type Heere!!" onChange={(event) => { setText(event.target.value) }} value={text} />
-
+                <input
+                  type="text"
+                  className="nobordershadow message_length"
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type Here!!"
+                  onChange={(event) => setText(event.target.value)}
+                  value={text}
+                />
               </div>
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
@@ -268,8 +280,6 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
                 </div>
                 <MdSend className="icon send nobordershadow" onClick={send} />
               </div>
-
-
             </div>
           </>
           :
@@ -279,7 +289,7 @@ function CommunityMsgScreen({ setViewChat, ViewChat, screen, create, individualC
       {SideScreen && <div className="section3 box nopadding nobordershadow">
         {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} data={{ "image": "images/profileimg_chat.jpg", "username": "arsif" }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
-          <SideScreenCommunityDetailsFn data={{ individualCommunity,"selectedCommunityName":selectedCommunityName,"description":selectedCommunityStatus, selectedCommunity  }} actions={{ setSelectedCommunity }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
+          <SideScreenCommunityDetailsFn data={{ individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setSelectedCommunity }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 
       </div>}
     </>
