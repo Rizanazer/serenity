@@ -59,7 +59,7 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
                     <span className="bold ">Group Members</span>
                     <MdGroups className="icon_search" />
                 </div>
-                <div className="box nopadding nobordershadow gap10 scroll nocircleradius">
+                <div className="box nopadding nobordershadow padding5 scroll nocircleradius">
                 {memberNames && memberNames.map((elem, i) => (
                         <div className="Group_Participations box nobordershadow  flexrow spacebetween flex " key={i}>
                             <div className="group_box " onClick={() => { member() }}>
