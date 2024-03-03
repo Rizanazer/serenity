@@ -29,10 +29,13 @@
       const {newData} = req.body;
       newData.friends = []
       newData.communities = []
+      newData.hobbies = req.body.newData.hobbies.split(' ')
+      newData.likes = req.body.newData.likes.split(' ')
+      newData.dislikes = req.body.newData.dislikes.split(' ')
       console.log(newData);
       const result = await User.create(newData);
       console.log('Data inserted Succesfully');
-      res.json({"success":true})
+      res.json({"success":true,"result":result})
     } catch (error) {
       console.error('Error inserting data:', error);
       res.status(500).json({ error: 'Internal Server Error' });

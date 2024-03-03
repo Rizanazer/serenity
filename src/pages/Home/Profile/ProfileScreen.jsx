@@ -29,7 +29,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
           </div>
           <div className="section1 profilesection2 flex flexcolumn center gap20">
             <div className="profilemain_name">
-              <span className="main_name center">username</span>
+              <span className="main_name center">{userdata.username}</span>
             </div>
             <div className="profilemain_name flex flexrow center gap20">
               <span className="bold ">Do you want to be hidden?</span>

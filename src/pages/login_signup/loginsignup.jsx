@@ -70,11 +70,11 @@ const CreateAccount_details = ({ actions  }) =>
 (
 
   <div className="box_login box center">
-    <input placeholder='dateofbirth' onChange={actions.handleInputChange} />
-    <input placeholder='gender' onChange={actions.handleInputChange} />
-    <input placeholder='likes' onChange={actions.handleInputChange} />
-    <input placeholder='hobbies' onChange={actions.handleInputChange}/>
-    <input placeholder='dislikes' onChange={actions.handleInputChange}/>
+    <input type='date' placeholder='dateofbirth' name="dob" onChange={actions.handeleregchange} />
+    <input placeholder='gender' name="gender" onChange={actions.handeleregchange} />
+    <input placeholder='likes' name="likes" onChange={actions.handeleregchange} />
+    <input placeholder='hobbies' name="hobbies" onChange={actions.handeleregchange}/>
+    <input placeholder='dislikes' name="dislikes" onChange={actions.handeleregchange}/>
     <div className='viewerror'>
     {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
     </div>
@@ -146,6 +146,9 @@ const handleInputChange = (event) =>{
       email:'',
       phone:'',
       gender:'',
+      likes:'',
+      dislikes:'',
+      hobbies:'',
 
       });
       const handeleregchange = (event) =>{
@@ -156,10 +159,13 @@ const handleInputChange = (event) =>{
         async function register(){
           console.log("register")
           try {
-            handleActionChange("VALIDATE")
             const response = await axios.post('/register',{newData:regData})
             if(response.data.success === true){
               handleActionChange("VALIDATE")
+              localStorage.setItem('userdata', JSON.stringify(response.data.result));
+              localStorage.setItem('username', response.data.result.username);
+              localStorage.setItem('userid', respons
+            e.data.result._id)
             }
           } catch (error) {
             console.error(error)
@@ -206,7 +212,7 @@ return (
     {action === "LOGIN" && <Login actions={{handleActionChange, handleInputChange, handleClick,handlereg,setViewError}} userData={{userData,viewError}} />}
     {action === "GetOTP" && <MobileNumberInput actions={{handleActionChange}} />}
     {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} />}
-    {action === "More_Details"&&<CreateAccount_details actions={{handleActionChange,register}} />}
+    {action === "More_Details"&&<CreateAccount_details actions={{handleActionChange,register,handeleregchange}} />}
     {action === "Create_Account"&&<CreateAccount actions={{handleActionChange,handeleregchange}} />}
   </div>
 );
