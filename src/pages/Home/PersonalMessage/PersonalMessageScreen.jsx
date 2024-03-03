@@ -190,7 +190,7 @@ function PersonalMsgScreen() {
   const handleContextMenu = (e, message) => {
     e.preventDefault(); // Prevent default context menu
     console.log("Right-clicked on message:", message);
-    setrightclk(true); // Set rightclk state to true
+    togglerightclick(); // Set rightclk state to true
     setSelectedMessage(message); // Set the selected message
   };
   //delete message individual
@@ -200,6 +200,9 @@ function PersonalMsgScreen() {
     console.log('====================================');
     setrightclk(false);
   }
+  const togglerightclick = () => {
+    setrightclk(prevState => !prevState);
+  };
   return (
     <>
       <div className="section1 section_margin box spacebetween">
