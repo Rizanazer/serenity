@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     username: String,
-    age: Number,
+    dob: Date,
+    anonymity:{type:Boolean,default:true},
     email:String,
     phone:Number,
     gender:String,
@@ -12,6 +13,7 @@ const userSchema = new mongoose.Schema({
     location:String,
     likes:[{type:String,default:[]}],
     dislikes:[{type:String,default:[]}],
+    hobbies:[{type:String,default:[]}],
     status:{type:String,default:"I Love Serenity, It is helping a lot of people"},
     serenityscore:{type:Number,default:100},
     friends:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],

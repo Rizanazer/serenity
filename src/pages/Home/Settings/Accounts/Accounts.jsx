@@ -2,6 +2,7 @@ import { useState } from "react/cjs/react.production.min";
 import "./Accounts.css";
 import { MdEdit,MdEditOff  } from "react-icons/md";
 function AccountSettings({Gender,DOB,Password,setGender,setDOB,setPassword}) {
+    const userdata = JSON.parse(localStorage.getItem('userdata'))
    function ToggleGenderEdit(){
         setGender(prev=>!prev);
         setDOB(false);
@@ -36,12 +37,12 @@ function AccountSettings({Gender,DOB,Password,setGender,setDOB,setPassword}) {
                         <div className="box basicprofileinfo flex flexcolumn gap10">
                           <div className="flex flexrow gap10 center">
                                 <span className="light">Email :</span>
-                                <span className="bold">email@email.com</span>
+                                <span className="bold">{userdata.email}</span>
                                 {/* <MdEdit className="violetHover"/> */}
                             </div>
                             <div className="flex flexrow gap10 center">
                                 <span className="light">Mobile No :</span>
-                                <span className="bold">9544914457</span>
+                                <span className="bold">{userdata.phone}</span>
                                 {/* <MdEdit className="violetHover"/> */}
                             </div>
                             <div className="flex flexrow gap10 center">
