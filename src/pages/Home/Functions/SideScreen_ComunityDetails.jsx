@@ -55,28 +55,24 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
                 </div>
             </div>
             <div className="section3_2 flexcolumn">
-                <div className="center spacebetween">
-                    <span className="bold">Group Members</span>
+                <div className="center spacebetween ">
+                    <span className="bold ">Group Members</span>
                     <MdGroups className="icon_search" />
                 </div>
+                <div className="box nopadding nobordershadow gap10 scroll nocircleradius">
                 {memberNames && memberNames.map((elem, i) => (
-                    <div className="Group_Participations box nobordershadow" key={i}>
-                        <div className="flexrow spacebetween flex">
-                        <div className="group_box " onClick={() => { member() }}>
-                            <img src="images/profileimg_chat.jpg" className="icon_search" />
-                            <span className="bold pointer">{elem}</span>
+                        <div className="Group_Participations box nobordershadow  flexrow spacebetween flex " key={i}>
+                            <div className="group_box " onClick={() => { member() }}>
+                                <img src="images/profileimg_chat.jpg" className="icon_search" />
+                                <span className="bold pointer">{elem}</span>
+                            </div>
+                            <span className="light">active</span>
                         </div>
-                        <span className="light">active</span>
-                        </div>
-                        
+                        ))}
                     </div>
-                ))}
-
-
             </div>
 
             <div className="section3_3">
-
             </div>
         </>
     );
