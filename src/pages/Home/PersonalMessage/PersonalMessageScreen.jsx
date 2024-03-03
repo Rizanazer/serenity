@@ -9,7 +9,7 @@ import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
 import axios from "axios";
 import io from "socket.io-client";
-
+import rightBox from "../Functions/message_rightclick/chat_rightclck";
 
 function PersonalMsgScreen() {
 
@@ -29,8 +29,9 @@ function PersonalMsgScreen() {
       }
     }, 100);
   }, [messages, scrollPosition]);
-
+  const [selectedMessage, setSelectedMessage] = useState(null);
   var [ViewChat, setViewChat] = useState(false);
+  var [rightclk, setrightclk] = useState(true);
   var [SideScreen, setSideScreen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
   const [ChatSearch, SetChatSearch] = useState(false);
@@ -154,7 +155,7 @@ function PersonalMsgScreen() {
   //   setScrollPosition(scrollPosition + 1);
   // }
 
-  const send =async () => {
+  const send = async () => {
     const trimmedText = text.trim();
     console.log("selectedChat");
     console.log(selectedChat);
@@ -185,7 +186,23 @@ function PersonalMsgScreen() {
     }
   }
 
-
+  //rightclk
+  const handleContextMenu = (e, message) => {
+    e.preventDefault(); // Prevent default context menu
+    console.log("Right-clicked on message:", message);
+    togglerightclick(); // Set rightclk state to true
+    setSelectedMessage(message); // Set the selected message
+  };
+  //delete message individual
+  const deleteMessage=(message)=>{
+    console.log('====================================');
+    console.log("deleted msg : ",message);
+    console.log('====================================');
+    setrightclk(false);
+  }
+  const togglerightclick = () => {
+    setrightclk(prevState => !prevState);
+  };
   return (
     <>
       <div className="section1 section_margin box spacebetween">
@@ -314,9 +331,31 @@ function PersonalMsgScreen() {
               </div>
             </div>}
 
-            {messages.length > 0 && messages.map((el, i) => <p className={el.from.username === username ? "msg-rightside" : "msg"} key={i}
-              onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
-              onMouseLeave={cancelHoverTimer}>{el.messageBody}</p>)}
+            {messages.length > 0 && messages.map((el, i) => (
+              <React.Fragment key={i}>
+                <div className="flex flexrow" onContextMenu={(e) => handleContextMenu(e, el)}>
+                  <p
+                    className={el.from.username === username ? "msg-rightside" : "msg"}
+                    onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
+                    onMouseLeave={cancelHoverTimer}
+                  >
+                    {el.messageBody}
+                  </p>
+                  {rightclk && selectedMessage === el && ( // Render delete box for the selected message
+                  <div className="box padding10 center nobordershadow">
+                    <div className="box nopadding nocircleradius" onClick={() => deleteMessage(el)}>
+                      <div className="bold ">
+                        <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" /><span className="bold padding5">delete</span> </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                </div>
+                
+              </React.Fragment>
+            ))}
+
+
           </div>
 
           {/* bottomchats component-chat_typing */}

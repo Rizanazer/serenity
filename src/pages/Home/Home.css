@@ -286,12 +286,11 @@
     flex: 2;
     width: 100%;
     padding: 10px 10px;
-    overflow-y: scroll;
+overflow-y: auto;
     
 }
 
 .Group_Participations{
-    overflow-y: scroll;
     height: max-content;
     padding:0px 0px !important;
     border-radius: 0 !important;
@@ -345,4 +344,10 @@
 }
 .padding10{
     padding: 10px 10px !important;
+}
+.padding5{
+    padding: 5px 5px !important;
+}
+.nocircleradius{
+    border-radius: 0 !important;
 }
