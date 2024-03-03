@@ -18,6 +18,7 @@
     "socket.io": "^4.7.4"
   },
   "devDependencies": {
+    "@types/multer": "^1.4.11",
     "nodemon": "^3.0.2"
   }
 }
