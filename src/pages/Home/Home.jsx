@@ -11,10 +11,16 @@ import Nav from "./Nav/Nav";
 import axios from "axios";
 import CreateCommunity from "./Functions/createcommunity/createCommunity";
 import AccountSettings from "./Settings/Accounts/Accounts";
+import Theme_Settings from "./Settings/Theme/Theme";
+import Notification_Settings from "./Settings/Notification/Notification";
+
 const Home = () => {
   var [ViewChat, setViewChat] = useState(false);
   var [Profile, setProfile] = useState(false);
   var [Account, setAccount] = useState(false);
+
+  var [NotificationSetting, setNotificationSetting] = useState(false);
+  var [Theme, setTheme] = useState(false);
 
   //accounts
   const [Edit_Pass, setEdit_Pass] = useState(false);
@@ -44,6 +50,8 @@ const Home = () => {
     setEdit_Pass(false);
     setEdit_profLocation(false);
     setEdit_profStatus(false);
+    setNotificationSetting(false);
+    setTheme(false);
   };
   const toggleAccount = () => {
     setAccount(prevState => !prevState);
@@ -53,7 +61,31 @@ const Home = () => {
     setEdit_profLocation(false);
     setEdit_profStatus(false);
     setProfile(false);
+    setNotificationSetting(false);
+    setTheme(false);
   };
+  const toggleNotificationSetting=()=>{
+    setNotificationSetting(prevState => !prevState);
+    setAccount(false);
+    setEdit_DOB(false);
+    setEdit_Gender(false);
+    setEdit_Pass(false);
+    setEdit_profLocation(false);
+    setEdit_profStatus(false);
+    setProfile(false);
+    setTheme(false);
+  }
+  const toggleTheme=()=>{
+    setTheme(prevState => !prevState);
+    setAccount(false);
+    setEdit_DOB(false);
+    setEdit_Gender(false);
+    setEdit_Pass(false);
+    setEdit_profLocation(false);
+    setEdit_profStatus(false);
+    setProfile(false);
+    setNotificationSetting(false);
+  }
   async function fetchCommunityDetails() {
     try {
       const response = await axios.post('/getUsersCommunities', { id: userdata._id });
@@ -85,7 +117,12 @@ const Home = () => {
                 setscreen={() => toggleProfile()}
                 profileView={Profile}
                 accountcheck={Account}
-                accounts={() => { toggleAccount() }} />
+                accounts={() => { toggleAccount() }}
+                notification={()=>{toggleNotificationSetting()}}
+                notificationcheck={NotificationSetting}
+                theme={()=>{toggleTheme()}}
+                themecheck={Theme}
+                />
             </div>
             <div className="flex set2 h_w_full">
               {Profile && <ProfileScreen
@@ -103,6 +140,8 @@ const Home = () => {
                 setPassword={setEdit_Pass}
               />
               }
+              {Theme&&<Theme_Settings/>}
+              {NotificationSetting&&<Notification_Settings/>}
             </div>
           </div>
 

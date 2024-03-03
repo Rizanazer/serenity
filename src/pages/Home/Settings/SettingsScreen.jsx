@@ -1,7 +1,7 @@
 import "./SettingsScreen.css"
 import { MdArrowBack, MdArrowForwardIos, MdArrowBackIos, MdReport, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-function SettingsScreen({ handleClick, setscreen, profileView, accounts, accountcheck, closeother,}) {
+function SettingsScreen({ handleClick, setscreen, profileView, accounts, accountcheck, closeother,notification,notificationcheck,theme,themecheck}) {
 
   const navigate = useNavigate()
 
@@ -32,8 +32,17 @@ function SettingsScreen({ handleClick, setscreen, profileView, accounts, account
           <div className={accountcheck ? " box joinbtn selectedBtn" : " box joinbtn"}
             onClick={accounts}
            >
-          
             Accounts
+          </div>
+          <div className={themecheck ? " box joinbtn selectedBtn" : " box joinbtn"}
+            onClick={theme}
+           >
+            Theme
+          </div>
+          <div className={notificationcheck ? " box joinbtn selectedBtn" : " box joinbtn"}
+            onClick={notification}
+           >
+            Notification
           </div>
           <div className=" box joinbtn" onClick={() => { logout(); closeother() }}>
             LogOut
