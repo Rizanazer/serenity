@@ -55,6 +55,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
       console.log(selectedChat)
       console.log("chatt" + selectedChat);
       const response = await axios.post('/checkjoinstatus', { c_id: selectedChat, u_id: userid })
+      console.log(response.data)
       setJoined(response.data.member)
     }
     checkjoin()
@@ -119,8 +120,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
           <div className="box chat_area nopadding">
             {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}></div>}
 
-            {messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
-
+            {messages && messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
           </div>
 
           {/* bottomchats component-chat_typing */}

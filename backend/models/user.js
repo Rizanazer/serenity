@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     gender:String,
     password:String,
     location:String,
+    profilePicture:String,
     likes:[{type:String,default:[]}],
     dislikes:[{type:String,default:[]}],
     hobbies:[{type:String,default:[]}],
