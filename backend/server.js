@@ -7,7 +7,7 @@
   const port = process.env.PORT || 5000;
   const socketIoPort = 5555;
   const path = require('path');
-
+  const multer = require('multer')
   const connectDB = require('./db'); 
   const User = require('./models/user'); 
   const { MongoClient } = require('mongodb');
@@ -24,17 +24,32 @@
   app.use(express.json());
 
   connectDB();
-  router.route("/register").post(async (req, res) => {
+  const storeProfilePicture = multer.diskStorage({
+    destination:function(req,file,cb){
+      cb(null,path.join(__dirname, '/uploads/profilePictures'))
+    },
+    filename:function(req,file,cb){
+      const fileName = "profilepic.jpg"; 
+      cb(null, fileName);
+    }
+  })
+  const profilePictureUpload = multer({ storage: storeProfilePicture });
+
+  router.route("/register").post(profilePictureUpload.single('profilePicture'),async (req, res) => {
     try {
-      const {newData} = req.body;
-      newData.friends = []
-      newData.communities = []
-      newData.hobbies = req.body.newData.hobbies.split(' ')
-      newData.likes = req.body.newData.likes.split(' ')
-      newData.dislikes = req.body.newData.dislikes.split(' ')
-      console.log(newData);
-      const result = await User.create(newData);
-      console.log('Data inserted Succesfully');
+      const formData = req.body
+      // formData.friends = []
+      // formData.communities = []
+      // if(formData.hobbies){formData.hobbies = req.body.formData.hobbies.split(' ')}
+      // formData.likes = req.body.formData.likes.split(' ')
+      // formData.dislikes = req.body.formData.dislikes.split(' ')
+      const propic = formData.profilePicture
+      console.log(propic);
+      // formData.profilePicture = propic
+      console.log(req.body);
+      const result = await User.create(formData);
+      // console.log('Data inserted Succesfully');
+      // console.log(formData);
       res.json({"success":true,"result":result})
     } catch (error) {
       console.error('Error inserting data:', error);
@@ -501,6 +516,9 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     const u_id = req.body.u_id
     console.log(c_id+"  "+u_id);
     const community = await Community.findById(c_id)
+    if (!community) {
+      return res.json({ "success": false, "message": "Community not found" });
+    }
      if(community.members && community.members.includes(u_id)){
        
        res.json({ "success": true,"member":true});

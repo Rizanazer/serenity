@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './loginsignup.css';
 import { Link } from "react-router-dom";
 import { FaGoogle, FaApple, FaTwitter, FaFacebook } from "react-icons/fa";
@@ -41,6 +41,7 @@ const CreateAccount = ({ actions  }) =>
 (
 
   <div className="box_login box center">
+    <input type="file" accept="image/*" name="profilePicture"onChange={actions.handleImageChange} />
     <input placeholder='Username' name="username" onChange={actions.handeleregchange} />
     <input placeholder='Email' name="email" onChange={actions.handeleregchange} />
     <input placeholder='Password' name="password" onChange={actions.handeleregchange} />
@@ -149,27 +150,39 @@ const handleInputChange = (event) =>{
       likes:'',
       dislikes:'',
       hobbies:'',
-
+      profilePicture:null
       });
+      const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        setRegData({ ...regData, profilePicture: file });
+      };
+      
       const handeleregchange = (event) =>{
         const {name, value} = event.target
         setRegData({...regData,[name]:value})
         console.log(regData);
       };
-        async function register(){
-          console.log("register")
-          try {
-            const response = await axios.post('/register',{newData:regData})
-            if(response.data.success === true){
-              handleActionChange("VALIDATE")
-              localStorage.setItem('userdata', JSON.stringify(response.data.result));
-              localStorage.setItem('username', response.data.result.username);
-              localStorage.setItem('userid', response.data.result._id)
-            }
-          } catch (error) {
-            console.error(error)
+
+      async function register() {
+        try {
+          const formData = new FormData();
+          for (const key in regData) {
+            formData.append(key, regData[key]);
+            console.log(`${key}:`, formData.get(key));
           }
+          console.log(formData);
+          const response = await axios.post('/register', formData);
+          if (response.data.success === true) {
+            handleActionChange("VALIDATE");
+            localStorage.setItem('userdata', JSON.stringify(response.data.result));
+            localStorage.setItem('username', response.data.result.username);
+            localStorage.setItem('userid', response.data.result._id);
+          }
+        } catch (error) {
+          console.error(error);
         }
+      }
+      
         
 const handleClick = async () => {
   console.log('Button clicked!');
@@ -212,7 +225,7 @@ return (
     {action === "GetOTP" && <MobileNumberInput actions={{handleActionChange}} />}
     {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} />}
     {action === "More_Details"&&<CreateAccount_details actions={{handleActionChange,register,handeleregchange}} />}
-    {action === "Create_Account"&&<CreateAccount actions={{handleActionChange,handeleregchange}} />}
+    {action === "Create_Account"&&<CreateAccount actions={{handleActionChange,handeleregchange,handleImageChange}} />}
   </div>
 );
 };
