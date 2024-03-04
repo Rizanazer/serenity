@@ -1,20 +1,31 @@
 import { useState } from "react/cjs/react.production.min";
 import "./Accounts.css";
-import { MdEdit,MdEditOff  } from "react-icons/md";
-function AccountSettings({Gender,DOB,Password,setGender,setDOB,setPassword}) {
+import { MdEdit, MdEditOff } from "react-icons/md";
+import DropdownInput from "pages/Home/Functions/dropdownbox/dropdowninput";
+function AccountSettings({ Gender, DOB, Password, setGender, setDOB, setPassword }) {
+    
+    const options1 = [
+        { value: 'option1', label: 'korean' },
+        { value: 'option2', label: 'Hindi' },
+        { value: 'option3', label: 'janese' },
+      ];
+    const options2 = [
+        { value: 'option1', label: 'English (default)' },
+       
+      ];
     const userdata = JSON.parse(localStorage.getItem('userdata'))
-   function ToggleGenderEdit(){
-        setGender(prev=>!prev);
+    function ToggleGenderEdit() {
+        setGender(prev => !prev);
         setDOB(false);
         setPassword(false);
     }
-   function ToggleDOBEdit(){
-        setDOB(prev=>!prev);
+    function ToggleDOBEdit() {
+        setDOB(prev => !prev);
         setGender(false);
         setPassword(false);
     }
-   function TogglePasswordEdit(){
-        setPassword(prev=>!prev);
+    function TogglePasswordEdit() {
+        setPassword(prev => !prev);
         setDOB(false);
         setGender(false);
     }
@@ -35,7 +46,7 @@ function AccountSettings({Gender,DOB,Password,setGender,setDOB,setPassword}) {
                     <div className="section2 profilesection1 flex flexcolumn">
                         <div className=" box joinbtn center padding20 redHover" onClick={() => { }}>Delete Account</div>
                         <div className="box basicprofileinfo flex flexcolumn gap10">
-                          <div className="flex flexrow gap10 center">
+                            <div className="flex flexrow gap10 center">
                                 <span className="light">Email :</span>
                                 <span className="bold">{userdata.email}</span>
                                 {/* <MdEdit className="violetHover"/> */}
@@ -47,49 +58,61 @@ function AccountSettings({Gender,DOB,Password,setGender,setDOB,setPassword}) {
                             </div>
                             <div className="flex flexrow gap10 center">
                                 <span className="light">Password :</span>
-                                {Password?
-                                <>
-                                <input type="text" className="bold edit_account_elmt padding10"/>
-                                <MdEditOff  className="violetHover" onClick={()=>{TogglePasswordEdit()}}/>
-                                </>
-                                :
-                                <>
-                                 <span className="bold">****</span>
-                                <MdEdit className="violetHover" onClick={()=>{TogglePasswordEdit()}}/>
-                                </>}
-                               
-                              
+                                {Password ?
+                                    <>
+                                        <input type="text" className="bold edit_account_elmt padding10" />
+                                        <MdEditOff className="violetHover" onClick={() => { TogglePasswordEdit() }} />
+                                    </>
+                                    :
+                                    <>
+                                        <span className="bold">****</span>
+                                        <MdEdit className="violetHover" onClick={() => { TogglePasswordEdit() }} />
+                                    </>}
+
+
                             </div>
                             <hr className='line' />
                             <div className="flex flexrow gap10 center">
                                 <span className="light">Gender :</span>
-                                {Gender?
-                                <>
-                                <input type="text" className="bold edit_account_elmt padding10"/>
-                                <MdEditOff  className="violetHover" onClick={()=>{ToggleGenderEdit()}}/>
-                                </>
-                                :
-                                <>
-                                <span className="bold">Male</span>
-                                <MdEdit className="violetHover" onClick={()=>{ToggleGenderEdit()}}/>
-                                </>}
-                                
+                                {Gender ?
+                                    <>
+                                        <input type="text" className="bold edit_account_elmt padding10" />
+                                        <MdEditOff className="violetHover" onClick={() => { ToggleGenderEdit() }} />
+                                    </>
+                                    :
+                                    <>
+                                        <span className="bold">Male</span>
+                                        <MdEdit className="violetHover" onClick={() => { ToggleGenderEdit() }} />
+                                    </>}
+
                             </div>
                             <div className="flex flexrow gap10 center">
                                 <span className="light">Date of Birth :</span>
-                                {DOB?
-                                <>
-                                <input type="text" className="bold edit_account_elmt padding10"/>
-                                <MdEditOff  className="violetHover" onClick={()=>{ToggleDOBEdit()}}/>
-                                </>
-                                :
-                                <>
-                                  <span className="bold">23/04/2001</span>
-                                <MdEdit className="violetHover" onClick={()=>{ToggleDOBEdit()}}/>
-                                </>}
-                                    
+                                {DOB ?
+                                    <>
+                                        <input type="text" className="bold edit_account_elmt padding10" />
+                                        <MdEditOff className="violetHover" onClick={() => { ToggleDOBEdit() }} />
+                                    </>
+                                    :
+                                    <>
+                                        <span className="bold">23/04/2001</span>
+                                        <MdEdit className="violetHover" onClick={() => { ToggleDOBEdit() }} />
+                                    </>}
+
                             </div>
                             <hr className='line' />
+                        </div>
+                        
+                        <div className="box basicprofileinfo flex flexcolumn gap10">
+                            <div className="flex flexrow gap10 center">
+                                <span className="light">Choose Language to be Translated:</span>
+                                <DropdownInput options={options1} onSelect={()=>{}}/>
+                            </div>
+                            <div className="flex flexrow gap10 center">
+                                <span className="light">Choose translation Prefered Language :</span>
+                                <DropdownInput options={options2} onSelect={()=>{}}/>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
