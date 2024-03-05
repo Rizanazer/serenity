@@ -50,6 +50,7 @@
       const result = await User.create(formData);
       // console.log('Data inserted Succesfully');
       // console.log(formData);
+      
       res.json({"success":true,"result":result})
     } catch (error) {
       console.error('Error inserting data:', error);
