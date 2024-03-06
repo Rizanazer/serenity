@@ -1,6 +1,6 @@
 .more_items{
-    height: 30%;
-    border-radius: 0 !important;
+    
+    border-radius: 5px !important;
     background-color: transparent !important;
     box-shadow: none !important;
     display: flex !important;
@@ -8,9 +8,13 @@
   
 }
 .more_items:hover{
-    background-color: #d9d9d9 !important;
+    background-color: #5E4AE3 !important;
+    color: #fff;
+    
 }
 .neration{
+    width: 100%;
+    height: 35px;
     display:flex ;
     gap: 20px;
     align-items: center;

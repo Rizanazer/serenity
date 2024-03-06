@@ -256,7 +256,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
             {/* //onClick={()=>(console.log(allCommunityMessages.map(s=>s.messages.map(t=>t.message))))} */}
             <div className="box chat_area padding10" ref={chatAreaRef}>
               {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
-                <div className="box  nopadding more_items" onClick={() => {
+                <div className=" nopadding more_items " onClick={() => {
                   toggleNeration()
                 }}>
                   <div className="bold">{Neration ?

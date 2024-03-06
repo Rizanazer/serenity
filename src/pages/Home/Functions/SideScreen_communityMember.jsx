@@ -29,7 +29,7 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
                 </div>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}
-                    <div className="section3_textArea profile_text">
+                    <div className="section3_textArea profile_text center">
                         <span className="light">SerenityScore:<span className="bold">90.99</span></span>
                         <div className="textlength_head center">
                             <span className="bold alignself_center">{selectedUser.username}</span>
