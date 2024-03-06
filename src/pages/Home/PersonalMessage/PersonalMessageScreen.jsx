@@ -364,7 +364,7 @@ function PersonalMsgScreen() {
                   >
                     {el.messageBody}
                   </p>
-
+ 
                   {rightclk && selectedMessage === el && (
                     <div className="message_options center option-rightside">
                       <div className="message_items" onClick={() => deleteMessage(el._id)}>
