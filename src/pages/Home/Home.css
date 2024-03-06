@@ -358,3 +358,6 @@ overflow-y: auto;
     z-index: 2 !important;
     backdrop-filter: blur(10px);
   }
+  .row_revese{
+    flex-direction: row-reverse;
+  }

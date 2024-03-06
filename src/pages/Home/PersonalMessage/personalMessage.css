@@ -97,10 +97,10 @@ background:transparent ;
 z-index: 1;
 backdrop-filter: blur(10px);
 box-shadow: var(--shadow);
-margin-top: 20px;
+
 }
 .message_items{
-
+width: 140px;
 }
 /* .msg_main-rightside {
   display: flex;

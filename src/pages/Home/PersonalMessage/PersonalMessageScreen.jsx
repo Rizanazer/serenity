@@ -3,7 +3,7 @@ import { CgSearch } from "react-icons/cg";
 import { FaCircleDot } from "react-icons/fa6";
 import './personalMessage.css';
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
-import { MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
+import { MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
@@ -58,7 +58,7 @@ function PersonalMsgScreen() {
   const [Deletefn, setDeletefn] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null)
   const [selectedFriendName, setSelectedFriendName] = useState(null)
-  const [chatId,setChatid] = useState(null)
+  const [chatId, setChatid] = useState(null)
   useEffect(() => {
     console.log("selectedChat")
     console.log(selectedChat)
@@ -197,14 +197,14 @@ function PersonalMsgScreen() {
     setSelectedMessage(message); // Set the selected message
   };
   //delete message individual
-  const deleteMessage = async(m_id) => {
+  const deleteMessage = async (m_id) => {
     console.log('====================================');
     console.log("deleted msg : ", m_id);
     console.log('====================================');
     setrightclk(false);
     try {
-      const response = await axios.post('/delete_a_personal_message',{m_id:m_id,c_id:chatId})
-      if(response.data.success === true){
+      const response = await axios.post('/delete_a_personal_message', { m_id: m_id, c_id: chatId })
+      if (response.data.success === true) {
         const messages = await axios.post('/fetchpersonal', { f_id: selectedFriend, u_id: u_id })
         // console.log(friend);
         console.log(messages.data.chats.messages);
@@ -356,27 +356,28 @@ function PersonalMsgScreen() {
               <React.Fragment key={i}>
                 {
                   rightclk && el.from.username === username ?
-                  <div className="flex flexrow gap10 msg-rightside" onContextMenu={(e) => handleContextMenu(e, el)}>
-                  
-                  {rightclk && selectedMessage === el && (
-                    <div className="message_options center option-rightside">
-                      <div className="message_items" onClick={() => deleteMessage(el._id)}>
-                        <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
-                          <span className="bold padding5">delete</span>
+                    <div className="flex flexrow gap10 msg-rightside" onContextMenu={(e) => handleContextMenu(e, el)}>
+
+                      {rightclk && selectedMessage === el && (
+                        <div className="message_options center option-rightside">
+                          <div className="message_items" onClick={() => deleteMessage(el._id)}>
+                            <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
+                              <span className="bold padding5">delete</span>
+                            </div>
+                          </div>
+
                         </div>
-                      </div>
+                      )}
+                      <p
+                        className={el.from.username === username ? "msg" : "msg"}
+                        onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
+                        onMouseLeave={cancelHoverTimer}
+                      >
+                        {el.messageBody}
+                      </p>
                     </div>
-                  )}
-                  <p
-                    className={el.from.username === username ? "msg" : "msg"}
-                    onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
-                    onMouseLeave={cancelHoverTimer}
-                  >
-                    {el.messageBody}
-                  </p>
-                </div>
-                
-                
+
+
                     :
                     <div className="flex flexrow gap10" onContextMenu={(e) => handleContextMenu(e, el)}>
                       <p
@@ -392,29 +393,17 @@ function PersonalMsgScreen() {
                             <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                               <span className="bold padding5">delete</span> </div>
                           </div>
+                          <div className="message_items" onClick={() => { }}>
+                            <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
+                              <span className="bold padding5">translate</span>
+                            </div>
+                          </div>
                         </div>
 
                       )}
                     </div>
                 }
-                {/* <div className="flex flexrow gap10" onContextMenu={(e) => handleContextMenu(e, el)}>
-                  <p
-                    className={el.from.username === username ? "msg-rightside" : "msg"}
-                    onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
-                    onMouseLeave={cancelHoverTimer}
-                  >
-                    {el.messageBody}
-                  </p>
-                  {rightclk && selectedMessage === el && (
-                    <div className="message_options center ">
-                      <div className="message_items  " onClick={() => deleteMessage(el)}>
-                        <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
-                          <span className="bold padding5">delete</span> </div>
-                      </div>
-                    </div>
-
-                  )}
-                </div> */}
+               
 
               </React.Fragment>
             ))}
