@@ -33,6 +33,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   var [text, setText] = useState("");
   const [Neration, setNeration] = useState(false);
   const [Deletefn, setDeletefn] = useState(false);
+  const [chatId,setChatId] = useState(null)
   useEffect(() => {
     // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
@@ -185,7 +186,37 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     setNeration(prevState => !prevState);
   };
 
+  const fileInputRef = useRef(null);
 
+  const sendimage = () => {
+    fileInputRef.current.click();
+  };
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('u_name', userdata.username);
+        formData.append('c_id', selectedCommunity);
+        formData.append('u_id', userdata._id);
+        const response = await axios.post('/community_upload_image', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+      //   console.log("formdata------------------------------------------------");
+      //   console.log(Object.fromEntries(formData));
+      //   socket.emit('send-image-community', formData);
+      // // Handle the response from the server as needed
+      //   socket.on('send-image-community', (response) => {
+      //   console.log('Image uploaded successfully:', response);
+      // });
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+  };
 
 
   return (
@@ -285,14 +316,16 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                           </div>
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
-                          <p
+                          {(el.messagetype==="image")?
+                          <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} />
+                          :<p
                             className="msg"
                             onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
                             onMouseLeave={cancelHoverTimer}
                             onContextMenu={(e) => handleContextMenu(e, el)}
                           >
                             {el.message}
-                          </p>
+                          </p>}
                           <div className="flex flexcolumn center">
                             <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
@@ -305,14 +338,16 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                       <div className="flex flexrow gap10" >
 
                         <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
-                          <p
+                          {(el.messagetype==="image")?
+                          <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} />
+                          :<p
                             className="msg"
                             onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
                             onMouseLeave={cancelHoverTimer}
                             onContextMenu={(e) => handleContextMenu(e, el)}
                           >
                             {el.message}
-                          </p>
+                          </p>}
                           <div className="flex flexcolumn center">
                             <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
@@ -359,7 +394,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                 <div className="chatfeature">
                   <MdOutlineKeyboardVoice className="icon icon_small nobordershadow" />
                   <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" />
-                  <MdOutlineImage className="icon icon_small nobordershadow" />
+                  <input type="file"accept="image/*" ref={fileInputRef}style={{ display: 'none' }}onChange={handleFileChange}/>
+                  <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage}/>
                 </div>
                 <MdSend className="icon send nobordershadow" onClick={send} />
               </div>

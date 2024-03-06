@@ -35,6 +35,64 @@
   })
   const profilePictureUpload = multer({ storage: storeProfilePicture });
 
+  
+  //////////////////////////////////////////////multer community message storing
+  const storeCommunityMessageImage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, path.join(__dirname, '/uploads/communityMessageImages'));
+    },
+    filename: function(req, file, cb) {
+      // Generate a unique filename for the uploaded image
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, 'communityMessageImage-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  });
+  
+  const uploadCommunityMessageImage = multer({ storage: storeCommunityMessageImage });
+  
+/////////////////////////////////////////////////////////multer community message storing end here
+
+    app.post('/community_upload_image', uploadCommunityMessageImage.single('image'), async (req, res) => {
+      console.log(req.body);
+      console.log(req.file);
+      try {
+        // Extract necessary data from the request
+        const { c_id, u_id, u_name } = req.body;
+        const filename = req.file.filename;
+    
+        // Check if a chat exists for the given communityId
+        let existingChat = await CommunityChats.findOne({ communityId: c_id });
+    
+        if (existingChat) {
+          existingChat.messages.push({
+            u_id,
+            u_name,
+            filename,
+            messagetype: "image",
+            caption: "caption by user available soon"
+          });
+          await existingChat.save();
+        } else {
+          await CommunityChats.create({
+            communityId: c_id,
+            messages: [{
+              u_id,
+              u_name,
+              filename,
+              messagetype: "image",
+              caption: "caption by user available soon"
+            }]
+          });
+        }
+    
+        // Send success response
+        res.json({"success":true});
+      } catch (error) {
+        console.error("Error in image sending to community:", error);
+        res.json({"success":false});
+      }
+    });
+
   router.route("/register").post(profilePictureUpload.single('profilePicture'),async (req, res) => {
     try {
       const formData = req.body
@@ -665,6 +723,13 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     });
     
     //personal message area end
+
+    socket.on('send-image-community', async ({image,u_name}) => {
+      
+      console.log("image--------------------")
+      console.log(u_name)
+    });
+
     socket.on('sendMessage', async ({ c_id, u_name, message, u_id }) => {
       console.log(c_id,+" "+message+" "+u_name+" "+u_id);
       try {
@@ -704,4 +769,47 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   });
   // server.listen(socketIoPort, () => {
   //   console.log(`Socket Server is running on port ${socketIoPort}`);
+  // });
+
+
+
+  // app.post('/community_upload_image', uploadCommunityMessageImage.single('image'), async (req, res) => {
+  //   console.log(req.body);
+  //   console.log(req.file);
+  //   try {
+  //     // Extract necessary data from the request
+  //     const { c_id, u_id, u_name } = req.body;
+  //     const filename = req.file.filename;
+  
+  //     // Check if a chat exists for the given communityId
+  //     let existingChat = await CommunityChats.findOne({ communityId: c_id });
+  
+  //     if (existingChat) {
+  //       existingChat.messages.push({
+  //         u_id,
+  //         u_name,
+  //         filename,
+  //         messagetype: "image",
+  //         caption: "caption by user available soon"
+  //       });
+  //       await existingChat.save();
+  //     } else {
+  //       await CommunityChats.create({
+  //         communityId: c_id,
+  //         messages: [{
+  //           u_id,
+  //           u_name,
+  //           filename,
+  //           messagetype: "image",
+  //           caption: "caption by user available soon"
+  //         }]
+  //       });
+  //     }
+  
+  //     // Send success response
+  //     res.json({"success":true});
+  //   } catch (error) {
+  //     console.error("Error in image sending to community:", error);
+  //     res.json({"success":false});
+  //   }
   // });

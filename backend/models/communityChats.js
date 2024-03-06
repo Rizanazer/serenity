@@ -7,6 +7,9 @@ const communityChatSchema = new mongoose.Schema({
           u_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
           u_name:{type:String},
           message: String,
+          messagetype:{type:String,default:"text"},
+          filename:{type:String,default:""},
+          caption:{type:String,default:""},
           timeStamp: { type: Date, default: Date.now }
         }
       ]
