@@ -563,7 +563,26 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       res.json({"success":false})
     }
   })
-
+  
+  router.post('/exitcommunity',async(req,res)=>{
+    const {u_id,c_id} = req.body
+    const removefromuser = await User.findOneAndUpdate(
+      {_id:u_id},
+      {$pull:{communities:c_id}},
+      {new:true}
+    );
+    const removefromcommunity = await Community.findOneAndUpdate(
+      {_id:c_id},
+      {$pull:{members:u_id}},
+      {new:true}
+    );
+    if(removefromcommunity && removefromuser){
+      res.json({"success":true})
+    }else{
+      res.json({"success":false})
+    }
+    
+  })
   router.post("/getmemberdata",async (req,res)=>{
     
     try {  
