@@ -117,11 +117,8 @@ margin-top: 20px;
   right: 0;
   position: relative;
 } */
-.msg_main-rightside {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
+
+
 
 .option-rightside {
   position: relative;
