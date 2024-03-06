@@ -4,7 +4,7 @@ import { GiExitDoor } from "react-icons/gi";
 import SideScreenCommunityMemberFn from "./SideScreen_communityMember";
 import axios from "axios";
 import { useEffect, useState } from "react";
-var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
+var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data, member,actions }) => {
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])
     useEffect(() => {
@@ -20,6 +20,24 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
         }
         getmemberdata()
     }, [data.selectedCommunity])
+    async function exitcommunity(c_id){
+        actions.setViewChat(false)
+        actions.setSideScreen(false)
+
+        try {
+            const response = await axios.post('/exitcommunity',{c_id:c_id,u_id:localStorage.getItem('userid')})
+            console.log(response);
+            const filteredcommunities = data.individualCommunity.map((c) => {
+                if (c._id !== c_id) {
+                    return c; 
+                }
+                return null; 
+            }).filter((c) => c !== null);
+            actions.setIndividualCommunity(filteredcommunities);
+        } catch (error) {
+            console.error(error)
+        }
+    }
     return (
         <>
             <div className="section3_back">
@@ -44,7 +62,7 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
 
                     <div className="section3_features">
                         <MdReport className="icons_2" />
-                        <GiExitDoor className="icons_2" />
+                        <GiExitDoor className="icons_2" onClick={()=>exitcommunity(data.selectedCommunity)}/>
                         <IoMdHeartDislike className="icons_2" />
                     </div>
                     {/* <div className="section3_location flexrow center">
