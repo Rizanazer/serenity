@@ -553,7 +553,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         (message) => message._id.toString() === m_id
       );
       if (messageIndex === -1) {
-        throw new Error("Message not found in the chat");
+        console.log(`message not found`);
       }
       chat.messages.splice(messageIndex, 1);
       await chat.save();

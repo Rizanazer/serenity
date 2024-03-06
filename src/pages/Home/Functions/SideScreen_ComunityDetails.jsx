@@ -44,7 +44,7 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, member }) => {
 
                     <div className="section3_features">
                         <MdReport className="icons_2" />
-                        <GiExitDoor className="icons_2" />
+                        <GiExitDoor className="icons_2" onClick={()=>exitcommunity(data.selectedCommunity)}/>
                         <IoMdHeartDislike className="icons_2" />
                     </div>
                     {/* <div className="section3_location flexrow center">
