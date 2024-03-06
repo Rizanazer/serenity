@@ -356,7 +356,7 @@ function PersonalMsgScreen() {
               <React.Fragment key={i}>
                 {
                   rightclk && el.from.username === username ?
-                    <div className="flex flexrow gap10 msg-rightside" onContextMenu={(e) => handleContextMenu(e, el)}>
+                    <div className="flex flexrow gap10 msg-rightside">
 
                       {rightclk && selectedMessage === el && (
                         <div className="message_options center option-rightside">
@@ -372,6 +372,7 @@ function PersonalMsgScreen() {
                         className={el.from.username === username ? "msg" : "msg"}
                         onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
                         onMouseLeave={cancelHoverTimer}
+                        onContextMenu={(e) => handleContextMenu(e, el)}
                       >
                         {el.messageBody}
                       </p>
@@ -379,11 +380,12 @@ function PersonalMsgScreen() {
 
 
                     :
-                    <div className="flex flexrow gap10" onContextMenu={(e) => handleContextMenu(e, el)}>
+                    <div className="flex flexrow gap10" >
                       <p
                         className={el.from.username === username ? "msg msg-rightside" : "msg"}
                         onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
                         onMouseLeave={cancelHoverTimer}
+                        onContextMenu={(e) => handleContextMenu(e, el)}
                       >
                         {el.messageBody}
                       </p>
