@@ -10,7 +10,7 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
-function CommunityMsgScreen({ setIndividualCommunity,setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
 
   const userdata = JSON.parse(localStorage.getItem('userdata'));
   const [selectedMessage, setSelectedMessage] = useState(null);
@@ -271,66 +271,71 @@ function CommunityMsgScreen({ setIndividualCommunity,setViewChat, ViewChat, scre
 
 
               {messages && messages.map((el, i) => (
-  <React.Fragment key={i}>
-    {
-      rightclk && el.u_name === username ?
-        <div className="flex flexrow gap10 msg-rightside" >
-          {rightclk && selectedMessage === el && (
-            <div className="message_options center option-rightside">
-              <div className="message_items" onClick={() => { }}>
-                <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
-                  <span className="bold padding5">delete</span>
-                </div>
-              </div>
-            </div>
-          )}
-          <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
-            <p
-              className="msg"
-              onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
-              onMouseLeave={cancelHoverTimer}
-              onContextMenu={(e) => handleContextMenu(e, el)}
-            >
-              {el.message}
-            </p>
-            <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
-            <p className="uname-msg">{el.u_name}</p>
-          </div>
-          
-        </div>
-        :
-        <div className="flex flexrow gap10" >
-          
-          <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
-            <p
-              className="msg"
-              onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
-              onMouseLeave={cancelHoverTimer}
-              onContextMenu={(e) => handleContextMenu(e, el)}
-            >
-              {el.message}
-            </p>
-            <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
-            <p className="uname-msg">{el.u_name}</p>
-          </div>
-          {rightclk && selectedMessage === el && (
-            <div className="message_options center">
-              <div className="message_items">
-                <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
-                  <span className="bold padding5">delete</span>
-                </div>
-              </div>
-              <div className="message_items" onClick={() => { }}>
-                <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
-                  <span className="bold padding5">translate</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-    }
-  </React.Fragment>
-))}
+                <React.Fragment key={i}>
+                  {
+                    rightclk && el.u_name === username ?
+                      <div className="flex flexrow gap10 msg-rightside" >
+                        {rightclk && selectedMessage === el && (
+                          <div className="message_options center option-rightside">
+                            <div className="message_items" onClick={() => { }}>
+                              <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
+                                <span className="bold padding5">delete</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
+                          <p
+                            className="msg"
+                            onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
+                            onMouseLeave={cancelHoverTimer}
+                            onContextMenu={(e) => handleContextMenu(e, el)}
+                          >
+                            {el.message}
+                          </p>
+                          <div className="flex flexcolumn center">
+                            <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
+                            <p className="bold">{el.u_name}</p>
+                          </div>
+
+                        </div>
+
+                      </div>
+                      :
+                      <div className="flex flexrow gap10" >
+
+                        <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
+                          <p
+                            className="msg"
+                            onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
+                            onMouseLeave={cancelHoverTimer}
+                            onContextMenu={(e) => handleContextMenu(e, el)}
+                          >
+                            {el.message}
+                          </p>
+                          <div className="flex flexcolumn center">
+                            <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
+                            <p className="bold">{el.u_name}</p>
+                          </div>
+                        </div>
+                        {rightclk && selectedMessage === el && (
+                          <div className="message_options center">
+                            <div className="message_items">
+                              <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
+                                <span className="bold padding5">delete</span>
+                              </div>
+                            </div>
+                            <div className="message_items" onClick={() => { }}>
+                              <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
+                                <span className="bold padding5">translate</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                  }
+                </React.Fragment>
+              ))}
 
 
 
@@ -367,7 +372,7 @@ function CommunityMsgScreen({ setIndividualCommunity,setViewChat, ViewChat, scre
       {SideScreen && <div className="section3 box nopadding nobordershadow">
         {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} data={{ "image": "images/profileimg_chat.jpg", "username": "arsif" }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
-          <SideScreenCommunityDetailsFn data={{ individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity,setSelectedCommunity ,setViewChat,setSideScreen}} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
+          <SideScreenCommunityDetailsFn data={{ individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 
       </div>}
     </>
