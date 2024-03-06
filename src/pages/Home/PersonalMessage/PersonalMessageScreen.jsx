@@ -58,6 +58,7 @@ function PersonalMsgScreen() {
   const [Deletefn, setDeletefn] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null)
   const [selectedFriendName, setSelectedFriendName] = useState(null)
+  const [chatId,setChatid] = useState(null)
   useEffect(() => {
     console.log("selectedChat")
     console.log(selectedChat)
@@ -137,6 +138,7 @@ function PersonalMsgScreen() {
     try {
       const response = await axios.post('/fetchpersonal', { f_id: friend, u_id: u_id, f_name: friendname })
       console.log(friend);
+      setChatid(response.data.chats._id)
       console.log(response.data.chats.messages);
       setMessages(response.data.chats.messages)
     } catch (error) {
@@ -195,11 +197,22 @@ function PersonalMsgScreen() {
     setSelectedMessage(message); // Set the selected message
   };
   //delete message individual
-  const deleteMessage = (message) => {
+  const deleteMessage = async(m_id) => {
     console.log('====================================');
-    console.log("deleted msg : ", message);
+    console.log("deleted msg : ", m_id);
     console.log('====================================');
     setrightclk(false);
+    try {
+      const response = await axios.post('/delete_a_personal_message',{m_id:m_id,c_id:chatId})
+      if(response.data.success === true){
+        const messages = await axios.post('/fetchpersonal', { f_id: selectedFriend, u_id: u_id })
+        // console.log(friend);
+        console.log(messages.data.chats.messages);
+        setMessages(messages.data.chats.messages)
+      }
+    } catch (error) {
+      console.log("error in deleting a message")
+    }
   }
   const togglerightclick = () => {
     setrightclk(prevState => !prevState);
@@ -351,11 +364,14 @@ function PersonalMsgScreen() {
                   >
                     {el.messageBody}
                   </p>
+
                   {rightclk && selectedMessage === el && (
                     <div className="message_options center option-rightside">
-                      <div className="message_items" onClick={() => deleteMessage(el)}>
+                      <div className="message_items" onClick={() => deleteMessage(el._id)}>
                         <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                           <span className="bold padding5">delete</span>
+
+                  
                         </div>
                       </div>
                     </div>
