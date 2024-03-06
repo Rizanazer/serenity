@@ -543,6 +543,26 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
     console.log(chats);
   })
+  
+
+  router.post('/delete_a_personal_message',async(req,res)=>{
+    const {m_id,c_id} = req.body
+    const chat = await DirectChats.findById(c_id);
+    if(chat){
+      const messageIndex = chat.messages.findIndex(
+        (message) => message._id.toString() === m_id
+      );
+      if (messageIndex === -1) {
+        throw new Error("Message not found in the chat");
+      }
+      chat.messages.splice(messageIndex, 1);
+      await chat.save();
+      res.json({"success":true,"m_id":m_id})
+      // console.log(m_id+"---  ---"+c_id);
+    }else{
+      res.json({"success":false})
+    }
+  })
 
   router.post("/getmemberdata",async (req,res)=>{
     
