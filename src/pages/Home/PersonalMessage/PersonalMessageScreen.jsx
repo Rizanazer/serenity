@@ -10,6 +10,7 @@ import SideScreenPersonalFn from "../Functions/SideScreen_personal";
 import axios from "axios";
 import io from "socket.io-client";
 import rightBox from "../Functions/message_rightclick/chat_rightclck";
+import RightClickBox from "../Functions/message_rightclick/chat_rightclck";
 
 function PersonalMsgScreen() {
 
@@ -326,7 +327,7 @@ function PersonalMsgScreen() {
           {/* middlechats component-chat_area */}
           <div className="box chat_area padding10" ref={chatAreaRef}>
             {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
-              <div className="box nopadding more_items" onClick={() => {
+              <div className="box  nopadding more_items" onClick={() => {
                 toggleNeration()
               }}>
                 <div className="bold">{Neration ?
@@ -340,7 +341,9 @@ function PersonalMsgScreen() {
 
             {messages.length > 0 && messages.map((el, i) => (
               <React.Fragment key={i}>
-                <div className="flex flexrow" onContextMenu={(e) => handleContextMenu(e, el)}>
+                {
+                  rightclk && el.from.username === username ?
+                  <div className="flex flexrow gap10 msg_main-rightside" onContextMenu={(e) => handleContextMenu(e, el)}>
                   <p
                     className={el.from.username === username ? "msg-rightside" : "msg"}
                     onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
@@ -348,16 +351,56 @@ function PersonalMsgScreen() {
                   >
                     {el.messageBody}
                   </p>
-                  {rightclk && selectedMessage === el && ( // Render delete box for the selected message
-                    <div className="box padding10 center nobordershadow">
-                      <div className="box nopadding nocircleradius" onClick={() => deleteMessage(el)}>
-                        <div className="bold ">
-                          <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" /><span className="bold padding5">delete</span> </div>
+                  {rightclk && selectedMessage === el && (
+                    <div className="message_options center option-rightside">
+                      <div className="message_items" onClick={() => deleteMessage(el)}>
+                        <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
+                          <span className="bold padding5">delete</span>
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
+                
+                
+                    :
+                    <div className="flex flexrow gap10" onContextMenu={(e) => handleContextMenu(e, el)}>
+                      <p
+                        className={el.from.username === username ? "msg-rightside" : "msg"}
+                        onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
+                        onMouseLeave={cancelHoverTimer}
+                      >
+                        {el.messageBody}
+                      </p>
+                      {rightclk && selectedMessage === el && (
+                        <div className="message_options center ">
+                          <div className="message_items  " onClick={() => deleteMessage(el)}>
+                            <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
+                              <span className="bold padding5">delete</span> </div>
+                          </div>
+                        </div>
+
+                      )}
+                    </div>
+                }
+                {/* <div className="flex flexrow gap10" onContextMenu={(e) => handleContextMenu(e, el)}>
+                  <p
+                    className={el.from.username === username ? "msg-rightside" : "msg"}
+                    onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
+                    onMouseLeave={cancelHoverTimer}
+                  >
+                    {el.messageBody}
+                  </p>
+                  {rightclk && selectedMessage === el && (
+                    <div className="message_options center ">
+                      <div className="message_items  " onClick={() => deleteMessage(el)}>
+                        <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
+                          <span className="bold padding5">delete</span> </div>
+                      </div>
+                    </div>
+
+                  )}
+                </div> */}
 
               </React.Fragment>
             ))}

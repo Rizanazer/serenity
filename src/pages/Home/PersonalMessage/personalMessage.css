@@ -89,3 +89,40 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.message_options{
+display: flex;
+flex-direction: column;
+padding: 10px 10px;
+background:transparent ;
+z-index: 1;
+backdrop-filter: blur(10px);
+box-shadow: var(--shadow);
+margin-top: 20px;
+}
+.message_items{
+
+}
+/* .msg_main-rightside {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+}
+
+.msg-rightside {
+  align-self: flex-end;
+}
+
+.option-rightside {
+  margin-left: auto;
+  right: 0;
+  position: relative;
+} */
+.msg_main-rightside {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.option-rightside {
+  position: relative;
+}
