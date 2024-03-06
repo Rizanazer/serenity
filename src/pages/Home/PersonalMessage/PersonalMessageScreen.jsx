@@ -356,33 +356,31 @@ function PersonalMsgScreen() {
               <React.Fragment key={i}>
                 {
                   rightclk && el.from.username === username ?
-                  <div className="flex flexrow gap10 msg_main-rightside" onContextMenu={(e) => handleContextMenu(e, el)}>
-                  <p
-                    className={el.from.username === username ? "msg-rightside" : "msg"}
-                    onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
-                    onMouseLeave={cancelHoverTimer}
-                  >
-                    {el.messageBody}
-                  </p>
- 
+                  <div className="flex flexrow gap10 msg-rightside" onContextMenu={(e) => handleContextMenu(e, el)}>
+                  
                   {rightclk && selectedMessage === el && (
                     <div className="message_options center option-rightside">
                       <div className="message_items" onClick={() => deleteMessage(el._id)}>
                         <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                           <span className="bold padding5">delete</span>
-
-                  
                         </div>
                       </div>
                     </div>
                   )}
+                  <p
+                    className={el.from.username === username ? "msg" : "msg"}
+                    onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
+                    onMouseLeave={cancelHoverTimer}
+                  >
+                    {el.messageBody}
+                  </p>
                 </div>
                 
                 
                     :
                     <div className="flex flexrow gap10" onContextMenu={(e) => handleContextMenu(e, el)}>
                       <p
-                        className={el.from.username === username ? "msg-rightside" : "msg"}
+                        className={el.from.username === username ? "msg msg-rightside" : "msg"}
                         onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
                         onMouseLeave={cancelHoverTimer}
                       >
@@ -390,7 +388,7 @@ function PersonalMsgScreen() {
                       </p>
                       {rightclk && selectedMessage === el && (
                         <div className="message_options center ">
-                          <div className="message_items  " onClick={() => deleteMessage(el)}>
+                          <div className="message_items  " onClick={() => deleteMessage(el._id)}>
                             <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                               <span className="bold padding5">delete</span> </div>
                           </div>
