@@ -274,7 +274,7 @@ function CommunityMsgScreen({ setIndividualCommunity,setViewChat, ViewChat, scre
   <React.Fragment key={i}>
     {
       rightclk && el.u_name === username ?
-        <div className="flex flexrow gap10 msg-rightside" onContextMenu={(e) => handleContextMenu(e, el)}>
+        <div className="flex flexrow gap10 msg-rightside" >
           {rightclk && selectedMessage === el && (
             <div className="message_options center option-rightside">
               <div className="message_items" onClick={() => { }}>
@@ -289,6 +289,7 @@ function CommunityMsgScreen({ setIndividualCommunity,setViewChat, ViewChat, scre
               className="msg"
               onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
               onMouseLeave={cancelHoverTimer}
+              onContextMenu={(e) => handleContextMenu(e, el)}
             >
               {el.message}
             </p>
@@ -298,13 +299,14 @@ function CommunityMsgScreen({ setIndividualCommunity,setViewChat, ViewChat, scre
           
         </div>
         :
-        <div className="flex flexrow gap10" onContextMenu={(e) => handleContextMenu(e, el)}>
+        <div className="flex flexrow gap10" >
           
           <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
             <p
               className="msg"
               onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
               onMouseLeave={cancelHoverTimer}
+              onContextMenu={(e) => handleContextMenu(e, el)}
             >
               {el.message}
             </p>
