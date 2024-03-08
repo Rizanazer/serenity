@@ -1,6 +1,6 @@
 import { MdArrowBack, MdReport, MdOutlinePersonAddAlt, MdMessage, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
 import { IoMdHeartDislike } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 
@@ -9,15 +9,30 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
     //status of anonymous :not used now but soon
     const [AnonymsGps, setAnonymsGps] = useState(true);
     const u_id = localStorage.getItem('userid')
+    const [sideScreenGroupList,setSideScreenGroupList] = useState(null)
     async function addfriend() {
         if (u_id != selectedUser.userid) {
+            console.log(selectedUser);
+
             const response = await axios.post('/addfriend', { userid: u_id, friendtobe: selectedUser.userid })
         } else {
             console.log(`both same users`);
         }
 
     }
-
+    useEffect(()=>{
+        async function sidescreengrouplist(){
+            try {
+                const result = await axios.post('/sidescreengroupnames',{c_id:selectedUser.userid})
+                setSideScreenGroupList(result.data)
+                console.log(result)
+            } catch (error) {
+                console.error(error)
+            }
+            
+        }
+        sidescreengrouplist()
+    },[selectedUser])
     return (
         <>
             <div className="section3_back">
@@ -55,28 +70,15 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
                     <span className="bold">Group Participations</span>
                     <MdGroups className="icon_search" />
                 </div>
-                <div className="Group_Participations box nobordershadow">
+                {sideScreenGroupList && sideScreenGroupList.map((name,i)=>(
+                    <div className="Group_Participations box nobordershadow">
                     <div className="group_box flexrow">
                         <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">group1</span>
+                        <span className="bold">{name}</span>
                     </div>
-                    <div className="group_box flexrow">
-                        <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">group2</span>
-                    </div>
-                    <div className="group_box flexrow">
-                        <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">group3</span>
-                    </div>
-                    <div className="group_box flexrow">
-                        <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">group4</span>
-                    </div>
-
-
-                </div>
-
-
+                </div>)
+                )}
+                
             </div>
 
             <div className="section3_3">

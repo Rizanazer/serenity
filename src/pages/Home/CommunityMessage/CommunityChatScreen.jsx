@@ -34,6 +34,9 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const [Neration, setNeration] = useState(false);
   const [Deletefn, setDeletefn] = useState(false);
   const [chatId,setChatId] = useState(null)
+  const openImageViewer = (imageUrl) => {
+    window.open(imageUrl, '_blank');
+  };
   useEffect(() => {
     // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
@@ -205,6 +208,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
             'Content-Type': 'multipart/form-data'
           }
         });
+        setMessages({...messages.response.data})
       //   console.log("formdata------------------------------------------------");
       //   console.log(Object.fromEntries(formData));
       //   socket.emit('send-image-community', formData);
@@ -317,7 +321,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
                           {(el.messagetype==="image")?
-                          <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} />
+                          <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} onClick={() => window.open(`uploads/communityMessageImages/${el.filename}`,'_blank')}/>
                           :<p
                             className="msg"
                             onMouseEnter={() => { Neration && startHoverTimer(el.message) }}

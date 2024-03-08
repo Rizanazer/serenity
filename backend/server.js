@@ -668,7 +668,21 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   })
 
 
-  
+  router.post('/sidescreengroupnames',async(req,res)=>{
+    try {
+      const c_id = req.body.c_id
+      const communities = (await User.findById(c_id)).communities
+      console.log(communities);
+      const names = []
+      for(let i=0;i<communities.length;i++){
+        const name = await Community.findById(communities[i])
+        names.push(name.communityName)
+      }
+      res.send(names)
+    } catch (error) {
+      res.send("failure")
+    }
+  })
 
   app.use('/',router)
  

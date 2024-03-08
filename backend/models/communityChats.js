@@ -18,5 +18,4 @@ const communityChatSchema = new mongoose.Schema({
 });
 
 const CommunityChats = mongoose.model('CommunityChats',communityChatSchema)
-
 module.exports = CommunityChats
