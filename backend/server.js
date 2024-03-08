@@ -518,6 +518,20 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
   })
 
+  
+  router.post('/getfriendlist',async (req,res)=>{
+    try{
+      const ids = req.body.friendids
+    const friends = []
+    for(let i in ids){
+      const result = await User.findById(ids[i])
+      friends.push(result)
+    }
+    res.send(friends)
+  }catch(error){
+    res.send("error")
+  }
+  })
 
   router.post("/fetchfriends",async (req,res)=>{
     
