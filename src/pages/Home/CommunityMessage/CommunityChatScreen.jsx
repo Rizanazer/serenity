@@ -37,6 +37,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const openImageViewer = (imageUrl) => {
     window.open(imageUrl, '_blank');
   };
+  const profilePicture  = userdata.profilePicture
   useEffect(() => {
     // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
@@ -79,7 +80,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     });
 
     newSocket.on('newMessage', (message) => {
-
+      
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message }
       setMessages((prev) => [...prev, appenddata])
       // console.log('New message from the server socket:', message);
@@ -113,7 +114,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const send = async () => {
     console.log(text);
     if (text.trim().length > 0 && selectedCommunity) {
-      const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username') };
+      const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username') ,profilePicture:profilePicture};
       console.log(messageData);
       if (socket) {
         socket.emit('sendMessage', messageData);
@@ -331,7 +332,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                             {el.message}
                           </p>}
                           <div className="flex flexcolumn center">
-                            <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
+                            <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
                           </div>
 
@@ -353,7 +354,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                             {el.message}
                           </p>}
                           <div className="flex flexcolumn center">
-                            <img src="images/profileimg_chat.jpg" className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
+                            <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
                           </div>
                         </div>

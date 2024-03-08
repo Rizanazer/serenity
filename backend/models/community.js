@@ -3,6 +3,7 @@ const User = require('./user');
 const mongoose = require('mongoose');
 const communitySchema = mongoose.Schema({
   communityName: String,
+  communityIcon:{type:String,default:'default-icon.png'},
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   email: String,
   description: String,

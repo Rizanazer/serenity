@@ -2,20 +2,31 @@ import { useEffect, useState } from "react";
 import "./createCommunity.css"
 import { CgSearch } from "react-icons/cg";
 import axios from "axios"
+
 var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
     const [Next, setNext] = useState(false);
-    const [createCommunityData,setCreateCommunityData] = useState({c_name:'',c_desc:""})
+    const [friendList,setFriendList] = useState([])
+    const [createCommunityData,setCreateCommunityData] = useState({c_name:'',c_desc:"",communityIcon:null})
    
     const handleInputChange =(event) =>{
         const {name, value} = event.target
         setCreateCommunityData({...createCommunityData,[name]:value})
     };
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        setCreateCommunityData({ ...createCommunityData, profilePicture: file });
+      };
     
     async function createCommunity() {
         const createdBy = localStorage.getItem("userid");
-        const senddata = { createdby: createdBy, c_name: createCommunityData.c_name, c_desc: createCommunityData.c_desc };
+        const formData = new FormData()
+        for(const key in createCommunityData){
+            formData.append(key,createCommunityData[key])
+        }
+        formData.append('createdBy',createdBy)
+        // const senddata = { createdby: createdBy, c_name: createCommunityData.c_name, c_desc: createCommunityData.c_desc };
         try {
-            const response = await axios.post('/createcommunity', senddata);
+            const response = await axios.post('/createcommunity', formData);
             setCreateAlert(false);
             console.log("❤️");
             await fetchCommunityDetails();
@@ -114,6 +125,7 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
                         <div className="name_image flexrow center">
                             <img src="images/profilepic.jpg" className="circle" alt="" />
                             <div className="groupname flexcolumn">
+                            <input type="file" accept="image/*" name="profilePicture"onChange={handleImageChange} />            
                                 <span className="bold">Group Name</span>
                                 <input type="text" value={createCommunityData.c_name} name="c_name" onChange={handleInputChange}/>
                                 <span className="light">Group Description</span>

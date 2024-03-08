@@ -7,6 +7,7 @@ const communityChatSchema = new mongoose.Schema({
           u_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
           u_name:{type:String},
           message: String,
+          profilePicture:{type:String,default:"user.png"},
           messagetype:{type:String,default:"text"},
           filename:{type:String,default:""},
           caption:{type:String,default:""},

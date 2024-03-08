@@ -52,6 +52,25 @@
   
 /////////////////////////////////////////////////////////multer community message storing end here
 
+
+
+
+  //////////////////////////////////////////////multer community icon storing
+  const storeCommunityIcon = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, path.join(__dirname, '/uploads/communityIcons'));
+    },
+    filename: function(req, file, cb) {
+      // Generate a unique filename for the uploaded image
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, 'communityIcon-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  });
+  
+  const uploadCommunityIcon = multer({ storage: storeCommunityIcon });
+  
+/////////////////////////////////////////////////////////multer community icon storing end here
+
     app.post('/community_upload_image', uploadCommunityMessageImage.single('image'), async (req, res) => {
       console.log(req.body);
       console.log(req.file);
@@ -224,21 +243,23 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 
 
 
-  router.route("/createcommunity").post(async(req,res) =>{
+  router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'),async (req, res) => {
     try {
-      //const communityData = req.body;
-      const c_name = req.body.c_name;
-      const c_desc = req.body.c_desc;
-      const createdby = req.body.createdby;
-      const admins = req.body.createdby || [];
-      const members = req.body.createdby || [];
-  
+      const communityData = req.body;
+      const c_name = communityData.c_name;
+      const c_desc = communityData.c_desc;
+      const createdby = communityData.createdby;
+      const admins = communityData.createdby || [];
+      // const members = formData.members || [];
+
+      // console.log(members);
       const result = await Community.create({
         communityName: c_name,
         createdBy: createdby,
         description: c_desc,
         admins: admins,
-        members: members,
+        // members: members,
+        communityIcon:req.file.filename
       });
 
       const addtouser = await User.findOneAndUpdate(
@@ -747,7 +768,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       console.log(u_name)
     });
 
-    socket.on('sendMessage', async ({ c_id, u_name, message, u_id }) => {
+    socket.on('sendMessage', async ({ c_id, u_name, message, u_id ,profilePicture}) => {
       console.log(c_id,+" "+message+" "+u_name+" "+u_id);
       try {
         if (!c_id || !u_id || !message) {
@@ -757,14 +778,14 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         const existingChat = await CommunityChats.findOne({ communityId: c_id });
        
         if (existingChat) {
-          existingChat.messages.push({ u_id, message, u_name });
+          existingChat.messages.push({ u_id, message, u_name,profilePicture });
           await existingChat.save();
         } else {
-          await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message,u_name }] });
+          await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message,u_name,profilePicture }] });
         }
     
         // Emit the new message to all connected clients
-        io.emit('newMessage', { u_id, u_name, message ,c_id});
+        io.emit('newMessage', { u_id, u_name, message ,c_id,profilePicture});
         //socket.emit({ success: true });
       } catch (error) {
         console.error('Error in handling incoming message:', error);
