@@ -11,7 +11,8 @@
 
 # testing
 /coverage
-
+#uploaded contents
+/backend/uploads/
 # production
 /build
 .history
