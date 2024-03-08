@@ -9,10 +9,11 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
     //status of anonymous :not used now but soon
     const [AnonymsGps, setAnonymsGps] = useState(true);
     const u_id = localStorage.getItem('userid')
+    const [userData,setUserData] = useState(null)
     const [sideScreenGroupList,setSideScreenGroupList] = useState(null)
     async function addfriend() {
         if (u_id != selectedUser.userid) {
-            console.log(selectedUser);
+            console.log(selectedUser.userid);
 
             const response = await axios.post('/addfriend', { userid: u_id, friendtobe: selectedUser.userid })
         } else {
@@ -23,8 +24,9 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
     useEffect(()=>{
         async function sidescreengrouplist(){
             try {
-                const result = await axios.post('/sidescreengroupnames',{c_id:selectedUser.userid})
-                setSideScreenGroupList(result.data)
+                const result = await axios.post('/sidescreengroupnames',{u_id:selectedUser.userid})
+                setSideScreenGroupList(result.data.names)
+                setUserData(result.data.userdata)
                 console.log(result)
             } catch (error) {
                 console.error(error)
@@ -40,7 +42,9 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
             </div>
             <div className="section3_1">
                 <div className="section3_1_1">
-                    <img src={data.image} className="section3_1_1" alt="" />
+                {/* <img alt=""src={`/uploads/profilePictures/user.png`}  /> */}
+                    {/* <img src={`/uploads/profilePictures/user.png`} className="section3_1_1" alt="" /> */}
+                    <img src={`/uploads/profilePictures/${userData?.profilePicture}`} className="section3_1_1" alt="" />
                 </div>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}

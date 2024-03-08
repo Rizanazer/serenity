@@ -29,8 +29,8 @@
       cb(null,path.join(__dirname, '/uploads/profilePictures'))
     },
     filename:function(req,file,cb){
-      const fileName = "profilepic.jpg"; 
-      cb(null, fileName);
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, 'profilePicture-' + uniqueSuffix + path.extname(file.originalname));
     }
   })
   const profilePictureUpload = multer({ storage: storeProfilePicture });
@@ -96,15 +96,16 @@
   router.route("/register").post(profilePictureUpload.single('profilePicture'),async (req, res) => {
     try {
       const formData = req.body
-      // formData.friends = []
-      // formData.communities = []
-      // if(formData.hobbies){formData.hobbies = req.body.formData.hobbies.split(' ')}
-      // formData.likes = req.body.formData.likes.split(' ')
-      // formData.dislikes = req.body.formData.dislikes.split(' ')
+      formData.friends = []
+      formData.communities = []
+      if(formData.hobbies){formData.hobbies = formData.hobbies.split(' ')}
+      formData.likes = formData.likes.split(' ')
+      formData.dislikes = formData.dislikes.split(' ')
+      console.log(formData)
       const propic = formData.profilePicture
       console.log(propic);
-      // formData.profilePicture = propic
-      console.log(req.body);
+      formData.profilePicture = propic
+      formData.profilePicture = req.file.filename
       const result = await User.create(formData);
       // console.log('Data inserted Succesfully');
       // console.log(formData);
@@ -670,15 +671,17 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 
   router.post('/sidescreengroupnames',async(req,res)=>{
     try {
-      const c_id = req.body.c_id
-      const communities = (await User.findById(c_id)).communities
+      const u_id = req.body.u_id
+      const result = await User.findById(u_id)
+      const communities = result.communities
       console.log(communities);
       const names = []
       for(let i=0;i<communities.length;i++){
         const name = await Community.findById(communities[i])
         names.push(name.communityName)
       }
-      res.send(names)
+      // res.send(names)
+      res.json({"names":names,"userdata":result})
     } catch (error) {
       res.send("failure")
     }

@@ -14,7 +14,7 @@ export default function Nav({Screen,setScreen,setSetting}){
           <MdOutlineSettings className="icon" color={Screen=="Settings" ? "#979697" :"#fff"} onClick={() => {setSetting()}} />
         </div>
 
-        <UserProfile data={{ "image": "images/profilepic.jpg", "Username": "sungjinwoo", "status": true }} />
+        <UserProfile />
 
       </aside>)
 }
