@@ -19,7 +19,8 @@
 
   const Community = require('./models/community');
   const CommunityChats = require('./models/communityChats');
-  const DirectChats = require('./models/directchats')
+  const DirectChats = require('./models/directchats');
+const { default: mongoose } = require('mongoose');
   app.use(cors());
   app.use(express.json());
 
@@ -245,20 +246,27 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 
   router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'),async (req, res) => {
     try {
+      
       const communityData = req.body;
+      console.log(communityData.selectedMembers);
       const c_name = communityData.c_name;
       const c_desc = communityData.c_desc;
       const createdby = communityData.createdby;
       const admins = communityData.createdby || [];
-      // const members = formData.members || [];
+      const members = communityData.selectedMembers || [];
 
-      // console.log(members);
+      console.log("---------------members");
+      console.log(typeof(members));
+      const memberssplitted = members.split(',')
+      console.log(memberssplitted);
+      const memberids = memberssplitted.map(id => new mongoose.Types.ObjectId(id));
+      memberids.push(createdby)
       const result = await Community.create({
         communityName: c_name,
         createdBy: createdby,
         description: c_desc,
         admins: admins,
-        // members: members,
+        members: memberids,
         communityIcon:req.file.filename
       });
 

@@ -158,7 +158,7 @@ function GroupList_1({ userid, data, HandleClick, setViewChat }) {
     <div className="box chat pointer" onClick={() => { setViewChat(true); HandleClick(data._id, data.communityName); }}>
 
       <div className="chat_info " >
-        <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+        <img className="icon profile_chat_img" src={`uploads/communityIcons/${data.communityIcon}`} alt="" />
         <div className=" profile_text">
           <div className="textlength_head ">
             <span className="bold ">{data.communityName}</span>

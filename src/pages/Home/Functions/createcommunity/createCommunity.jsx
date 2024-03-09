@@ -18,8 +18,13 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
         }
         fetchfriends()
     },[])
-    const [createCommunityData,setCreateCommunityData] = useState({c_name:'',c_desc:"",communityIcon:null})
-   
+    const [createCommunityData,setCreateCommunityData] = useState({
+        c_name:'',
+        c_desc:"",
+        communityIcon:null,
+        selectedMembers:[]
+    })
+    
     const handleInputChange =(event) =>{
         const {name, value} = event.target
         setCreateCommunityData({...createCommunityData,[name]:value})
@@ -28,6 +33,25 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
         const file = event.target.files[0];
         setCreateCommunityData({ ...createCommunityData, communityIcon: file });
       };
+      const handleCheckboxChange = (event, memberId) => {
+        const isChecked = event.target.checked;
+        if (isChecked) {
+            setCreateCommunityData({
+            ...createCommunityData,
+            selectedMembers: [
+                ...createCommunityData.selectedMembers,memberId
+            ]
+        });
+            console.log(`its checked`+createCommunityData.selectedMembers);
+            console.log(typeof(createCommunityData.selectedMembers));
+
+        } else {
+            setCreateCommunityData({
+                ...createCommunityData,
+                selectedMembers: createCommunityData.selectedMembers.filter(id => id !== memberId)
+            });
+        }
+    };
     
     async function createCommunity() {
         const createdBy = localStorage.getItem("userid");
@@ -35,7 +59,7 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
         for(const key in createCommunityData){
             formData.append(key,createCommunityData[key])
         }
-        formData.append('createdBy',createdBy)
+        formData.append('createdby',createdBy)
         // const senddata = { createdby: createdBy, c_name: createCommunityData.c_name, c_desc: createCommunityData.c_desc };
         try {
             const response = await axios.post('/createcommunity', formData);
@@ -66,7 +90,7 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
 
                             {friendList&&friendList.map((elem,key)=>(
                                 <div className="member_box flexrow" onClick={() => { }}>
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
                                 <img src="images/profileimg_chat.jpg" className="icon_member" />
                                 <span className="bold pointer">{elem.username}</span>
                             </div>

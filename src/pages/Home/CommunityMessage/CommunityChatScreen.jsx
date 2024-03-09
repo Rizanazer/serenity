@@ -237,7 +237,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
           <div className="box chat pointer ">
             <div className="chat_info" onClick={() => onclick(el._id, el.communityName, el.description)}>
-              <img className="icon profile_chat_img" alt="" />
+              <img className="icon profile_chat_img" src={`uploads/communityIcons/${el.communityIcon}`} alt="" />
               <div className=" profile_text">
                 <div className="textlength_head ">
                   <span className="bold ">{el.communityName}</span>
