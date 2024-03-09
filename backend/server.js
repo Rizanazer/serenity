@@ -528,6 +528,19 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     }
   })
 
+  router.post("/getafriend",async (req,res)=>{
+    
+    try {
+      const u_id = req.body.u_id
+      const result = await User.findById(u_id)
+      console.log("df" + result);
+      res.send(result)
+    } catch (error) {
+      console.log("error ocuurred while accepting")
+      res.json({"success":false})
+    }
+  })
+
   
   router.post('/getfriendlist',async (req,res)=>{
     try{
@@ -599,6 +612,20 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       res.json({"success":false})
     }
   })
+
+
+  router.post("/searchcommunity",async (req,res)=>{
+    try {  
+      const searchText = req.body.searchText
+      const groups = await Community.find({ communityName: { $regex: searchText, $options: 'i' } });
+      res.json({ "success": true,"groups":groups});
+    } catch (error) {
+      console.log("error ocuurred while loading community names")
+      res.json({"success":false})
+    }
+  })
+
+
   router.post("/get_c_messages",async (req,res)=>{
     
     try {  

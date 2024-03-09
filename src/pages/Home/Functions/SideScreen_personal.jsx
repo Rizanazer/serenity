@@ -1,6 +1,24 @@
 import { MdArrowBack, MdOutlinePersonAddAlt, MdMessage, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
 import { IoMdHeartDislike } from "react-icons/io";
-var SideScreenPersonalFn = ({ handleClick, data }) => {
+import { useEffect,useState } from "react";
+import axios from "axios";
+var SideScreenPersonalFn = ({ handleClick, data,selectedFriend }) => {
+    const [userData,setUserData] = useState(null)
+    const [sideScreenGroupList,setSideScreenGroupList] = useState(null)
+    useEffect(()=>{
+        async function sidescreengrouplist(){
+            try {
+                const result = await axios.post('/sidescreengroupnames',{u_id:selectedFriend})
+                setSideScreenGroupList(result.data.names)
+                setUserData(result.data.userdata)
+                console.log(result)
+            } catch (error) {
+                console.error(error)
+            }
+            
+        }
+        sidescreengrouplist()
+    },[selectedFriend])
     return (
         <>
             <div className="section3_back">
@@ -8,13 +26,13 @@ var SideScreenPersonalFn = ({ handleClick, data }) => {
             </div>
             <div className="section3_1">
                 <div className="section3_1_1">
-                    <img src={'/uploads/data'} className="section3_1_1" alt="" />
+                    <img src={`/uploads/profilePictures/${userData?.profilePicture}`} className="section3_1_1" alt="" />
                 </div>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}
                     <div className="section3_textArea profile_text">
                         <span className="bold alignself_center">{data.username}</span>
-                        <span className="light">status_text</span>
+                        <span className="light">{userData?.status}</span>
                     </div>
                     <div className="section3_features">
                         <MdBlockFlipped className="icons_1" />
@@ -22,7 +40,7 @@ var SideScreenPersonalFn = ({ handleClick, data }) => {
                     </div>
                     <div className="section3_location flexrow center">
                         <MdLocationPin className="icon nobordershadow" />
-                        <span className="bold">Kerala,India</span>
+                        <span className="bold">{userData?.location}</span>
                     </div>
 
                 </div>
@@ -32,28 +50,17 @@ var SideScreenPersonalFn = ({ handleClick, data }) => {
                     <span className="bold">Group Participations</span>
                     <MdGroups className="icon_search" />
                 </div>
-                <div className="Group_Participations box nobordershadow">
+                {sideScreenGroupList && sideScreenGroupList.map((name,i)=>(
+                    <div className="Group_Participations box nobordershadow">
                     <div className="group_box flexrow">
                         <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">group1</span>
+                        <span className="bold">{name}</span>
                     </div>
-                    <div className="group_box flexrow">
-                    <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">group2</span>
-                    </div>
-                    <div className="group_box flexrow">
-                    <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">group3</span>
-                    </div>
-                    <div className="group_box flexrow">
-                    <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">group4</span>
-                    </div>
-                    
+                </div>)
+                )}
+                
 
                 </div>
-
-            </div>
 
             <div className="section3_3">
 

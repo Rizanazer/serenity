@@ -67,13 +67,28 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
     setSelectedChat(c_id)
     setSelectedChatName(c_name)
   }
-
+  const [searchText,setSearchText] = useState('')
+  const handlesearchtext = (event)=>{
+    setSearchText(event.target.value)
+    console.log(searchText);
+  }
+  useEffect(()=>{
+    async function searchcommunity(){
+      try{
+        const response = await axios.post('/searchcommunity',{searchText:searchText})
+        setGroupName(response.data.groups)
+      }catch(error){
+        console.error(error)
+      }
+    }
+    searchcommunity()
+  },[searchText])
   return (
     <>
       <div className="section1 section_margin box gap20">
         <div className="box nopadding nobordershadow search_box">
           <div className="box searchbox">
-            <input type="text" placeholder="Search for New Communities" className="nobordershadow widthmax" />
+            <input type="text" placeholder="Search for New Communities" className="nobordershadow widthmax" name="searchbox" onChange={handlesearchtext}/>
           </div>
           <div className="box nopadding nobordershadow searchBoxContnt">
             {GroupName.map((el, i) => <GroupList_1 setViewChat={setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />)}

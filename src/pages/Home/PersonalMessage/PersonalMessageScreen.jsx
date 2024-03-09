@@ -59,6 +59,7 @@ function PersonalMsgScreen() {
   const [selectedFriend, setSelectedFriend] = useState(null)
   const [selectedFriendName, setSelectedFriendName] = useState(null)
   const [chatId, setChatid] = useState(null)
+  const [selectedFriendIcon,setSelectedFriendIcon] = useState(null)
   useEffect(() => {
     console.log("selectedChat")
     console.log(selectedChat)
@@ -131,8 +132,14 @@ function PersonalMsgScreen() {
   var [messages, setMessages] = useState([]);
 
   async function onclickfriendchat(friend, friendname) {
+    const response = await axios.post('/getafriend',{u_id:friend})
+    if(response){
+      console.log(response.data.profilePicture);
+      setSelectedFriendIcon(response.data.profilepicture)
+    }
     console.log(friend)
     setViewChat(true)
+    setSelectedFriendIcon(friend.profilePicture)
     setSelectedFriend(friend)
     setSelectedFriendName(friendname)
     try {
@@ -176,6 +183,7 @@ function PersonalMsgScreen() {
     console.log(friend)
     setViewChat(true)
     setSelectedChat(friend)
+    setSelectedFriendIcon(friend.profilePicture)
     setSelectedFriend(friend)
     setSelectedFriendName(friend.username)
     try {
@@ -279,14 +287,14 @@ function PersonalMsgScreen() {
 
               <div className="box chat pointer nobordershadow ">
                 <div className="chat_info" key={i} onClick={() => onclickfriend(el)}>
-                  <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                  <img className="icon profile_chat_img" src={`uploads/profilePictures/${el.profilePicture}`} alt="" />
                   <div className=" profile_text">
                     <div className="textlength_head_friends ">
                       {/* <span className="bold ">{el.users[0].username !== username ? el.users[0].username : el.users[1].username}</span> */}
                       <span className="bold ">{el.username}</span>
                     </div>
                     <div className="textlength_status ">
-                      <span className="light">status</span>
+                      <span className="light">{el.status}</span>
                     </div>
                   </div>
                 </div>
@@ -309,7 +317,7 @@ function PersonalMsgScreen() {
 
               {/* {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.username, "status": () => { setSideScreen(true);setMoreadj(true);} }} />} */}
               {<div className="center inputrow" onClick={() => { setSideScreen(true); setMoreadj(true); }}>
-                <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                <img className="icon profile_chat_img" src={`uploads/profilePictures/${selectedFriendIcon}`} alt="" />
                 <span className="bold">{selectedFriendName}</span>
               </div>}
             </div>
@@ -440,7 +448,7 @@ function PersonalMsgScreen() {
 
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        <SideScreenPersonalFn data={{ "image": selectedChat?.image, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
+        <SideScreenPersonalFn selectedFriend={selectedFriend}data={{ "image": selectedFriendIcon, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
       </div>}
     </>
   );

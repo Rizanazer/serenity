@@ -54,7 +54,7 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
                             <span className="bold alignself_center">{selectedUser.username}</span>
                         </div>
                         <div className="textlength_para center">
-                            <span className="light alignself_center">status</span>
+                            <span className="light alignself_center">statusssssss</span>
                         </div>
                     </div>
                     <div className="section3_features">
