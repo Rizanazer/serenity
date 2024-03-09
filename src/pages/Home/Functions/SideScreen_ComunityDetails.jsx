@@ -45,7 +45,7 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data, 
             </div>
             <div className="section3_1">
                 <div className="section3_1_1">
-                    <img src={data.image} className="section3_1_1" alt="" />
+                    <img src={`uploads/communityIcons/${data.selectedCommunityIcon}`} className="section3_1_1" alt="" />
                 </div>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}

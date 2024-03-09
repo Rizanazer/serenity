@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./createCommunity.css"
 import { CgSearch } from "react-icons/cg";
 import axios from "axios"
-
+import mongoose from "mongoose";
 var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
     const [Next, setNext] = useState(false);
     const [friendList,setFriendList] = useState([])
@@ -39,8 +39,7 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
             setCreateCommunityData({
             ...createCommunityData,
             selectedMembers: [
-                ...createCommunityData.selectedMembers,memberId
-            ]
+                ...createCommunityData.selectedMembers,memberId]
         });
             console.log(`its checked`+createCommunityData.selectedMembers);
             console.log(typeof(createCommunityData.selectedMembers));
@@ -56,9 +55,15 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
     async function createCommunity() {
         const createdBy = localStorage.getItem("userid");
         const formData = new FormData()
-        for(const key in createCommunityData){
-            formData.append(key,createCommunityData[key])
-        }
+        for (const key in createCommunityData) {
+            if (key === 'selectedMembers') {
+              createCommunityData[key].forEach(memberId => {
+                formData.append(key, memberId);
+              });
+            } else {
+              formData.append(key, createCommunityData[key]);
+            }
+          }
         formData.append('createdby',createdBy)
         // const senddata = { createdby: createdBy, c_name: createCommunityData.c_name, c_desc: createCommunityData.c_desc };
         try {

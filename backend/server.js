@@ -253,28 +253,30 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       const c_desc = communityData.c_desc;
       const createdby = communityData.createdby;
       const admins = communityData.createdby || [];
-      const members = communityData.selectedMembers || [];
+      let members = communityData.selectedMembers || [];
 
       console.log("---------------members");
       console.log(typeof(members));
-      const memberssplitted = members.split(',')
-      console.log(memberssplitted);
-      const memberids = memberssplitted.map(id => new mongoose.Types.ObjectId(id));
-      memberids.push(createdby)
+      if (!Array.isArray(members)) {
+        members = [members];
+    }
+      members.push(createdby)
       const result = await Community.create({
         communityName: c_name,
         createdBy: createdby,
         description: c_desc,
         admins: admins,
-        members: memberids,
-        communityIcon:req.file.filename
+        members: members,
+        communityIcon:req.file?.filename
       });
-
-      const addtouser = await User.findOneAndUpdate(
-        { _id: createdby },
-        { $addToSet: { communities: result._id } }, 
-        { new: true }
-      );
+      for(const i in members){
+        const addtouser = await User.findOneAndUpdate(
+          { _id: members[i] },
+          { $addToSet: { communities: result._id } }, 
+          { new: true }
+        );
+      }
+        
 
       console.log('Community created successfully:', result);
       res.json({"success":true,"result":result});

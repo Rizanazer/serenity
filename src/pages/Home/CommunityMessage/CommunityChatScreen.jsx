@@ -48,10 +48,11 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   }, [messages, scrollPosition]);
 
 
-  async function onclick(id, name, desc) {
+  async function onclick(id, name, desc,icon) {
     setViewChat(true);
     setSelectedCommunityName(name);
     setselectedCommunityStatus(desc);
+    setSelectedCommunityIcon(icon)
     // console.log(selectedCommunity);
     setSelectedCommunity(id)
     console.log(id);
@@ -103,7 +104,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   // var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   var [selectedChat, setSelectedChat] = useState(null);
-
+  const [selectedCommunityIcon,setSelectedCommunityIcon] = useState(null)
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
@@ -236,7 +237,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
           // <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>
 
           <div className="box chat pointer ">
-            <div className="chat_info" onClick={() => onclick(el._id, el.communityName, el.description)}>
+            <div className="chat_info" onClick={() => onclick(el._id, el.communityName, el.description,el.communityIcon)}>
               <img className="icon profile_chat_img" src={`uploads/communityIcons/${el.communityIcon}`} alt="" />
               <div className=" profile_text">
                 <div className="textlength_head ">
@@ -263,7 +264,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                 <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
                 {/* {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true);setMember(false); } }} />} */}
-                {<UpperChatInfo data={{ individualCommunity, selectedCommunityName }} actions={{ setSelectedCommunity }} sidescreen={() => { setSideScreen(true); setMoreadj(true); setMember(false); }} />}
+                {<UpperChatInfo data={{ selectedCommunityIcon,individualCommunity, selectedCommunityName }} actions={{ setSelectedCommunity }} sidescreen={() => { setSideScreen(true); setMoreadj(true); setMember(false); }} />}
 
               </div>
 
@@ -413,7 +414,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       {SideScreen && <div className="section3 box nopadding nobordershadow">
         {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} data={{ "image": "images/profileimg_chat.jpg", "username": "arsif" }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
-          <SideScreenCommunityDetailsFn data={{ individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
+          <SideScreenCommunityDetailsFn data={{ selectedCommunityIcon,individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 
       </div>}
     </>
