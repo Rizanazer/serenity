@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import "./Profile.css";
 import { MdEdit, MdEditOff } from "react-icons/md";
+import axios from "axios";
 function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation }) {
   function ToggleLocationEdit() {
     setLocation(prev => !prev);
@@ -9,7 +11,42 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
     setProfileStatus(prev => !prev);
     setLocation(false);
   }
+  function calculateAge(dob) {
+    const dobDate = new Date(dob);
+    const currentDate = new Date();
+    let age = currentDate.getFullYear() - dobDate.getFullYear();
+    if (currentDate.getMonth() < dobDate.getMonth() || (currentDate.getMonth() === dobDate.getMonth()
+    && currentDate.getDate() < dobDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  function toggleButtonstatus(){
+    setButtonstatus(prev=>!prev);
+  }
+
   const userdata = JSON.parse(localStorage.getItem('userdata'))
+  var [Likes, setLikes] = useState([]);
+  var [DisLikes, setDisLikes] = useState([]);
+  var [Hobies, setHobies] = useState([]);
+  var [Status,setStatus]=useState("");
+  var [Gender,setGender]=useState("");
+  var [Age,setAge]=useState(null);
+  var [Buttonstatus,setButtonstatus]=useState(null)
+  console.log('====================================');
+  console.log(Buttonstatus);
+  console.log('====================================');
+  useEffect(() => {
+    setLikes(userdata.likes);
+    setDisLikes(userdata.dislikes);
+    setHobies(userdata.hobbies);
+    setStatus(userdata.status);
+    setGender(userdata.gender);
+    setAge(userdata.dob);
+    setButtonstatus(userdata.anonymity);
+  }, []);
+
   return (
     <>
       <div className="h_w_full flex flexrow  zindex2 profile_whole">
@@ -18,7 +55,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
 
           <div className="section2 profilesection1 flex flexcolumn">
             <div className="profile_photosection center">
-              <img src="images/profilepic.jpg" alt="image" className="circle profilemain_photo profile_chat_img" />
+              <img src={`/uploads/profilePictures/${userdata.profilePicture}`} alt="image" className="circle profilemain_photo profile_chat_img" />
             </div>
             <div className="profile_postsection">
               <div className="box h_w_full center">
@@ -34,7 +71,9 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
             <div className="profilemain_name flex flexrow center gap20">
               <span className="bold ">Do you want to be hidden?</span>
               <label className="switch">
-                <input type="checkbox" defaultChecked />
+                <input type="checkbox"  onClick={()=>{toggleButtonstatus()}}
+                checked={Buttonstatus}
+                />
                 <span className="slider round"></span>
               </label>
             </div>
@@ -48,7 +87,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
                   </>
                   :
                   <>
-                    <span className="bold violetHover" onClick={() => { ToggleStatusEdit() }}>lyf sucks!!</span>
+                    <span className="light violetHover textlength_head" onClick={() => { ToggleStatusEdit() }}>{Status}</span>
                   </>}
               </div>
 
@@ -69,28 +108,29 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
               <hr className='line' />
               <div className="flex flexrow gap10 center">
                 <span className="light">Gender :</span>
-                <span className="bold">Male</span>
+                <span className="bold">{Gender}</span>
               </div>
               <div className="flex flexrow gap10 center">
                 <span className="light">Age :</span>
-                <span className="bold">23</span>
+                <span className="bold">{calculateAge(Age)}</span>
               </div>
               <hr className='line' />
             </div>
             <div className="profile_preferences alignself_cntr flex flexrow gap10 scroll">
-              <div className="box padding5 preference_item">
-                <span className="light">#likes_cats</span>
-              </div>
-              <div className="box padding5 preference_item">
-                <span className="light">#likes_biriyani</span>
-              </div>
-              <div className="box padding5 preference_item">
-                <span className="light">#techie</span>
-              </div>
-              <div className="box padding5 preference_item">
-                <span className="light">#dont_like_annoying_people</span>
-              </div>
+              {Array.isArray(Likes) && Likes.map((el, i) => (
+                <div className="box padding5 preference_item" key={i}>
+                  <span className="light">#likes_{el}</span>
+                </div>))}
 
+              {Array.isArray(Hobies) && Hobies.map((el, i) => (
+                <div className="box padding5 preference_item" key={i}>
+                  <span className="light">#{el}</span>
+                </div>))}
+
+              {Array.isArray(DisLikes) && DisLikes.map((el, i) => (
+                <div className="box padding5 preference_item" key={i}>
+                  <span className="light">#dont_like_{el}</span>
+                </div>))}
             </div>
             <div className="bbf_section flex gap10 flexcolumn">
               <span className="light">BFF :</span>
