@@ -1,18 +1,11 @@
 import { useState } from "react/cjs/react.production.min";
 import "./Accounts.css";
 import { MdEdit, MdEditOff } from "react-icons/md";
+import Translate from "pages/Home/Settings/Accounts/translation_Settings";
 import DropdownInput from "pages/Home/Functions/dropdownbox/dropdowninput";
 function AccountSettings({ Gender, DOB, Password, setGender, setDOB, setPassword }) {
     
-    const options1 = [
-        { value: 'option1', label: 'korean' },
-        { value: 'option2', label: 'Hindi' },
-        { value: 'option3', label: 'janese' },
-      ];
-    const options2 = [
-        { value: 'option1', label: 'English (default)' },
-       
-      ];
+  
     const userdata = JSON.parse(localStorage.getItem('userdata'))
     function ToggleGenderEdit() {
         setGender(prev => !prev);
@@ -102,18 +95,7 @@ function AccountSettings({ Gender, DOB, Password, setGender, setDOB, setPassword
                             </div>
                             <hr className='line' />
                         </div>
-                        
-                        <div className="box basicprofileinfo flex flexcolumn gap10">
-                            <div className="flex flexrow gap10 center">
-                                <span className="light">Choose Language to be Translated:</span>
-                                <DropdownInput options={options1} onSelect={()=>{}}/>
-                            </div>
-                            <div className="flex flexrow gap10 center">
-                                <span className="light">Choose translation Prefered Language :</span>
-                                <DropdownInput options={options2} onSelect={()=>{}}/>
-                            </div>
-                            
-                        </div>
+                        <Translate/>
                     </div>
                 </div>
             </div>

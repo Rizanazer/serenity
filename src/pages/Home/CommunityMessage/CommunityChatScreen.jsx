@@ -33,11 +33,16 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   var [text, setText] = useState("");
   const [Neration, setNeration] = useState(false);
   const [Deletefn, setDeletefn] = useState(false);
-  const [chatId,setChatId] = useState(null)
+  const [chatId, setChatId] = useState(null);
+
+  const [Translate, set_Translate] = useState(false);
+  const [messageTtext, setmessageTtext] = useState("");
+  const [language, setLanguage] = useState("es"); // Default language
+
   const openImageViewer = (imageUrl) => {
     window.open(imageUrl, '_blank');
   };
-  const profilePicture  = userdata.profilePicture
+  const profilePicture = userdata.profilePicture
   useEffect(() => {
     // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
@@ -48,7 +53,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   }, [messages, scrollPosition]);
 
 
-  async function onclick(id, name, desc,icon) {
+  async function onclick(id, name, desc, icon) {
     setViewChat(true);
     setSelectedCommunityName(name);
     setselectedCommunityStatus(desc);
@@ -81,7 +86,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     });
 
     newSocket.on('newMessage', (message) => {
-      
+
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message }
       setMessages((prev) => [...prev, appenddata])
       // console.log('New message from the server socket:', message);
@@ -104,7 +109,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   // var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   var [selectedChat, setSelectedChat] = useState(null);
-  const [selectedCommunityIcon,setSelectedCommunityIcon] = useState(null)
+  const [selectedCommunityIcon, setSelectedCommunityIcon] = useState(null)
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
@@ -115,7 +120,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const send = async () => {
     console.log(text);
     if (text.trim().length > 0 && selectedCommunity) {
-      const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username') ,profilePicture:profilePicture};
+      const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture };
       console.log(messageData);
       if (socket) {
         socket.emit('sendMessage', messageData);
@@ -165,6 +170,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
   const togglerightclick = () => {
     setrightclk(prevState => !prevState);
+    setmessageTtext("");
+    set_Translate(false);
   };
 
   const deleteMessage = async (m_id) => {
@@ -210,20 +217,47 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
             'Content-Type': 'multipart/form-data'
           }
         });
-        setMessages({...messages.response.data})
-      //   console.log("formdata------------------------------------------------");
-      //   console.log(Object.fromEntries(formData));
-      //   socket.emit('send-image-community', formData);
-      // // Handle the response from the server as needed
-      //   socket.on('send-image-community', (response) => {
-      //   console.log('Image uploaded successfully:', response);
-      // });
+        setMessages({ ...messages.response.data })
+        //   console.log("formdata------------------------------------------------");
+        //   console.log(Object.fromEntries(formData));
+        //   socket.emit('send-image-community', formData);
+        // // Handle the response from the server as needed
+        //   socket.on('send-image-community', (response) => {
+        //   console.log('Image uploaded successfully:', response);
+        // });
       } catch (error) {
         console.error('Error uploading image:', error);
       }
     }
   };
 
+  //translation
+
+  // const handleText = (event) => {
+  //   setmessageTtext(event.target.value);
+  // }
+
+  const handleSelectChange = (event) => {
+    setLanguage(event.target.value);
+  }
+
+  const toggleTranslation = () => {
+    set_Translate(prevState => !prevState);
+  }
+  const handleTranslate = () => {
+    axios.post('/convert', {
+      input_text: messageTtext,
+      to_lang: language
+    })
+      .then(response => {
+        setmessageTtext(response.data.translated_text);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        console.log('Error occurred while translating');
+      });
+    // set_Translate(true);
+  }
 
   return (
     <>
@@ -237,7 +271,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
           // <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>
 
           <div className="box chat pointer ">
-            <div className="chat_info" onClick={() => onclick(el._id, el.communityName, el.description,el.communityIcon)}>
+            <div className="chat_info" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
               <img className="icon profile_chat_img" src={`uploads/communityIcons/${el.communityIcon}`} alt="" />
               <div className=" profile_text">
                 <div className="textlength_head ">
@@ -264,7 +298,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                 <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
 
                 {/* {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true);setMember(false); } }} />} */}
-                {<UpperChatInfo data={{ selectedCommunityIcon,individualCommunity, selectedCommunityName }} actions={{ setSelectedCommunity }} sidescreen={() => { setSideScreen(true); setMoreadj(true); setMember(false); }} />}
+                {<UpperChatInfo data={{ selectedCommunityIcon, individualCommunity, selectedCommunityName }} actions={{ setSelectedCommunity }} sidescreen={() => { setSideScreen(true); setMoreadj(true); setMember(false); }} />}
 
               </div>
 
@@ -322,16 +356,16 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                           </div>
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
-                          {(el.messagetype==="image")?
-                          <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} onClick={() => window.open(`uploads/communityMessageImages/${el.filename}`,'_blank')}/>
-                          :<p
-                            className="msg"
-                            onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
-                            onMouseLeave={cancelHoverTimer}
-                            onContextMenu={(e) => handleContextMenu(e, el)}
-                          >
-                            {el.message}
-                          </p>}
+                          {(el.messagetype === "image") ?
+                            <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} onClick={() => window.open(`uploads/communityMessageImages/${el.filename}`, '_blank')} />
+                            : <p
+                              className="msg"
+                              onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
+                              onMouseLeave={cancelHoverTimer}
+                              onContextMenu={(e) => handleContextMenu(e, el)}
+                            >
+                              {el.message}
+                            </p>}
                           <div className="flex flexcolumn center">
                             <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
@@ -344,32 +378,41 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                       <div className="flex flexrow gap10" >
 
                         <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
-                          {(el.messagetype==="image")?
-                          <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} />
-                          :<p
-                            className="msg"
-                            onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
-                            onMouseLeave={cancelHoverTimer}
-                            onContextMenu={(e) => handleContextMenu(e, el)}
-                          >
-                            {el.message}
-                          </p>}
+                          {(el.messagetype === "image") ?
+                            <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} />
+                            : <p
+                              className="msg"
+                              onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
+                              onMouseLeave={cancelHoverTimer}
+                              onContextMenu={(e) => {handleContextMenu(e, el); setmessageTtext(el.message);}}
+                            >
+                              
+                              {Translate && selectedMessage === el ? messageTtext : el.message}
+                            </p>}
                           <div className="flex flexcolumn center">
                             <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
                           </div>
                         </div>
                         {rightclk && selectedMessage === el && (
+                      
                           <div className="message_options center">
                             <div className="message_items">
                               <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                                 <span className="bold padding5">delete</span>
                               </div>
                             </div>
-                            <div className="message_items" onClick={() => { }}>
+                            <div className="message_items" onClick={() => { handleTranslate(); toggleTranslation() }}>
                               <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
                                 <span className="bold padding5">translate</span>
+                                <select id='dropmenu' onChange={handleSelectChange}>
+                                  <option value="es">Spanish</option>
+                                  <option value="ml">Malayalam</option>
+                                  <option value="ta">Tamil</option>
+                                  <option value="ar">Arabic</option>
+                                </select>
                               </div>
+
                             </div>
                           </div>
                         )}
@@ -400,8 +443,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                 <div className="chatfeature">
                   <MdOutlineKeyboardVoice className="icon icon_small nobordershadow" />
                   <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" />
-                  <input type="file"accept="image/*" ref={fileInputRef}style={{ display: 'none' }}onChange={handleFileChange}/>
-                  <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage}/>
+                  <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
+                  <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage} />
                 </div>
                 <MdSend className="icon send nobordershadow" onClick={send} />
               </div>
@@ -414,7 +457,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       {SideScreen && <div className="section3 box nopadding nobordershadow">
         {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} data={{ "image": "images/profileimg_chat.jpg", "username": "arsif" }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
-          <SideScreenCommunityDetailsFn data={{ selectedCommunityIcon,individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
+          <SideScreenCommunityDetailsFn data={{ selectedCommunityIcon, individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 
       </div>}
     </>

@@ -1,6 +1,8 @@
   const express = require('express');
   const cors = require('cors');
   //const mongoose = require('mongoose');
+  const translate = require('@iamtraction/google-translate');
+  
 
   const router = express.Router()
   const app = express();
@@ -141,7 +143,6 @@ const { default: mongoose } = require('mongoose');
     try {
       const user = await User.findOne({_id:req.body.id});
       const communityIds = user.communities;
-      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",user);
       const communities = await Community.find({ _id: { $in: communityIds } });
       res.json(communities);
     } catch (error) {
@@ -239,9 +240,29 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   //     res.status(500).json({ "success": false, "error": "Internal server error." });
   //   }
   // });
+
+
+
+  router.route('/convert').post(async (req, res) => {
+      try {
+          const { input_text, to_lang } = req.body;
+          console.log("❤️", input_text, to_lang);
   
-
-
+          translate(input_text, { to: to_lang })
+              .then(result => {
+                  const translated_text = result.text;
+                  res.json({ translated_text });
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  res.status(500).json({ error: 'An error occurred' });
+              });
+      } catch (error) {
+          console.error('Error:', error);
+          res.status(500).json({ error: 'An error occurred' });
+      }
+  });
+  
 
 
   router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'),async (req, res) => {
