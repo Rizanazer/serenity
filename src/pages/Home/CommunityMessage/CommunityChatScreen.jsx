@@ -172,6 +172,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     setrightclk(prevState => !prevState);
     setmessageTtext("");
     set_Translate(false);
+    setLanguage("es");
   };
 
   const deleteMessage = async (m_id) => {
