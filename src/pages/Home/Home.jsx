@@ -23,9 +23,12 @@ const Home = () => {
   var [Theme, setTheme] = useState(false);
 
   //accounts
+
+  const [Edit_email, setEdit_email] = useState(false);
+  const [Edit_mobile, setEdit_mobile] = useState(false);
   const [Edit_Pass, setEdit_Pass] = useState(false);
   const [Edit_DOB, setEdit_DOB] = useState(false);
-  const [Edit_Gender, setEdit_Gender] = useState(true);
+  const [Edit_Gender, setEdit_Gender] = useState(false);
   //
   //profile
   const [Edit_profStatus, setEdit_profStatus] = useState(false);
@@ -53,6 +56,32 @@ const Home = () => {
     setNotificationSetting(false);
     setTheme(false);
   };
+  // const toggleEmail = () => {
+  //   setEdit_email(prevState => !prevState);
+  //   setProfile(false);
+  //   setAccount(false);
+  //   setEdit_DOB(false);
+  //   setEdit_Gender(false);
+  //   setEdit_Pass(false);
+  //   setEdit_profLocation(false);
+  //   setEdit_profStatus(false);
+  //   setNotificationSetting(false);
+  //   setTheme(false);
+  //   setEdit_mobile(false);
+  // };
+  // const toggleMobile = () => {
+  //   setEdit_mobile(prevState => !prevState);
+  //   setProfile(false);
+  //   setAccount(false);
+  //   setEdit_DOB(false);
+  //   setEdit_Gender(false);
+  //   setEdit_Pass(false);
+  //   setEdit_profLocation(false);
+  //   setEdit_profStatus(false);
+  //   setNotificationSetting(false);
+  //   setTheme(false);
+  //   setEdit_email(false);
+  // };
   const toggleAccount = () => {
     setAccount(prevState => !prevState);
     setEdit_DOB(false);
@@ -63,8 +92,10 @@ const Home = () => {
     setProfile(false);
     setNotificationSetting(false);
     setTheme(false);
+    setEdit_mobile(false);
+    setEdit_email(false);
   };
-  const toggleNotificationSetting=()=>{
+  const toggleNotificationSetting = () => {
     setNotificationSetting(prevState => !prevState);
     setAccount(false);
     setEdit_DOB(false);
@@ -74,8 +105,10 @@ const Home = () => {
     setEdit_profStatus(false);
     setProfile(false);
     setTheme(false);
+    setEdit_mobile(false);
+    setEdit_email(false);
   }
-  const toggleTheme=()=>{
+  const toggleTheme = () => {
     setTheme(prevState => !prevState);
     setAccount(false);
     setEdit_DOB(false);
@@ -85,6 +118,8 @@ const Home = () => {
     setEdit_profStatus(false);
     setProfile(false);
     setNotificationSetting(false);
+    setEdit_mobile(false);
+    setEdit_email(false);
   }
   async function fetchCommunityDetails() {
     try {
@@ -112,17 +147,19 @@ const Home = () => {
           <div className="flex flexrow h_w_full">
             <div className="flex set1 h_w_full">
               <SettingsScreen
-                handleClick={() => { setSetting(false); setProfile(false); setEdit_DOB(false);setEdit_Gender(false);setEdit_Pass(false);setEdit_profLocation(false);setEdit_profStatus(false);}}
-                closeother={() => { setProfile(false); setAccount(false);setEdit_DOB(false);setEdit_Gender(false);setEdit_Pass(false);setEdit_profLocation(false);setEdit_profStatus(false); }}
+                handleClick={() => { setSetting(false); setProfile(false); setEdit_DOB(false); setEdit_Gender(false); setEdit_Pass(false); setEdit_profLocation(false); setEdit_profStatus(false);setEdit_mobile(false);
+                  setEdit_email(false); }}
+                closeother={() => { setProfile(false); setAccount(false); setEdit_DOB(false); setEdit_Gender(false); setEdit_Pass(false); setEdit_profLocation(false); setEdit_profStatus(false);setEdit_mobile(false);
+                  setEdit_email(false); }}
                 setscreen={() => toggleProfile()}
                 profileView={Profile}
                 accountcheck={Account}
                 accounts={() => { toggleAccount() }}
-                notification={()=>{toggleNotificationSetting()}}
+                notification={() => { toggleNotificationSetting() }}
                 notificationcheck={NotificationSetting}
-                theme={()=>{toggleTheme()}}
+                theme={() => { toggleTheme() }}
                 themecheck={Theme}
-                />
+              />
             </div>
             <div className="flex set2 h_w_full">
               {Profile && <ProfileScreen
@@ -138,10 +175,14 @@ const Home = () => {
                 setDOB={setEdit_DOB}
                 setGender={setEdit_Gender}
                 setPassword={setEdit_Pass}
+                setEmail={setEdit_email}
+                setMobile={setEdit_mobile}
+                Email={Edit_email}
+                Mobile={Edit_mobile}
               />
               }
-              {Theme&&<Theme_Settings/>}
-              {NotificationSetting&&<Notification_Settings/>}
+              {Theme && <Theme_Settings />}
+              {NotificationSetting && <Notification_Settings />}
             </div>
           </div>
 

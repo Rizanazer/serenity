@@ -241,19 +241,40 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   //     res.status(500).json({ "success": false, "error": "Internal server error." });
   //   }
   // });
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   router.route('/updateProfile').post(async (req,res)=>{
     try{
-    const { id, anonymity, status} = req.body;
+    const { id, anonymity,status,email,phone,password,gender,dob} = req.body;
     // Update the data in the database
-    await User.updateOne({ _id: id }, { $set: { anonymity ,status} });
-    // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",anonymity);
+    await User.updateOne({ _id: id }, { $set: { anonymity ,status,email,phone,password,gender,dob} });
+    
     res.status(200).json({ message: 'Data updated successfully' });
   } catch (error) {
     console.error('Error updating data:', error);
     res.status(500).json({ error: 'An error occurred while updating data' });
   }
   })
+
+  router.post("/fetchProfile", async (req, res) => {
+    try {
+      const u_id = req.body.u_id
+      const profile = await User.findOne({_id:u_id})
+        if (profile) {
+          console.log("User profile fetched successfully:", profile);
+          res.status(200).json({ success: true, status: profile.status ,anonymity:profile.anonymity,
+            email:profile.email,phone:profile.phone,password:profile.password,
+            gender:profile.gender,dob:profile.dob});
+            // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",phone);
+      } else {
+          console.log("User not found with ID:", u_id);
+          res.status(404).json({ success: false, message: 'User details not found' });
+      }
+    } catch (error) {
+        console.error('Error fetching profile:', error);
+        res.status(500).json({ success: false, error: 'An error occurred while fetching profile' });
+    }
+});
+
 
   router.route('/convert').post(async (req, res) => {
       try {
@@ -276,7 +297,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   });
   
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'),async (req, res) => {
     try {
       

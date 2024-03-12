@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Profile.css";
-import { MdEdit, MdEditOff ,MdDone } from "react-icons/md";
+import { MdEdit, MdEditOff, MdDone } from "react-icons/md";
 import axios from "axios";
 function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation }) {
 
@@ -8,7 +8,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
     setLocation(prev => !prev);
     setProfileStatus(false);
   }
-  function ToggleStatusEdit()  {
+  function ToggleStatusEdit() {
     setProfileStatus(prev => !prev);
     setLocation(false);
   }
@@ -17,22 +17,22 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
     const currentDate = new Date();
     let age = currentDate.getFullYear() - dobDate.getFullYear();
     if (currentDate.getMonth() < dobDate.getMonth() || (currentDate.getMonth() === dobDate.getMonth()
-    && currentDate.getDate() < dobDate.getDate())) {
+      && currentDate.getDate() < dobDate.getDate())) {
       age--;
     }
     return age;
   }
 
- 
+
 
   const userdata = JSON.parse(localStorage.getItem('userdata'))
   var [Likes, setLikes] = useState([]);
   var [DisLikes, setDisLikes] = useState([]);
   var [Hobies, setHobies] = useState([]);
-  var [Status,setStatus]=useState("");
-  var [Gender,setGender]=useState("");
-  var [Age,setAge]=useState(null);
-  var [Anonimity,setAnonimity]=useState(false)
+  var [Status, setStatus] = useState("");
+  var [Gender, setGender] = useState("");
+  var [Age, setAge] = useState(null);
+  var [Anonimity, setAnonimity] = useState(false)
 
   useEffect(() => {
     setLikes(userdata.likes);
@@ -42,9 +42,10 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
     setGender(userdata.gender);
     setAge(userdata.dob);
     setAnonimity(userdata.anonymity);
-    
+    fetchProfileUpdate()
+    // console.log( "##################" ,Status)
   }, []);
-  
+
 
   const handleButtonData = async () => {
     try {
@@ -56,11 +57,13 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
           'Content-Type': 'application/json',
         }
       });
-     
+
     } catch (error) {
       console.error('Error updating data:', error);
     }
   };
+
+
   const handleStatusData = async () => {
     try {
       await axios.post('/updateProfile', {
@@ -71,15 +74,29 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
           'Content-Type': 'application/json',
         }
       });
-      setStatus(Status);
+      // setStatus(Status);
+      console.log("##################", Status)
     } catch (error) {
       console.error('Error updating data:', error);
     }
   };
+  async function fetchProfileUpdate() {
+    const u_id = localStorage.getItem('userid')
+    try {
+      const response = await axios.post("/fetchProfile", { u_id: u_id, })
+      // console.log( "##################" ,response.data.status)
+      setStatus(response.data.status)
+      setAnonimity(response.data.anonymity)
+    } catch (error) {
+      console.log("error fetching Status")
+    }
+  }
+
+
 
   function ToggleAnonimus() {
     setAnonimity((prevAnonimity) => !prevAnonimity);
-    // console.log( "##################" ,Anonimity)
+
     handleButtonData()
   }
 
@@ -108,9 +125,9 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
               <span className="bold ">Do you want to be hidden?</span>
 
               <label className="switch">
-                <input type="checkbox"  
-                onChange={()=>{ToggleAnonimus()}}
-                checked={Anonimity}
+                <input type="checkbox"
+                  onChange={() => { ToggleAnonimus() }}
+                  checked={Anonimity}
                 />
                 <span className="slider round"></span>
               </label>
@@ -121,8 +138,8 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
                 <span className="light">Status :</span>
                 {ProfileStatus ?
                   <>
-                    <input type="text" className="bold edit_account_elmt padding10" value={Status} onChange={(event)=>{setStatus(event.target.value)}}/>
-                    <MdDone className="violetHover" onClick={() => { handleStatusData()}} />
+                    <input type="text" className="bold edit_account_elmt padding10" value={Status} onChange={(event) => { setStatus(event.target.value) }} />
+                    <MdDone className="violetHover" onClick={() => { handleStatusData() }} />
                     <MdEditOff className="violetHover" onClick={() => { ToggleStatusEdit() }} />
                   </>
                   :
@@ -135,7 +152,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
                 <span className="light">Location :</span>
                 {Location ?
                   <>
-                    <input type="text" className="bold edit_account_elmt padding10"/>
+                    <input type="text" className="bold edit_account_elmt padding10" />
                     <MdDone className="violetHover" onClick={() => { }} />
                     <MdEditOff className="violetHover" onClick={() => { ToggleLocationEdit() }} />
                   </>
