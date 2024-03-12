@@ -51,12 +51,21 @@ const { log } = require('console');
       cb(null, 'communityMessageImage-' + uniqueSuffix + path.extname(file.originalname));
     }
   });
-  
+
   const uploadCommunityMessageImage = multer({ storage: storeCommunityMessageImage });
   
 /////////////////////////////////////////////////////////multer community message storing end here
+const storePersonalMessageImage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, path.join(__dirname, '/uploads/personalMessageImages'));
+  },
+  filename: function(req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'personalMessageImage-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
 
-
+const uploadPersonalMessageImage = multer({ storage: storePersonalMessageImage });
 
 
   //////////////////////////////////////////////multer community icon storing
@@ -65,7 +74,6 @@ const { log } = require('console');
       cb(null, path.join(__dirname, '/uploads/communityIcons'));
     },
     filename: function(req, file, cb) {
-      // Generate a unique filename for the uploaded image
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       cb(null, 'communityIcon-' + uniqueSuffix + path.extname(file.originalname));
     }
@@ -427,6 +435,35 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         {new:true}
       )
       console.log(result);
+      if(result && result2){
+        res.json({ "success": true });
+      }else{
+        res.json({ "success": false });
+      }
+        
+
+    } catch (error) {
+      console.error(error)
+      res.json({ "success": false });
+    }
+  })
+  router.post('/unfriend',async(req,res)=>{
+    try {
+      const userid = req.body.u_id
+      const friendid = req.body.f_id
+      const result1 = await User.findOneAndUpdate(
+        {_id : userid },
+        {
+          $pull:{friends:friendid}},
+        {new : true}
+        );
+      const result2 = await User.findOneAndUpdate(
+        {_id : friendid },
+        {
+          $pull:{friends:userid}},
+        {new : true}
+        );
+     
       if(result && result2){
         res.json({ "success": true });
       }else{
