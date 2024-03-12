@@ -71,7 +71,7 @@ function AddFriendsScreen() {
               <MdArrowBack className="icon nobordershadow" onClick={() => { setSelectedUserdata(null); setSelectedRequest(null); }} />
             </div>
             <div className="center alert_content">
-              <img src="images/profileimg_chat.jpg" alt="image" className="circle profile_pic" />
+              <img src={`/uploads/profilePictures/${selectedUserData.profilePicture}`} alt="image" className="circle profile_pic" />
               <span className="bold">{selectedUserData.username}</span>
               <span className="light">{selectedUserData.status}</span>
               <div className="serenity_score">
