@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import "./Profile.css";
-import { MdEdit, MdEditOff } from "react-icons/md";
+import { MdEdit, MdEditOff ,MdDone } from "react-icons/md";
 import axios from "axios";
 function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation }) {
+
   function ToggleLocationEdit() {
     setLocation(prev => !prev);
     setProfileStatus(false);
   }
-  function ToggleStatusEdit() {
+  function ToggleStatusEdit()  {
     setProfileStatus(prev => !prev);
     setLocation(false);
   }
@@ -22,9 +23,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
     return age;
   }
 
-  function toggleButtonstatus(){
-    setButtonstatus(prev=>!prev);
-  }
+ 
 
   const userdata = JSON.parse(localStorage.getItem('userdata'))
   var [Likes, setLikes] = useState([]);
@@ -33,10 +32,8 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
   var [Status,setStatus]=useState("");
   var [Gender,setGender]=useState("");
   var [Age,setAge]=useState(null);
-  var [Buttonstatus,setButtonstatus]=useState(null)
-  console.log('====================================');
-  console.log(Buttonstatus);
-  console.log('====================================');
+  var [Anonimity,setAnonimity]=useState(false)
+
   useEffect(() => {
     setLikes(userdata.likes);
     setDisLikes(userdata.dislikes);
@@ -44,8 +41,47 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
     setStatus(userdata.status);
     setGender(userdata.gender);
     setAge(userdata.dob);
-    setButtonstatus(userdata.anonymity);
+    setAnonimity(userdata.anonymity);
+    
   }, []);
+  
+
+  const handleButtonData = async () => {
+    try {
+      await axios.post('/updateProfile', {
+        id: userdata._id,
+        anonymity: !Anonimity
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+     
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
+  };
+  const handleStatusData = async () => {
+    try {
+      await axios.post('/updateProfile', {
+        id: userdata._id,
+        status: Status
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      setStatus(Status);
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
+  };
+
+  function ToggleAnonimus() {
+    setAnonimity((prevAnonimity) => !prevAnonimity);
+    // console.log( "##################" ,Anonimity)
+    handleButtonData()
+  }
 
   return (
     <>
@@ -70,19 +106,23 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
             </div>
             <div className="profilemain_name flex flexrow center gap20">
               <span className="bold ">Do you want to be hidden?</span>
+
               <label className="switch">
-                <input type="checkbox"  onClick={()=>{toggleButtonstatus()}}
-                checked={Buttonstatus}
+                <input type="checkbox"  
+                onChange={()=>{ToggleAnonimus()}}
+                checked={Anonimity}
                 />
                 <span className="slider round"></span>
               </label>
+
             </div>
             <div className="basicprofileinfo flex flexcolumn gap10">
               <div className="flex flexrow gap10 center">
                 <span className="light">Status :</span>
                 {ProfileStatus ?
                   <>
-                    <input type="text" className="bold edit_account_elmt padding10" />
+                    <input type="text" className="bold edit_account_elmt padding10" value={Status} onChange={(event)=>{setStatus(event.target.value)}}/>
+                    <MdDone className="violetHover" onClick={() => { handleStatusData()}} />
                     <MdEditOff className="violetHover" onClick={() => { ToggleStatusEdit() }} />
                   </>
                   :
@@ -95,7 +135,8 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
                 <span className="light">Location :</span>
                 {Location ?
                   <>
-                    <input type="text" className="bold edit_account_elmt padding10" />
+                    <input type="text" className="bold edit_account_elmt padding10"/>
+                    <MdDone className="violetHover" onClick={() => { }} />
                     <MdEditOff className="violetHover" onClick={() => { ToggleLocationEdit() }} />
                   </>
                   :

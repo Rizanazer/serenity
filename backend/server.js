@@ -23,6 +23,7 @@
   const CommunityChats = require('./models/communityChats');
   const DirectChats = require('./models/directchats');
 const { default: mongoose } = require('mongoose');
+const { log } = require('console');
   app.use(cors());
   app.use(express.json());
 
@@ -241,7 +242,18 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   //   }
   // });
 
-
+  router.route('/updateProfile').post(async (req,res)=>{
+    try{
+    const { id, anonymity, status} = req.body;
+    // Update the data in the database
+    await User.updateOne({ _id: id }, { $set: { anonymity ,status} });
+    // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",anonymity);
+    res.status(200).json({ message: 'Data updated successfully' });
+  } catch (error) {
+    console.error('Error updating data:', error);
+    res.status(500).json({ error: 'An error occurred while updating data' });
+  }
+  })
 
   router.route('/convert').post(async (req, res) => {
       try {
