@@ -62,10 +62,9 @@ function AccountSettings({ Email, Mobile, Gender, DOB, Password, setGender, setD
     };
     const handleMobileData = async () => {
         try {
-            const phoneNumber = Math.floor(EditPhone); 
             await axios.post('/updateProfile', {
                 id: userdata._id,
-                phone: phoneNumber
+                phone: EditPhone
             }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -152,7 +151,7 @@ function AccountSettings({ Email, Mobile, Gender, DOB, Password, setGender, setD
                                 <span className="light">Mobile No :</span>
                                 {Mobile ?
                                     <>
-                                        <input type="text" className="bold edit_account_elmt padding10" value={EditPhone}
+                                        <input className="bold edit_account_elmt padding10" value={EditPhone}
                                             onChange={(event) => { setEditPhone(event.target.value) }} />
                                         <MdDone className="violetHover" onClick={() => { handleMobileData() }} />
                                         <MdEditOff className="violetHover" onClick={() => { ToggleMobileEdit() }} />
