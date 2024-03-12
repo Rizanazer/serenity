@@ -30,7 +30,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
   var [DisLikes, setDisLikes] = useState([]);
   var [Hobies, setHobies] = useState([]);
   var [Status, setStatus] = useState("");
-  var [Gender, setGender] = useState("");
+  var [Gender, setGender] = useState(null);
   var [Age, setAge] = useState(null);
   var [Anonimity, setAnonimity] = useState(false)
 
@@ -87,6 +87,8 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
       // console.log( "##################" ,response.data.status)
       setStatus(response.data.status)
       setAnonimity(response.data.anonymity)
+      setAge(response.data.dob)
+      setGender(response.data.gender)
     } catch (error) {
       console.log("error fetching Status")
     }

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function SettingsScreen({ handleClick, setscreen, profileView, accounts, accountcheck, closeother,notification,notificationcheck,theme,themecheck}) {
 
   const navigate = useNavigate()
-
+  const userdata = JSON.parse(localStorage.getItem('userdata'))
   function logout() {
     localStorage.clear()
     console.log(`Logging out`);
@@ -19,8 +19,8 @@ function SettingsScreen({ handleClick, setscreen, profileView, accounts, account
           <div className=" box profile_box nobordershadow settings_back ">
             <div className="flex flexrow stretch settings_content" onClick={setscreen}>
               <div className="flex img_profile_name flexrow gap10 center pointer">
-                <img src="images/profilepic.jpg" alt="image" className="icon profile_chat_img" />
-                <span className="bold white">username</span>
+                <img src={`/uploads/profilePictures/${userdata.profilePicture}`} alt="image" className="icon profile_chat_img" />
+                <span className="bold white">{userdata.username}</span>
               </div>
               {profileView ? <MdArrowBackIos className="icon nobordershadow white" /> : <MdArrowForwardIos className="icon nobordershadow white" />}
 

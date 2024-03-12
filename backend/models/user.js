@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     password:String,
     location:String,
     profilePicture:String,
+    language:{type:String,default:"en"},
     likes:[{type:String,default:[]}],
     dislikes:[{type:String,default:[]}],
     hobbies:[{type:String,default:[]}],

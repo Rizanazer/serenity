@@ -37,14 +37,18 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
   const [Translate, set_Translate] = useState(false);
   const [messageTtext, setmessageTtext] = useState("");
-  const [language, setLanguage] = useState("es"); // Default language
+  const [language, setLanguage] = useState(null); 
+  useEffect(() => {
+    setLanguage(userdata.language)
+    fetchProfileUpdate()
+    
+  }, []);
 
   const openImageViewer = (imageUrl) => {
     window.open(imageUrl, '_blank');
   };
   const profilePicture = userdata.profilePicture
   useEffect(() => {
-    // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
       if (chatAreaRef.current) {
         chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
@@ -172,7 +176,6 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     setrightclk(prevState => !prevState);
     setmessageTtext("");
     set_Translate(false);
-    setLanguage("es");
   };
 
   const deleteMessage = async (m_id) => {
@@ -238,9 +241,6 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   //   setmessageTtext(event.target.value);
   // }
 
-  const handleSelectChange = (event) => {
-    setLanguage(event.target.value);
-  }
 
   const toggleTranslation = () => {
     set_Translate(prevState => !prevState);
@@ -259,7 +259,18 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       });
     // set_Translate(true);
   }
-
+  async function fetchProfileUpdate() {
+    const u_id = localStorage.getItem('userid')
+    try {
+        const response = await axios.post("/fetchProfile", { u_id: u_id, })
+        console.log( "##################" ,response.data.language)
+        
+        setLanguage(response.data.language)
+    } catch (error) {
+        console.log("error fetching Status")
+    }
+}
+  
   return (
     <>
       <div className="section1 section_margin box">
@@ -406,12 +417,6 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                             <div className="message_items" onClick={() => { handleTranslate(); toggleTranslation() }}>
                               <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
                                 <span className="bold padding5">translate</span>
-                                <select id='dropmenu' onChange={handleSelectChange}>
-                                  <option value="es">Spanish</option>
-                                  <option value="ml">Malayalam</option>
-                                  <option value="ta">Tamil</option>
-                                  <option value="ar">Arabic</option>
-                                </select>
                               </div>
 
                             </div>

@@ -244,9 +244,9 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   router.route('/updateProfile').post(async (req,res)=>{
     try{
-    const { id, anonymity,status,email,phone,password,gender,dob} = req.body;
+    const { id, anonymity,status,email,phone,password,gender,dob,language} = req.body;
     // Update the data in the database
-    await User.updateOne({ _id: id }, { $set: { anonymity ,status,email,phone,password,gender,dob} });
+    await User.updateOne({ _id: id }, { $set: { anonymity ,status,email,phone,password,gender,dob,language} });
     
     res.status(200).json({ message: 'Data updated successfully' });
   } catch (error) {
@@ -263,7 +263,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
           console.log("User profile fetched successfully:", profile);
           res.status(200).json({ success: true, status: profile.status ,anonymity:profile.anonymity,
             email:profile.email,phone:profile.phone,password:profile.password,
-            gender:profile.gender,dob:profile.dob});
+            gender:profile.gender,dob:profile.dob,language:profile.language});
             // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",phone);
       } else {
           console.log("User not found with ID:", u_id);
