@@ -296,7 +296,7 @@ function PersonalMsgScreen() {
                       <span className="bold ">{el.username}</span>
                     </div>
                     <div className="textlength_status ">
-                      <span className="light">dddddddddd{el.status}</span>
+                      <span className="light">{el.status}</span>
                     </div>
                   </div>
                 </div>
