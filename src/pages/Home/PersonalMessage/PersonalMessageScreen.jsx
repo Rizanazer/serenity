@@ -60,6 +60,8 @@ function PersonalMsgScreen() {
   const [selectedFriendName, setSelectedFriendName] = useState(null)
   const [chatId, setChatid] = useState(null)
   const [selectedFriendIcon,setSelectedFriendIcon] = useState(null)
+  const refreshFlag = 0;
+
   useEffect(() => {
     console.log("selectedChat")
     console.log(selectedChat)
@@ -89,7 +91,7 @@ function PersonalMsgScreen() {
   }
   useEffect(() => {
     fetchfriends()
-  }, [])
+  }, [refreshFlag])
 
   //delete chat fn
   const toggleDeletefn = () => {
@@ -294,7 +296,7 @@ function PersonalMsgScreen() {
                       <span className="bold ">{el.username}</span>
                     </div>
                     <div className="textlength_status ">
-                      <span className="light">{el.status}</span>
+                      <span className="light">dddddddddd{el.status}</span>
                     </div>
                   </div>
                 </div>
@@ -448,7 +450,7 @@ function PersonalMsgScreen() {
 
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        <SideScreenPersonalFn selectedFriend={selectedFriend}data={{ "image": selectedFriendIcon, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
+        <SideScreenPersonalFn fetchfriends={fetchfriends} selectedFriend={selectedFriend}data={{ "image": selectedFriendIcon, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
       </div>}
     </>
   );
