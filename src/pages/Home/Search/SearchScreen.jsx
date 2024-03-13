@@ -24,7 +24,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
       console.log(response.data);
       setGroupName(response.data.groups)
     }
-    fetchgroups()
+    // fetchgroups()
   }, [])
   var [text, setText] = useState("");
   var [messages, setMessages] = useState([]);
