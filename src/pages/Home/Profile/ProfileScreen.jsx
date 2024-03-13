@@ -31,10 +31,12 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
   var [Hobies, setHobies] = useState([]);
   var [Status, setStatus] = useState("");
   var [Gender, setGender] = useState(null);
+  var [location, set_location] = useState(null);
   var [Age, setAge] = useState(null);
   var [Anonimity, setAnonimity] = useState(false)
 
   useEffect(() => {
+    set_location(userdata.location);
     setLikes(userdata.likes);
     setDisLikes(userdata.dislikes);
     setHobies(userdata.hobbies);
@@ -64,6 +66,22 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
   };
 
 
+  const handleLocationData = async () => {
+    try {
+      await axios.post('/updateProfile', {
+        id: userdata._id,
+        location: location
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      // setStatus(Status);
+      // console.log("##################", Status)
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
+  };
   const handleStatusData = async () => {
     try {
       await axios.post('/updateProfile', {
@@ -75,7 +93,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
         }
       });
       // setStatus(Status);
-      console.log("##################", Status)
+      // console.log("##################", Status)
     } catch (error) {
       console.error('Error updating data:', error);
     }
@@ -89,6 +107,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
       setAnonimity(response.data.anonymity)
       setAge(response.data.dob)
       setGender(response.data.gender)
+      set_location(response.data.location)
     } catch (error) {
       console.log("error fetching Status")
     }
@@ -154,13 +173,13 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
                 <span className="light">Location :</span>
                 {Location ?
                   <>
-                    <input type="text" className="bold edit_account_elmt padding10" />
-                    <MdDone className="violetHover" onClick={() => { }} />
+                    <input type="text" className="bold edit_account_elmt padding10" value={location} onChange={(event) => { set_location(event.target.value) }} />
+                    <MdDone className="violetHover" onClick={() => {handleLocationData() }} />
                     <MdEditOff className="violetHover" onClick={() => { ToggleLocationEdit() }} />
                   </>
                   :
                   <>
-                    <span className="bold violetHover" onClick={() => { ToggleLocationEdit() }}>Wayanad,Kerala</span>
+                    <span className="bold violetHover" onClick={() => { ToggleLocationEdit() }}>{location}</span>
                   </>}
 
 

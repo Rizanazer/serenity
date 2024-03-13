@@ -252,9 +252,9 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   router.route('/updateProfile').post(async (req,res)=>{
     try{
-    const { id, anonymity,status,email,phone,password,gender,dob,language} = req.body;
+    const { id, anonymity,status,email,phone,password,gender,dob,language,location} = req.body;
     // Update the data in the database
-    await User.updateOne({ _id: id }, { $set: { anonymity ,status,email,phone,password,gender,dob,language} });
+    await User.updateOne({ _id: id }, { $set: { anonymity ,status,email,phone,password,gender,dob,language,location} });
     
     res.status(200).json({ message: 'Data updated successfully' });
   } catch (error) {
@@ -271,7 +271,7 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
           console.log("User profile fetched successfully:", profile);
           res.status(200).json({ success: true, status: profile.status ,anonymity:profile.anonymity,
             email:profile.email,phone:profile.phone,password:profile.password,
-            gender:profile.gender,dob:profile.dob,language:profile.language});
+            gender:profile.gender,dob:profile.dob,language:profile.language,location:profile.location});
             // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",phone);
       } else {
           console.log("User not found with ID:", u_id);
@@ -282,7 +282,19 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
         res.status(500).json({ success: false, error: 'An error occurred while fetching profile' });
     }
 });
-
+//////////////////////////////////////////////////////////////////////////////////
+router.post("/MessageForward", async (req, res) => {
+  try {
+    const { message, forwardTo } = req.body;
+    console.log('Forwarding message:', message, 'to:', forwardTo);
+    // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",message);
+    res.status(200).json({ success: true, message: 'Message forwarded successfully' });
+  } catch (error) {
+    console.error('Error forwarding message:', error);
+    res.status(500).json({ success: false, error: 'An error occurred while forwarding message' });
+  }
+});
+////////////////////////////////////////////////////////////////////////////////
 
   router.route('/convert').post(async (req, res) => {
       try {
@@ -642,6 +654,21 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
       friends.push(result)
     }
     res.send(friends)
+  }catch(error){
+    res.send("error")
+  }
+  })
+
+  router.post('/getCommunitylist',async (req,res)=>{
+    try{
+      const ids = req.body.communityids
+    const communities = []
+    for(let i in ids){
+      const result = await Community.findById(ids[i])
+      communities.push(result)
+    }
+    res.send(communities)
+    // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",communities);
   }catch(error){
     res.send("error")
   }

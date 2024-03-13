@@ -7,10 +7,12 @@ import axios from "axios";
 
 var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) => {
     //status of anonymous :not used now but soon
-    const [AnonymsGps, setAnonymsGps] = useState(true);
+    const [AnonymsGps, setAnonymsGps] = useState(null);
+    const [sernityscore, setsernityscore] = useState(null);
+    const [location, setLocation] = useState(null);
     const u_id = localStorage.getItem('userid')
-    const [userData,setUserData] = useState(null)
-    const [sideScreenGroupList,setSideScreenGroupList] = useState(null)
+    const [userData, setUserData] = useState(null)
+    const [sideScreenGroupList, setSideScreenGroupList] = useState(null)
     async function addfriend() {
         if (u_id != selectedUser.userid) {
             console.log(selectedUser.userid);
@@ -21,20 +23,27 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
         }
 
     }
-    useEffect(()=>{
-        async function sidescreengrouplist(){
+
+    useEffect(() => {
+        async function sidescreengrouplist() {
             try {
-                const result = await axios.post('/sidescreengroupnames',{u_id:selectedUser.userid})
+                const result = await axios.post('/sidescreengroupnames', { u_id: selectedUser.userid})
                 setSideScreenGroupList(result.data.names)
                 setUserData(result.data.userdata)
-                console.log(result)
+                setAnonymsGps(result.data.userdata.anonymity)
+                setsernityscore(result.data.userdata.serenityscore)
+                setLocation(result.data.userdata.location)
+                // console.log(result)
+                // console.log("serenityscore")
+                // console.log(userData)
+                // console.log(result.data.userdata.serenityscore)
             } catch (error) {
                 console.error(error)
             }
-            
+
         }
         sidescreengrouplist()
-    },[selectedUser])
+    }, [selectedUser])
     return (
         <>
             <div className="section3_back">
@@ -42,19 +51,20 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
             </div>
             <div className="section3_1">
                 <div className="section3_1_1">
-                {/* <img alt=""src={`/uploads/profilePictures/user.png`}  /> */}
-                    {/* <img src={`/uploads/profilePictures/user.png`} className="section3_1_1" alt="" /> */}
+
                     <img src={`/uploads/profilePictures/${userData?.profilePicture}`} className="section3_1_1" alt="" />
                 </div>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}
                     <div className="section3_textArea profile_text center">
-                        <span className="light">SerenityScore:<span className="bold">90.99</span></span>
+                        <span className="light">SerenityScore:<span className="bold">{sernityscore}</span></span>
                         <div className="textlength_head center">
-                            <span className="bold alignself_center">{selectedUser.username}</span>
+                        {AnonymsGps ? <span className="bold alignself_center">Anonymous</span>: <span className="bold alignself_center">{selectedUser.username}</span>}
+                           
                         </div>
                         <div className="textlength_para center">
-                            <span className="light alignself_center">statusssssss</span>
+                        {AnonymsGps ? <span className="light alignself_center">target's status is hidden!</span>: <span className="light alignself_center">{selectedUser.status}</span>}
+                           
                         </div>
                     </div>
                     <div className="section3_features">
@@ -64,26 +74,42 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
                     </div>
                     <div className="section3_location flexrow center">
                         <MdLocationPin className="icon nobordershadow" />
-                        <span className="bold">Kerala,India</span>
+                        <span className="bold">{location}</span>
                     </div>
 
                 </div>
             </div>
-            <div className={AnonymsGps ? "section3_2 flexcolumn" : "section3_2 flexcolumn blur"}>
-                <div className="center spacebetween">
-                    <span className="bold">Group Participations</span>
-                    <MdGroups className="icon_search" />
-                </div>
-                {sideScreenGroupList && sideScreenGroupList.map((name,i)=>(
-                    <div className="Group_Participations box nobordershadow">
-                    <div className="group_box flexrow">
-                        <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold">{name}</span>
+            {
+                AnonymsGps ?
+                    <div className="section3_2 flexcolumn">
+                        <div className="center spacebetween">
+                            <span className="bold">Group Participations</span>
+                            <MdGroups className="icon_search" />
+                        </div>
+                       
+                            <div className="Group_Participations box nobordershadow">
+                                <span className="light">user's data is hidden</span>
+                            </div>
+
                     </div>
-                </div>)
-                )}
-                
-            </div>
+                    :
+                    <div className= "section3_2 flexcolumn">
+                        <div className="center spacebetween">
+                            <span className="bold">Group Participations</span>
+                            <MdGroups className="icon_search" />
+                        </div>
+                        {sideScreenGroupList && sideScreenGroupList.map((name, i) => (
+                            <div className="Group_Participations box nobordershadow">
+                                <div className="group_box flexrow">
+                                    <img src="images/groupprofile.jpg" className="icon_search" />
+                                    <span className="bold">{name}</span>
+                                </div>
+                            </div>)
+                        )}
+
+                    </div>
+
+            }
 
             <div className="section3_3">
 

@@ -123,6 +123,14 @@
     border-radius: 0px 0px 0px 0px !important;
     overflow-y: auto;
 }
+/* .overlay_section2_mid{
+    flex:7;
+    position: fixed !important;
+    background-color: transparent !important;
+    z-index: 2 !important;
+    
+    backdrop-filter: blur(10px);
+} */
 
 .chat_typing {
     flex: .5;
@@ -265,8 +273,12 @@
     display: flex;
     flex: 6;
     width: 100%;
-
-    /* justify-content: center; */
+    /* min-height: 200px; /* Adjust the height as needed */
+    /* flex-shrink: 0;  */
+}
+.section3_1_1>img{
+    height: 300px;
+    width: 100%;
 }
 
 .section3_1_2 {

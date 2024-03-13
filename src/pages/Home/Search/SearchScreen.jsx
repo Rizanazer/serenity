@@ -158,9 +158,9 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
           <></>}
 
       </div>
-      {SideScreen && <div className="section3 box nopadding nobordershadow">
+      {/* {SideScreen && <div className="section3 box nopadding nobordershadow">
         {<SideScreenCommunityJoinFn data={{ "image": selectedChat?.image, "groupname": selectedChat?.groupname }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
-      </div>}
+      </div>} */}
     </>
   );
 }
