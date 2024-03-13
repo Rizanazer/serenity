@@ -207,7 +207,7 @@ function AccountSettings({ Email, Mobile, Gender, DOB, Password, setGender, setD
                     <div className="section2 profilesection1 flex flexcolumn">
                         <div className=" box joinbtn center padding20 redHover" onClick={() => { }}>Delete Account</div>
                         <div className="box basicprofileinfo flex flexcolumn gap10">
-                            <div className="flex flexrow gap10 center">
+                            <div className="flex flexrow gap10">
                                 <span className="light">Email :</span>
                                 {Email ?
                                     <>
@@ -219,13 +219,13 @@ function AccountSettings({ Email, Mobile, Gender, DOB, Password, setGender, setD
                                     </>
                                     :
                                     <>
-                                        <span className="bold">{EditEmail}</span>
+                                        <span className="bold textlength_head ">{EditEmail}</span>
                                         <MdEdit className="violetHover" onClick={() => { ToggleEmailEdit() }} />
                                     </>}
 
                                 {/* <MdEdit className="violetHover"/> */}
                             </div>
-                            <div className="flex flexrow gap10 center">
+                            <div className="flex flexrow gap10 ">
                                 <span className="light">Mobile No :</span>
                                 {Mobile ?
                                     <>
@@ -243,7 +243,7 @@ function AccountSettings({ Email, Mobile, Gender, DOB, Password, setGender, setD
 
                                 {/* <MdEdit className="violetHover"/> */}
                             </div>
-                            <div className="flex flexrow gap10 center">
+                            <div className="flex flexrow gap10 ">
                                 <span className="light">Password :</span>
                                 {Password ?
                                     <>
@@ -262,7 +262,7 @@ function AccountSettings({ Email, Mobile, Gender, DOB, Password, setGender, setD
 
                             </div>
                             <hr className='line' />
-                            <div className="flex flexrow gap10 center">
+                            <div className="flex flexrow gap10 ">
                                 <span className="light">Gender :</span>
                                 {Gender ?
                                     <>
@@ -278,7 +278,7 @@ function AccountSettings({ Email, Mobile, Gender, DOB, Password, setGender, setD
                                     </>}
 
                             </div>
-                            <div className="flex flexrow gap10 center">
+                            <div className="flex flexrow gap10 ">
                                 <span className="light">Date of Birth :</span>
                                 {DOB ?
                                     <>
