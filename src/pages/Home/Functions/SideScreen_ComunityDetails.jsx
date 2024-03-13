@@ -5,6 +5,7 @@ import SideScreenCommunityMemberFn from "./SideScreen_communityMember";
 import axios from "axios";
 import { useEffect, useState } from "react";
 var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data, member,actions }) => {
+    const username = localStorage.getItem('username')
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])
     useEffect(() => {

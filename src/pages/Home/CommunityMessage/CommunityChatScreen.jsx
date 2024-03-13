@@ -1,7 +1,7 @@
 // 
 import React, { useEffect, useState, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
-import { MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
+import { MdForward, MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import GroupList from "../Functions/GroupList";
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
 import UpperChatInfo from "../Functions/UpperChatInfo";
@@ -37,11 +37,11 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
   const [Translate, set_Translate] = useState(false);
   const [messageTtext, setmessageTtext] = useState("");
-  const [language, setLanguage] = useState(null); 
+  const [language, setLanguage] = useState(null);
   useEffect(() => {
     setLanguage(userdata.language)
     fetchProfileUpdate()
-    
+
   }, []);
 
   const openImageViewer = (imageUrl) => {
@@ -262,15 +262,74 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   async function fetchProfileUpdate() {
     const u_id = localStorage.getItem('userid')
     try {
-        const response = await axios.post("/fetchProfile", { u_id: u_id, })
-        console.log( "##################" ,response.data.language)
-        
-        setLanguage(response.data.language)
+      const response = await axios.post("/fetchProfile", { u_id: u_id, })
+      console.log("##################", response.data.language)
+
+      setLanguage(response.data.language)
     } catch (error) {
-        console.log("error fetching Status")
+      console.log("error fetching Status")
     }
-}
-  
+  }
+  ////////////////////////////messageforward////////////////////////////////////////
+  const [friendList, setFriendList] = useState([])
+  const [CommunityList, setCommunityList] = useState([]);
+
+  const [Selectedrecipients, setSelectedRecipients] = useState("");
+  const [ForwardMessage, setForwardMessage] = useState("");
+  const [handleForward_el, sethandleForward_el] = useState("");
+
+  const [forwarding, setForwarding] = useState(false);
+
+  async function fetchfriends() {
+    try {
+      const response = await axios.post('/getfriendlist', { friendids: userdata.friends })
+      setFriendList(response.data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  async function fetchcommunities() {
+    try {
+      const response = await axios.post('/getCommunitylist', { communityids: userdata.communities })
+      setCommunityList(response.data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  useEffect(() => {
+    fetchcommunities();
+    fetchfriends();
+  }, [])
+
+  const handleForward = async (message) => {
+    try {
+      setForwarding(false);
+      await axios.post('/MessageForward', {
+        message: ForwardMessage,
+        forwardTo: Selectedrecipients,
+      });
+
+    } catch (error) {
+      console.error('Error forwarding message:', error);
+
+    }
+  };
+  const handleCheckboxChange = (event, memberId) => {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",memberId)
+      setSelectedRecipients(memberId)
+      // setForwardMessage(forwardmessage)
+
+    } else {
+      console.log("❤️❤️❤️❤️❤️errrrrrorrrr forward❤️❤️❤️❤️❤️ ",)
+    }
+  };
+
+
+
+  //////////////////////////////////////////////////////////////////////////////////
+
   return (
     <>
       <div className="section1 section_margin box">
@@ -300,7 +359,9 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
       </div>
 
-      <div className="section2 box">
+      <div className="section2 box ">
+
+
         {ViewChat ?
           <>
             {/* upperchats component */}
@@ -336,8 +397,60 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
             </div>
 
             {/* middlechats component-chat_area */}
-            {/* //onClick={()=>(console.log(allCommunityMessages.map(s=>s.messages.map(t=>t.message))))} */}
-            <div className="box chat_area padding10" ref={chatAreaRef}>
+
+            <div className="box chat_area padding10 overlay_section2_mid " ref={chatAreaRef}>
+              {forwarding && <div className="center overlay">
+                <div className="box create center flexcolumn">
+                  <span className="bold"> Forward Message </span>
+                  <div className="name_members center flexcolumn">
+                    <span className="bold"> To Friends...</span>
+
+                    <div className="groupname flexrow center">
+                      <CgSearch className="icon_search" />
+                      <input type="text" />
+                    </div>
+                    <div className="box padding10 create_gp_Members ">
+
+                      {friendList && friendList.map((elem, key) => (
+                        <div className="member_box flexrow" onClick={() => { }}>
+                          <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
+                          <img src={`/uploads/profilePictures/${elem.profilePicture}`} className="icon_member" />
+                          <span className="bold pointer">{elem.username}</span>
+                        </div>
+                      ))
+                      }
+
+                    </div>
+                  </div>
+                  <div className="name_members center flexcolumn">
+                  <span className="bold"> To Community....</span>
+
+                    <div className="groupname flexrow center">
+                      <CgSearch className="icon_search" />
+                      <input type="text" />
+                    </div>
+                    <div className="box create_gp_Members">
+
+                    {CommunityList && CommunityList.map((elem, key) => (
+                      <div className="member_box flexrow" onClick={() => { }}>
+                        <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
+                        <img src={`uploads/communityIcons/${elem.communityIcon}`} className="icon_member" />
+                        <span className="bold pointer">{elem.communityName}</span>
+                      </div>
+                    ))
+                    }
+
+                    </div>
+                  </div>
+
+              
+                  <div className="txtbtn flexrow gap20">
+                    <span className="bold pointer txtbtn_clr" onClick={() => { setForwarding(false) }}>Cancel</span>
+                    <span className="bold pointer txtbtn_clr" onClick={() => { handleForward(handleForward_el)}}>Forward</span>
+                  </div>
+
+                </div>
+              </div>}
               {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
                 <div className=" nopadding more_items " onClick={() => {
                   toggleNeration()
@@ -358,11 +471,32 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   {
                     rightclk && el.u_name === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
+                        {/* {forwarding && (
+                          <div className="box">
+        
+                            {recipients.map((recipient) => (
+                              <div key={recipient.id} className="recipient" onClick={() => handleRecipientSelect(recipient)}>
+                                {recipient.name}
+                              </div>
+                            ))}
+                          </div>
+                        )} */}
                         {rightclk && selectedMessage === el && (
                           <div className="message_options center option-rightside">
-                            <div className="message_items" onClick={() => { }}>
+                            <div className="message_items" onClick={() => {
+                              sethandleForward_el(el);
+                              setForwarding(true);
+                              setForwardMessage(el.message);
+                            }}>
+                              <div className="neration flexrow violetHover"><MdForward className="icon_search" />
+                                <span className="bold padding5">Forward</span>
+                              </div>
+                            </div>
+                            <div className="message_items" onClick={() => {
+                              //  handleDelete(el) 
+                            }}>
                               <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
-                                <span className="bold padding5">delete</span>
+                                <span className="bold padding5">Delete</span>
                               </div>
                             </div>
                           </div>
@@ -382,9 +516,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                             <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
                           </div>
-
                         </div>
-
                       </div>
                       :
                       <div className="flex flexrow gap10" >
@@ -396,9 +528,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                               className="msg"
                               onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
                               onMouseLeave={cancelHoverTimer}
-                              onContextMenu={(e) => {handleContextMenu(e, el); setmessageTtext(el.message);}}
+                              onContextMenu={(e) => { handleContextMenu(e, el); setmessageTtext(el.message); }}
                             >
-                              
                               {Translate && selectedMessage === el ? messageTtext : el.message}
                             </p>}
                           <div className="flex flexcolumn center">
@@ -407,25 +538,43 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                           </div>
                         </div>
                         {rightclk && selectedMessage === el && (
-                      
                           <div className="message_options center">
-                            <div className="message_items">
+                            <div className="message_items" onClick={() => {
+                              handleForward(el)
+                            }}>
+                              <div className="neration flexrow violetHover"><MdForward className="icon_search" />
+                                <span className="bold padding5">Forward</span>
+                              </div>
+                            </div>
+                            <div className="message_items" onClick={() => {
+                              // handleDelete(el) 
+                            }}>
                               <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
-                                <span className="bold padding5">delete</span>
+                                <span className="bold padding5">Delete</span>
                               </div>
                             </div>
                             <div className="message_items" onClick={() => { handleTranslate(); toggleTranslation() }}>
                               <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
-                                <span className="bold padding5">translate</span>
+                                <span className="bold padding5">Translate</span>
                               </div>
-
                             </div>
                           </div>
                         )}
+                        {/* {forwarding && (
+                          <div className="box">
+        
+                            {recipients.map((recipient) => (
+                              <div key={recipient.id} className="recipient" onClick={() => handleRecipientSelect(recipient)}>
+                                {recipient.name}
+                              </div>
+                            ))}
+                          </div>
+                        )} */}
                       </div>
                   }
                 </React.Fragment>
               ))}
+
 
 
 
@@ -461,7 +610,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         }
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} data={{ "image": "images/profileimg_chat.jpg", "username": "arsif" }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
+        {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
           <SideScreenCommunityDetailsFn data={{ selectedCommunityIcon, individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 

@@ -3,46 +3,47 @@ import "./createCommunity.css"
 import { CgSearch } from "react-icons/cg";
 import axios from "axios"
 import mongoose from "mongoose";
-var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
+var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
     const [Next, setNext] = useState(false);
-    const [friendList,setFriendList] = useState([])
+    const [friendList, setFriendList] = useState([])
     const userdata = JSON.parse(localStorage.getItem('userdata'))
-    useEffect(()=>{
-        async function fetchfriends(){
-            try {
-                const response = await axios.post('/getfriendlist',{friendids:userdata.friends})
-                setFriendList(response.data)
-            } catch (error) {
-                console.error(error)
-            }
+    async function fetchfriends() {
+        try {
+            const response = await axios.post('/getfriendlist', { friendids: userdata.friends })
+            setFriendList(response.data)
+        } catch (error) {
+            console.error(error)
         }
+    }
+    useEffect(() => {
+
         fetchfriends()
-    },[])
-    const [createCommunityData,setCreateCommunityData] = useState({
-        c_name:'',
-        c_desc:"",
-        communityIcon:null,
-        selectedMembers:[]
+    }, [])
+    const [createCommunityData, setCreateCommunityData] = useState({
+        c_name: '',
+        c_desc: "",
+        communityIcon: null,
+        selectedMembers: []
     })
-    
-    const handleInputChange =(event) =>{
-        const {name, value} = event.target
-        setCreateCommunityData({...createCommunityData,[name]:value})
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target
+        setCreateCommunityData({ ...createCommunityData, [name]: value })
     };
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         setCreateCommunityData({ ...createCommunityData, communityIcon: file });
-      };
-      const handleCheckboxChange = (event, memberId) => {
+    };
+    const handleCheckboxChange = (event, memberId) => {
         const isChecked = event.target.checked;
         if (isChecked) {
             setCreateCommunityData({
-            ...createCommunityData,
-            selectedMembers: [
-                ...createCommunityData.selectedMembers,memberId]
-        });
-            console.log(`its checked`+createCommunityData.selectedMembers);
-            console.log(typeof(createCommunityData.selectedMembers));
+                ...createCommunityData,
+                selectedMembers: [
+                    ...createCommunityData.selectedMembers, memberId]
+            });
+            console.log(`its checked` + createCommunityData.selectedMembers);
+            console.log(typeof (createCommunityData.selectedMembers));
 
         } else {
             setCreateCommunityData({
@@ -51,20 +52,20 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
             });
         }
     };
-    
+
     async function createCommunity() {
         const createdBy = localStorage.getItem("userid");
         const formData = new FormData()
         for (const key in createCommunityData) {
             if (key === 'selectedMembers') {
-              createCommunityData[key].forEach(memberId => {
-                formData.append(key, memberId);
-              });
+                createCommunityData[key].forEach(memberId => {
+                    formData.append(key, memberId);
+                });
             } else {
-              formData.append(key, createCommunityData[key]);
+                formData.append(key, createCommunityData[key]);
             }
-          }
-        formData.append('createdby',createdBy)
+        }
+        formData.append('createdby', createdBy)
         // const senddata = { createdby: createdBy, c_name: createCommunityData.c_name, c_desc: createCommunityData.c_desc };
         try {
             const response = await axios.post('/createcommunity', formData);
@@ -76,7 +77,7 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
             console.error(error);
         }
     }
-    
+
 
     return (
         <>
@@ -93,15 +94,15 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
                         </div>
                         <div className="box create_gp_Members">
 
-                            {friendList&&friendList.map((elem,key)=>(
+                            {friendList && friendList.map((elem, key) => (
                                 <div className="member_box flexrow" onClick={() => { }}>
-                                <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
-                                <img src="images/profileimg_chat.jpg" className="icon_member" />
-                                <span className="bold pointer">{elem.username}</span>
-                            </div>
+                                    <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
+                                    <img src={`/uploads/profilePictures/${elem.profilePicture}`} className="icon_member" />
+                                    <span className="bold pointer">{elem.username}</span>
+                                </div>
                             ))
                             }
-                            
+
                         </div>
                         <div className="txtbtn flexrow ">
                             <span className="bold pointer txtbtn_clr" onClick={() => { setCreateAlert(false) }}>cancel</span>
@@ -115,14 +116,14 @@ var CreateCommunity = ({ setCreateAlert,fetchCommunityDetails }) => {
                         <div className="name_image flexrow center">
                             <img src="images/profilepic.jpg" className="circle" alt="" />
                             <div className="groupname flexcolumn">
-                            <input type="file" accept="image/*" name="communityIcon" onChange={handleImageChange} />            
+                                <input type="file" accept="image/*" name="communityIcon" onChange={handleImageChange} />
                                 <span className="bold">Group Name</span>
-                                <input type="text" value={createCommunityData.c_name} name="c_name" onChange={handleInputChange}/>
+                                <input type="text" value={createCommunityData.c_name} name="c_name" onChange={handleInputChange} />
                                 <span className="light">Group Description</span>
-                                <input type="text" value={createCommunityData.c_desc} name="c_desc" onChange={handleInputChange}/>
+                                <input type="text" value={createCommunityData.c_desc} name="c_desc" onChange={handleInputChange} />
                             </div>
                         </div>
-                        <div className="txtbtn flexrow ">
+                        <div className="txtbtn flexrow gap20">
                             <span className="bold pointer txtbtn_clr" onClick={() => { setCreateAlert(false) }}>cancel</span>
                             <span className="bold pointer txtbtn_clr" onClick={() => { setNext(true) }}>Next</span>
                         </div>
