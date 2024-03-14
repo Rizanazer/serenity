@@ -74,8 +74,16 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       try {
         const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
         console.log(response.data.chats.messages);
-        setMessages(response.data.chats.messages)
-        console.log(messages);
+        const msgs = response.data.chats.messages
+        console.log("msgs-open");console.log(msgs);
+        if(msgs.length > 0){
+          setMessages(response.data.chats.messages)
+          console.log("msgs");console.log(msgs);console.log(typeof(msgs));console.log(msgs.length);
+        }else{
+          setMessages({})
+          console.log("blank-msgs");console.log(msgs);console.log(typeof(msgs));
+        }
+        //console.log(messages);
       } catch (error) {
         console.log("error in fetching selected community messages")
       }
@@ -127,7 +135,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     console.log(text);
     if (text.trim().length > 0 && selectedCommunity) {
       const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture };
-      console.log(messageData);
+      // console.log(messageData);
       if (socket) {
         socket.emit('sendMessage', messageData);
         setMessages((prev) => [...prev, messageData]);
@@ -136,7 +144,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         console.log(`sendfunc`);
         console.log(allCommunityMessages);
         console.log(`///`);
-        console.log(messageData);
+        // console.log(messageData);
         const appenddata = { u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), message: text.trim() };
         // setCommunityMessages(prevMessages => [...prevMessages, appenddata]);
         setText("");
@@ -309,7 +317,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const [friendList, setFriendList] = useState([])
   const [CommunityList, setCommunityList] = useState([]);
 
-  const [Selectedrecipients, setSelectedRecipients] = useState("");
+  const [Selectedrecipients, setSelectedRecipients] = useState([]);
   const [ForwardMessage, setForwardMessage] = useState("");
   const [handleForward_el, sethandleForward_el] = useState("");
 
@@ -342,6 +350,9 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       await axios.post('/MessageForward', {
         message: ForwardMessage,
         forwardTo: Selectedrecipients,
+        u_id:localStorage.getItem('userid'),
+        u_name:username,
+        profilePicture : profilePicture
       });
 
     } catch (error) {
@@ -354,9 +365,11 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     if (isChecked) {
       console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", memberId)
       setSelectedRecipients(memberId)
+      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",memberId)
+      setSelectedRecipients(prevState => [...prevState, memberId]);
       // setForwardMessage(forwardmessage)
-
     } else {
+      setSelectedRecipients(prevState => prevState.filter(id => id !== memberId));
       console.log("❤️❤️❤️❤️❤️errrrrrorrrr forward❤️❤️❤️❤️❤️ ",)
     }
   };
@@ -590,6 +603,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                               onMouseLeave={cancelHoverTimer}
                               onContextMenu={(e) => handleContextMenu(e, el)}
                             >
+                              {el?.forwarded === true?<p className="light">forwarded</p>:<></>}
                               {Translate && selectedMessage === el ? messageTtext : el.message}
                             </p>
                           )}
