@@ -552,7 +552,9 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                         {rightclk && selectedMessage === el && (
                           <div className="message_options center">
                             <div className="message_items" onClick={() => {
-                              handleForward(el)
+                              sethandleForward_el(el);
+                              setForwarding(true);
+                              setForwardMessage(el.message);
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
