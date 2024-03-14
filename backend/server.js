@@ -342,14 +342,14 @@ router.post("/MessageForward", async (req, res) => {
     console.log('Forwarding message:', message, 'to:', forwardTo);
     const userids = []
     const communityids = []
-    for(const id in forwardTo){
-      console.log(forwardTo[id]);
-      const result = await User.findById(forwardTo[id])
+    const forwardTofiltered = forwardTo.filter((item, index) => forwardTo.indexOf(item) === index);
+
+    for(const id of forwardTofiltered){
+      const result = await User.findById(id)
       if(result){
-        userids.push(forwardTo[id])
-        console.log(result.username);
+        userids.push(id)
       }else{
-        communityids.push(forwardTo[id])
+        communityids.push(id)
       }
     }
        

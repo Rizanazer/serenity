@@ -364,10 +364,10 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     const isChecked = event.target.checked;
     if (isChecked) {
       console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", memberId)
-      setSelectedRecipients(memberId)
-      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",memberId)
       setSelectedRecipients(prevState => [...prevState, memberId]);
       // setForwardMessage(forwardmessage)
+      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", memberId)
+      console.log(Selectedrecipients);
     } else {
       setSelectedRecipients(prevState => prevState.filter(id => id !== memberId));
       console.log("❤️❤️❤️❤️❤️errrrrrorrrr forward❤️❤️❤️❤️❤️ ",)
