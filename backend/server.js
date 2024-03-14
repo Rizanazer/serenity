@@ -48,11 +48,27 @@ const { log } = require('console');
     filename: function(req, file, cb) {
       // Generate a unique filename for the uploaded image
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, 'communityMessageImage-' + uniqueSuffix + path.extname(file.originalname));
+      let fname= 'communityMessageImage-' + uniqueSuffix + path.extname(file.originalname);
+      req.filename = fname;
+      cb(null, fname);
+    }
+  });
+  
+  const storeCommunityMessagevideo = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, path.join(__dirname, '/uploads/communityMessageVideos'));
+    },
+    filename: function(req, file, cb) {
+      // Generate a unique filename for the uploaded image
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      let fname= 'communityMessageVideo-' + uniqueSuffix + path.extname(file.originalname)
+      req.filename = fname;
+      cb(null, fname);
     }
   });
 
   const uploadCommunityMessageImage = multer({ storage: storeCommunityMessageImage });
+  const uploadCommunityMessagevideo = multer({ storage: storeCommunityMessagevideo });
   
 /////////////////////////////////////////////////////////multer community message storing end here
 const storePersonalMessageImage = multer.diskStorage({
@@ -84,8 +100,6 @@ const uploadPersonalMessageImage = multer({ storage: storePersonalMessageImage }
 /////////////////////////////////////////////////////////multer community icon storing end here
 
     app.post('/community_upload_image', uploadCommunityMessageImage.single('image'), async (req, res) => {
-      console.log(req.body);
-      console.log(req.file);
       try {
         // Extract necessary data from the request
         const { c_id, u_id, u_name } = req.body;
@@ -115,9 +129,48 @@ const uploadPersonalMessageImage = multer({ storage: storePersonalMessageImage }
             }]
           });
         }
+        // Send success response
+        res.json({"success":true,"filename":req.filename});
+      } catch (error) {
+        console.error("Error in image sending to community:", error);
+        res.json({"success":false});
+      }
+    });
+    app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'), async (req, res) => {
+      console.log(req.body);
+      console.log(req.file);
+      try {
+        // Extract necessary data from the request
+        const { c_id, u_id, u_name } = req.body;
+        const filename = req.file.filename;
+    
+        // Check if a chat exists for the given communityId
+        let existingChat = await CommunityChats.findOne({ communityId: c_id });
+    
+        if (existingChat) {
+          existingChat.messages.push({
+            u_id,
+            u_name,
+            filename,
+            messagetype: "video",
+            caption: "caption by user available soon"
+          });
+          await existingChat.save();
+        } else {
+          await CommunityChats.create({
+            communityId: c_id,
+            messages: [{
+              u_id,
+              u_name,
+              filename,
+              messagetype: "video",
+              caption: "caption by user available soon"
+            }]
+          });
+        }
     
         // Send success response
-        res.json({"success":true});
+        res.json({"success":true,"filename":req.filename});
       } catch (error) {
         console.error("Error in image sending to community:", error);
         res.json({"success":false});

@@ -10,6 +10,7 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
+import { FaCross } from "react-icons/fa6";
 function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
 
   const userdata = JSON.parse(localStorage.getItem('userdata'));
@@ -38,6 +39,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const [Translate, set_Translate] = useState(false);
   const [messageTtext, setmessageTtext] = useState("");
   const [language, setLanguage] = useState(null);
+  const [Videoplay, setVideoplay] = useState(false);
   useEffect(() => {
     setLanguage(userdata.language)
     fetchProfileUpdate()
@@ -203,9 +205,15 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   };
 
   const fileInputRef = useRef(null);
+  const fileVideoInputRef = useRef(null);
 
   const sendimage = () => {
     fileInputRef.current.click();
+
+  };
+  const sendvideo = () => {
+    fileVideoInputRef.current.click();
+
   };
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -221,16 +229,43 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
             'Content-Type': 'multipart/form-data'
           }
         });
-        setMessages({ ...messages.response.data })
-        //   console.log("formdata------------------------------------------------");
-        //   console.log(Object.fromEntries(formData));
-        //   socket.emit('send-image-community', formData);
-        // // Handle the response from the server as needed
-        //   socket.on('send-image-community', (response) => {
-        //   console.log('Image uploaded successfully:', response);
-        // });
+        let newmessage = {
+          messagetype: 'image',
+          u_name: userdata.username,
+          filename: response.data.filename,
+
+        }
+        setMessages([...messages, newmessage])
+
       } catch (error) {
         console.error('Error uploading image:', error);
+      }
+    }
+  };
+  const handleFileVideoChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('video', file);
+        formData.append('u_name', userdata.username);
+        formData.append('c_id', selectedCommunity);
+        formData.append('u_id', userdata._id);
+        const response = await axios.post('/community_upload_video', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log(response);
+        let newmessage = {
+          messagetype: 'video',
+          u_name: userdata.username,
+          filename: response.data.filename,
+
+        }
+        setMessages([...messages, newmessage])
+      } catch (error) {
+        console.error('Error uploading video:', error);
       }
     }
   };
@@ -317,7 +352,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const handleCheckboxChange = (event, memberId) => {
     const isChecked = event.target.checked;
     if (isChecked) {
-      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",memberId)
+      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", memberId)
       setSelectedRecipients(memberId)
       // setForwardMessage(forwardmessage)
 
@@ -423,7 +458,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                     </div>
                   </div>
                   <div className="name_members center flexcolumn">
-                  <span className="bold"> To Community....</span>
+                    <span className="bold"> To Community....</span>
 
                     <div className="groupname flexrow center">
                       <CgSearch className="icon_search" />
@@ -431,22 +466,22 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                     </div>
                     <div className="box create_gp_Members">
 
-                    {CommunityList && CommunityList.map((elem, key) => (
-                      <div className="member_box flexrow" onClick={() => { }}>
-                        <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
-                        <img src={`uploads/communityIcons/${elem.communityIcon}`} className="icon_member" />
-                        <span className="bold pointer">{elem.communityName}</span>
-                      </div>
-                    ))
-                    }
+                      {CommunityList && CommunityList.map((elem, key) => (
+                        <div className="member_box flexrow" onClick={() => { }}>
+                          <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
+                          <img src={`uploads/communityIcons/${elem.communityIcon}`} className="icon_member" />
+                          <span className="bold pointer">{elem.communityName}</span>
+                        </div>
+                      ))
+                      }
 
                     </div>
                   </div>
 
-              
+
                   <div className="txtbtn flexrow gap20">
                     <span className="bold pointer txtbtn_clr" onClick={() => { setForwarding(false) }}>Cancel</span>
-                    <span className="bold pointer txtbtn_clr" onClick={() => { handleForward(handleForward_el)}}>Forward</span>
+                    <span className="bold pointer txtbtn_clr" onClick={() => { handleForward(handleForward_el) }}>Forward</span>
                   </div>
 
                 </div>
@@ -502,16 +537,30 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                           </div>
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
-                          {(el.messagetype === "image") ?
-                            <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} onClick={() => window.open(`uploads/communityMessageImages/${el.filename}`, '_blank')} />
-                            : <p
+                          {el.messagetype === "image" && (
+                            <img
+                              src={`uploads/communityMessageImages/${el.filename}`}
+                              style={{ width: '300px', height: '300px' }}
+                              onClick={() => window.open(`uploads/communityMessageImages/${el.filename}`, '_blank')}
+                            />
+                          )}
+
+                          {el.messagetype === "video" && (
+                            <Video src={`uploads/communityMessageVideos/${el.filename}`}
+                            />
+                          )}
+
+                          {el.messagetype !== "image" && el.messagetype !== "video" && (
+                            <p
                               className="msg"
                               onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
                               onMouseLeave={cancelHoverTimer}
                               onContextMenu={(e) => handleContextMenu(e, el)}
                             >
-                              {el.message}
-                            </p>}
+                              {Translate && selectedMessage === el ? messageTtext : el.message}
+                            </p>
+                          )}
+
                           <div className="flex flexcolumn center">
                             <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
@@ -522,16 +571,28 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                       <div className="flex flexrow gap10" >
 
                         <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
-                          {(el.messagetype === "image") ?
-                            <img src={`uploads/communityMessageImages/${el.filename}`} style={{ width: '300px', height: '300px' }} />
-                            : <p
+                          {el.messagetype === "image" && (
+                            <img
+                              src={`uploads/communityMessageImages/${el.filename}`}
+                              style={{ width: '300px', height: '300px' }}
+                              onClick={() => window.open(`uploads/communityMessageImages/${el.filename}`, '_blank')}
+                            />
+                          )}
+
+                          {el.messagetype === "video" && (
+                            <Video  src={`uploads/communityMessageVideos/${el.filename}`}/>
+                          )}
+
+                          {el.messagetype !== "image" && el.messagetype !== "video" && (
+                            <p
                               className="msg"
                               onMouseEnter={() => { Neration && startHoverTimer(el.message) }}
                               onMouseLeave={cancelHoverTimer}
-                              onContextMenu={(e) => { handleContextMenu(e, el); setmessageTtext(el.message); }}
+                              onContextMenu={(e) => handleContextMenu(e, el)}
                             >
                               {Translate && selectedMessage === el ? messageTtext : el.message}
-                            </p>}
+                            </p>
+                          )}
                           <div className="flex flexcolumn center">
                             <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => { setSelectedUser({ username: el.u_name, userid: el.u_id }); setMember(true); setSideScreen(true) }} />
                             <p className="bold">{el.u_name}</p>
@@ -599,8 +660,10 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
                   <MdOutlineKeyboardVoice className="icon icon_small nobordershadow" />
-                  <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" />
+                  <input type="file" accept="video/*" ref={fileVideoInputRef} style={{ display: 'none' }} onChange={handleFileVideoChange} />
+                  <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" onClick={sendvideo} />
                   <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
+
                   <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage} />
                 </div>
                 <MdSend className="icon send nobordershadow" onClick={send} />
@@ -621,3 +684,13 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   );
 }
 export default CommunityMsgScreen;
+
+
+function Video({src}){
+  const [open,setOpen] = useState(false);
+  return open?<div className="videoPlayer">
+    <video src={src} controls={true}/>
+    <MdClose size={50} color="#fff" className="close-button" onClick={()=>{setOpen(false)}}/>
+    </div>:
+    <video style={{ width: '300px', height: '300px' }} src={src} controls={false} onClick={()=>setOpen(true)}/>
+}

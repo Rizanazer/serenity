@@ -373,3 +373,30 @@ overflow-y: auto;
   .row_revese{
     flex-direction: row-reverse;
   }
+
+  .videoPlayer{
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      justify-content: center;
+      align-items:center;
+      background: #0005;
+      backdrop-filter: blur(5px);
+      z-index: 50000;
+    }
+.videoPlayer > video{
+    width: 80%;
+    height: 90%;
+    object-fit: contain;
+}
+
+.close-button{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 50px;
+    cursor: pointer;
+}
