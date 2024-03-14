@@ -285,9 +285,76 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////
 router.post("/MessageForward", async (req, res) => {
   try {
-    const { message, forwardTo } = req.body;
+    const { message, forwardTo,u_id,profilePicture,u_name } = req.body;
     console.log('Forwarding message:', message, 'to:', forwardTo);
-    // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",message);
+    const userids = []
+    const communityids = []
+    for(const id in forwardTo){
+      console.log(forwardTo[id]);
+      const result = await User.findById(forwardTo[id])
+      if(result){
+        userids.push(forwardTo[id])
+        console.log(result.username);
+      }else{
+        communityids.push(forwardTo[id])
+      }
+    }
+       
+        
+    if(communityids.length>0){
+      for(const id of communityids){
+        console.log(`hii`);
+        const existingChat = await CommunityChats.findOne({ communityId: id });
+        if (existingChat) {
+          existingChat.messages.push({ u_id, message, u_name,profilePicture,forwarded:true });
+          await existingChat.save();
+        } else {
+          await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message,u_name,profilePicture }] });
+        }
+      }
+
+    }
+    if(userids.length>0){
+      for(const id of userids){
+        const existingChat = await DirectChats.findOne({
+          users: {
+              $all: [
+                  { $elemMatch: { userid: u_id } },
+                  { $elemMatch: { userid: id } }
+              ]
+          }
+      });
+      const to = await User.findOne({_id:id})
+      if (existingChat) {
+        existingChat.messages.push({
+          from: { userid: u_id, username: u_name },
+          to: { userid: id, username: to.username },
+          messageBody: message,
+          messageType: "text"
+        });
+      await existingChat.save();
+      }else{
+        const savedDirectChat = await DirectChats.create({
+          users: [
+            { userid: u_id, username: u_name },
+            { userid: id, username: to.name }
+          ],
+          messages: [{
+            from: { userid: u_id, username: u_name },
+            to: { userid: id, username: to.username },
+            messageBody: message,
+            messageType: "text"
+          }]
+        });
+      }
+    }
+
+
+      }
+      
+    
+      // console.log(existingChat);
+      
     res.status(200).json({ success: true, message: 'Message forwarded successfully' });
   } catch (error) {
     console.error('Error forwarding message:', error);
@@ -712,7 +779,7 @@ router.post("/MessageForward", async (req, res) => {
         const chats = await DirectChats.findOne({
             'users.userid': { $all: [f_id, u_id] }
         });
-    console.log(chats);
+    //console.log(chats);
     res.json({ "success": true,"chats":chats});
     } catch (error) {
       console.log("error ocuurred while loading personalchat")
@@ -750,7 +817,7 @@ router.post("/MessageForward", async (req, res) => {
     const {c_id} = req.body
     console.log(c_id);
     const chats = await CommunityChats.findOne({communityId:c_id})
-     console.log(chats);
+    //  console.log(chats);
      if(chats){
        res.json({ "success": true,"chats":chats});
       }else{
@@ -794,7 +861,7 @@ router.post("/MessageForward", async (req, res) => {
     }else{
       res.json({"success":false})
     }
-    console.log(chats);
+    // console.log(chats);
   })
   
 

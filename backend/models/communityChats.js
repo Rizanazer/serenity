@@ -4,6 +4,7 @@ const communityChatSchema = new mongoose.Schema({
     communityId : {type:mongoose.Schema.Types.ObjectId,ref : 'Community'},
     messages: [
         {
+          forwarded:{type:Boolean,default:false},
           u_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
           u_name:{type:String},
           message: String,
