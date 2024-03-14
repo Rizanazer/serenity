@@ -415,46 +415,46 @@ router.post("/MessageForward", async (req, res) => {
   }
 });
 ////////////////////////////////////////////////////////////////////////////////
-app.post('/filterQuery', async (req, res) => {
-  const { inputs } = req.body;
+// app.post('/filterQuery', async (req, res) => {
+//   const { inputs } = req.body;
   
-  try {
-    const response = await axios.post(
-      'https://api-inference.huggingface.co/models/unitary/toxic-bert',
-      {
-        inputs: inputs
-      },
-      {
-        headers: {
-          Authorization: 'Bearer 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'
-        }
-      }
-    );
+//   try {
+//     const response = await axios.post(
+//       'https://api-inference.huggingface.co/models/unitary/toxic-bert',
+//       {
+//         inputs: inputs
+//       },
+//       {
+//         headers: {
+//           Authorization: 'Bearer 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'
+//         }
+//       }
+//     );
 
-    const result = response.data;
+//     const result = response.data;
 
-    // Extract scores for each toxicity label
-    const toxicScore = result[0][0].score;
-    const insultScore = result[0][1].score;
-    const obsceneScore = result[0][2].score;
-    const identityHateScore = result[0][3].score;
-    const threatScore = result[0][4].score;
-    const severeToxicScore = result[0][5].score;
+//     // Extract scores for each toxicity label
+//     const toxicScore = result[0][0].score;
+//     const insultScore = result[0][1].score;
+//     const obsceneScore = result[0][2].score;
+//     const identityHateScore = result[0][3].score;
+//     const threatScore = result[0][4].score;
+//     const severeToxicScore = result[0][5].score;
 
-    // Send the scores back as response
-    res.json({
-      toxicScore,
-      insultScore,
-      obsceneScore,
-      identityHateScore,
-      threatScore,
-      severeToxicScore
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'An error occurred while querying the model' });
-  }
-});
+//     // Send the scores back as response
+//     res.json({
+//       toxicScore,
+//       insultScore,
+//       obsceneScore,
+//       identityHateScore,
+//       threatScore,
+//       severeToxicScore
+//     });
+//   } catch (error) {
+//     console.error('Error:', error);
+//     res.status(500).json({ error: 'An error occurred while querying the model' });
+//   }
+// });
   router.route('/convert').post(async (req, res) => {
       try {
           const { input_text, to_lang } = req.body;
@@ -1128,13 +1128,63 @@ app.post('/filterQuery', async (req, res) => {
       console.log(u_name)
     });
 
+
+    
+    const axios = require('axios')
+
     socket.on('sendMessage', async ({ c_id, u_name, message, u_id ,profilePicture}) => {
       console.log(c_id,+" "+message+" "+u_name+" "+u_id);
       try {
         if (!c_id || !u_id || !message) {
           return socket.emit({ success: false, "error": "Missing required properties." });
         }
-    
+        
+        try {
+          const response = await axios.post(
+            'https://api-inference.huggingface.co/models/unitary/toxic-bert',
+            {
+              inputs: message
+            },
+            {
+              headers: {
+                Authorization: 'Bearer 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'
+              }
+            }
+          );
+      
+          const result = response.data;
+          console.log("response.data-------------------------------------------");
+          console.log(response.data);
+          // Extract scores for each toxicity label
+          const toxicScore = result[0][0].score;
+          const insultScore = result[0][1].score;
+          const obsceneScore = result[0][2].score;
+          const identityHateScore = result[0][3].score;
+          const threatScore = result[0][4].score;
+          const severeToxicScore = result[0][5].score;
+            console.log(threatScore);
+            const toxicityThreshold = 0.5;
+            if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
+              identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
+               console.log('Message is toxic');
+               message = "this was a toxic comment"
+              }
+          // Send the scores back as response
+          // res.json({
+          //   toxicScore,
+          //   insultScore,
+          //   obsceneScore,
+          //   identityHateScore,
+          //   threatScore,
+          //   severeToxicScore
+          // });
+        } catch (error) {
+          console.error('Error:', error);
+          // res.status(500).json({ error: 'An error occurred while querying the model' });
+        }
+
+
+
         const existingChat = await CommunityChats.findOne({ communityId: c_id });
        
         if (existingChat) {
@@ -1170,44 +1220,3 @@ app.post('/filterQuery', async (req, res) => {
   // });
 
 
-
-  // app.post('/community_upload_image', uploadCommunityMessageImage.single('image'), async (req, res) => {
-  //   console.log(req.body);
-  //   console.log(req.file);
-  //   try {
-  //     // Extract necessary data from the request
-  //     const { c_id, u_id, u_name } = req.body;
-  //     const filename = req.file.filename;
-  
-  //     // Check if a chat exists for the given communityId
-  //     let existingChat = await CommunityChats.findOne({ communityId: c_id });
-  
-  //     if (existingChat) {
-  //       existingChat.messages.push({
-  //         u_id,
-  //         u_name,
-  //         filename,
-  //         messagetype: "image",
-  //         caption: "caption by user available soon"
-  //       });
-  //       await existingChat.save();
-  //     } else {
-  //       await CommunityChats.create({
-  //         communityId: c_id,
-  //         messages: [{
-  //           u_id,
-  //           u_name,
-  //           filename,
-  //           messagetype: "image",
-  //           caption: "caption by user available soon"
-  //         }]
-  //       });
-  //     }
-  
-  //     // Send success response
-  //     res.json({"success":true});
-  //   } catch (error) {
-  //     console.error("Error in image sending to community:", error);
-  //     res.json({"success":false});
-  //   }
-  // });
