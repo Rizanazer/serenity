@@ -415,7 +415,46 @@ router.post("/MessageForward", async (req, res) => {
   }
 });
 ////////////////////////////////////////////////////////////////////////////////
+app.post('/filterQuery', async (req, res) => {
+  const { inputs } = req.body;
+  
+  try {
+    const response = await axios.post(
+      'https://api-inference.huggingface.co/models/unitary/toxic-bert',
+      {
+        inputs: inputs
+      },
+      {
+        headers: {
+          Authorization: 'Bearer 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'
+        }
+      }
+    );
 
+    const result = response.data;
+
+    // Extract scores for each toxicity label
+    const toxicScore = result[0][0].score;
+    const insultScore = result[0][1].score;
+    const obsceneScore = result[0][2].score;
+    const identityHateScore = result[0][3].score;
+    const threatScore = result[0][4].score;
+    const severeToxicScore = result[0][5].score;
+
+    // Send the scores back as response
+    res.json({
+      toxicScore,
+      insultScore,
+      obsceneScore,
+      identityHateScore,
+      threatScore,
+      severeToxicScore
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'An error occurred while querying the model' });
+  }
+});
   router.route('/convert').post(async (req, res) => {
       try {
           const { input_text, to_lang } = req.body;

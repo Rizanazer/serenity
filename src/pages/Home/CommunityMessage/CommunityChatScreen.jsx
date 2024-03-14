@@ -34,11 +34,23 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   var [text, setText] = useState("");
   const [Neration, setNeration] = useState(false);
   const [Deletefn, setDeletefn] = useState(false);
-  const [chatId, setChatId] = useState(null);
+
 
   const [Translate, set_Translate] = useState(false);
   const [messageTtext, setmessageTtext] = useState("");
   const [language, setLanguage] = useState(null);
+
+  const [ToxicCheckmessage, setToxicCheckMessage] = useState("");
+  const [toxicScore, setToxicScore] = useState(null);
+  const [insultScore, setInsultScore] = useState(null);
+  const [obsceneScore, setObsceneScore] = useState(null);
+  const [identityHateScore, setIdentityHateScore] = useState(null);
+  const [threatScore, setThreatScore] = useState(null);
+  const [severeToxicScore, setSevereToxicScore] = useState(null);
+
+
+
+
 
   useEffect(() => {
     setLanguage(userdata.language)
@@ -75,13 +87,13 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
         console.log(response.data.chats.messages);
         const msgs = response.data.chats.messages
-        console.log("msgs-open");console.log(msgs);
-        if(msgs.length > 0){
+        console.log("msgs-open"); console.log(msgs);
+        if (msgs.length > 0) {
           setMessages(response.data.chats.messages)
-          console.log("msgs");console.log(msgs);console.log(typeof(msgs));console.log(msgs.length);
-        }else{
+          console.log("msgs"); console.log(msgs); console.log(typeof (msgs)); console.log(msgs.length);
+        } else {
           setMessages({})
-          console.log("blank-msgs");console.log(msgs);console.log(typeof(msgs));
+          console.log("blank-msgs"); console.log(msgs); console.log(typeof (msgs));
         }
         //console.log(messages);
       } catch (error) {
@@ -133,7 +145,10 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
   const send = async () => {
     console.log(text);
+
     if (text.trim().length > 0 && selectedCommunity) {
+      setToxicCheckMessage(text);
+
       const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture };
       // console.log(messageData);
       if (socket) {
@@ -313,6 +328,39 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       console.log("error fetching Status")
     }
   }
+  //////////////////////////////////////commentfilter///////////////////////////////////////////
+  // async function query(data) {
+  //   const response = await fetch(
+  //     "https://api-inference.huggingface.co/models/unitary/toxic-bert",
+  //     {
+  //       headers: { Authorization: "Bearer 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" },
+  //       method: "POST",
+  //       body: JSON.stringify(data),
+  //     }
+  //   );
+  //   const result = await response.json();
+  //   return result;
+  // }
+
+  // query({ "inputs": ToxicCheckmessage }).then((response) => {
+
+  //   const toxicScore = response[0][0].score;
+  //   const insultScore = response[0][1].score;
+  //   const obsceneScore = response[0][2].score;
+  //   const identityHateScore = response[0][3].score;
+  //   const threatScore = response[0][4].score;
+  //   const severeToxicScore = response[0][5].score;
+
+  //   setToxicScore(toxicScore);
+  //   setInsultScore(insultScore);
+  //   setObsceneScore(obsceneScore);
+  //   setIdentityHateScore(identityHateScore);
+  //   setThreatScore(threatScore);
+  //   setSevereToxicScore(severeToxicScore);
+
+
+  // });
+  /////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////messageforward////////////////////////////////////////
   const [friendList, setFriendList] = useState([])
   const [CommunityList, setCommunityList] = useState([]);
@@ -348,11 +396,11 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     try {
       setForwarding(false);
       await axios.post('/MessageForward', {
-        message: ForwardMessage,
+        message: message,
         forwardTo: Selectedrecipients,
-        u_id:localStorage.getItem('userid'),
-        u_name:username,
-        profilePicture : profilePicture
+        u_id: localStorage.getItem('userid'),
+        u_name: username,
+        profilePicture: profilePicture
       });
 
     } catch (error) {
@@ -365,7 +413,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     if (isChecked) {
       console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", memberId)
       setSelectedRecipients(memberId)
-      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",memberId)
+      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", memberId)
       setSelectedRecipients(prevState => [...prevState, memberId]);
       // setForwardMessage(forwardmessage)
     } else {
@@ -534,7 +582,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                             <div className="message_items" onClick={() => {
                               sethandleForward_el(el);
                               setForwarding(true);
-                              setForwardMessage(el.message);
+                              // setForwardMessage(el.message);
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -593,7 +641,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                           )}
 
                           {el.messagetype === "video" && (
-                            <Video  src={`uploads/communityMessageVideos/${el.filename}`}/>
+                            <Video src={`uploads/communityMessageVideos/${el.filename}`} />
                           )}
 
                           {el.messagetype !== "image" && el.messagetype !== "video" && (
@@ -603,7 +651,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                               onMouseLeave={cancelHoverTimer}
                               onContextMenu={(e) => handleContextMenu(e, el)}
                             >
-                              {el?.forwarded === true?<p className="light">forwarded</p>:<></>}
+                              {el?.forwarded === true ? <p className="light">forwarded</p> : <></>}
                               {Translate && selectedMessage === el ? messageTtext : el.message}
                             </p>
                           )}
@@ -617,7 +665,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                             <div className="message_items" onClick={() => {
                               sethandleForward_el(el);
                               setForwarding(true);
-                              setForwardMessage(el.message);
+                              // setForwardMessage(el.message);
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -667,7 +715,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   className="nobordershadow message_length"
                   onKeyPress={handleKeyPress}
                   placeholder="Type Here!!"
-                  onChange={(event) => setText(event.target.value)}
+                  onChange={(event) => { setText(event.target.value); }}
                   value={text}
                 />
               </div>
@@ -680,7 +728,16 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
                   <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage} />
                 </div>
-                <MdSend className="icon send nobordershadow" onClick={send} />
+                <MdSend className="icon send nobordershadow" onClick={()=>{
+                        const toxicityThreshold = 0.5;
+                        if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
+                          identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
+                          // Message is toxic
+                          console.log('Message is toxic');
+                        } else {
+                         send()
+                        }
+                }} />
               </div>
             </div>
           </>
@@ -700,11 +757,11 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 export default CommunityMsgScreen;
 
 
-function Video({src}){
-  const [open,setOpen] = useState(false);
-  return open?<div className="videoPlayer">
-    <video src={src} controls={true}/>
-    <MdClose size={50} color="#fff" className="close-button" onClick={()=>{setOpen(false)}}/>
-    </div>:
-    <video style={{ width: '300px', height: '300px' }} src={src} controls={false} onClick={()=>setOpen(true)}/>
+function Video({ src }) {
+  const [open, setOpen] = useState(false);
+  return open ? <div className="videoPlayer">
+    <video src={src} controls={true} />
+    <MdClose size={50} color="#fff" className="close-button" onClick={() => { setOpen(false) }} />
+  </div> :
+    <video style={{ width: '300px', height: '300px' }} src={src} controls={false} onClick={() => setOpen(true)} />
 }
