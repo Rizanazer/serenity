@@ -39,7 +39,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const [Translate, set_Translate] = useState(false);
   const [messageTtext, setmessageTtext] = useState("");
   const [language, setLanguage] = useState(null);
-  const [Videoplay, setVideoplay] = useState(false);
+
   useEffect(() => {
     setLanguage(userdata.language)
     fetchProfileUpdate()
