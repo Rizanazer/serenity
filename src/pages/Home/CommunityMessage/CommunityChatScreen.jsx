@@ -72,7 +72,15 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       try {
         const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
         console.log(response.data.chats.messages);
-        setMessages(response.data.chats.messages)
+        const msgs = response.data.chats.messages
+        console.log("msgs-open");console.log(msgs);
+        if(msgs.length > 0){
+          setMessages(response.data.chats.messages)
+          console.log("msgs");console.log(msgs);console.log(typeof(msgs));console.log(msgs.length);
+        }else{
+          setMessages({})
+          console.log("blank-msgs");console.log(msgs);console.log(typeof(msgs));
+        }
         console.log(messages);
       } catch (error) {
         console.log("error in fetching selected community messages")

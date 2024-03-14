@@ -751,10 +751,14 @@ router.post("/MessageForward", async (req, res) => {
     console.log(c_id);
     const chats = await CommunityChats.findOne({communityId:c_id})
      console.log(chats);
-    res.json({ "success": true,"chats":chats});
+     if(chats){
+       res.json({ "success": true,"chats":chats});
+      }else{
+        res.json({ "success": true,"chats":[]});
+      }
     } catch (error) {
       console.log("error ocuurred while loading community chat")
-      res.json({"success":false})
+      res.json({"success":false,"chats":[]})
     }
   })
   
