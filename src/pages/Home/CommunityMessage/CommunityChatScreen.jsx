@@ -34,12 +34,6 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   var [text, setText] = useState("");
   const [Neration, setNeration] = useState(false);
   const [Deletefn, setDeletefn] = useState(false);
-
-
-  const [Translate, set_Translate] = useState(false);
-  const [messageTtext, setmessageTtext] = useState("");
-  const [language, setLanguage] = useState(null);
-
   const [ToxicCheckmessage, setToxicCheckMessage] = useState("");
   const [toxicScore, setToxicScore] = useState(null);
   const [insultScore, setInsultScore] = useState(null);
@@ -48,9 +42,9 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const [threatScore, setThreatScore] = useState(null);
   const [severeToxicScore, setSevereToxicScore] = useState(null);
 
-
-
-
+  const [Translate, set_Translate] = useState(false);
+  const [messageTtext, setmessageTtext] = useState("");
+  const [language, setLanguage] = useState(null);
 
   useEffect(() => {
     setLanguage(userdata.language)
@@ -115,15 +109,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message }
       setMessages((prev) => [...prev, appenddata])
-      // console.log('New message from the server socket:', message);
-      // const updatedMessages = [...allCommunityMessages];
-      // updatedMessages.forEach((elem)=>{
-      //   if(elem.communityId === message.c_id){
-      //     const appenddata = {"u_id":message.u_id,"u_name":message.u_name,"message":message.message}
-      //     elem.messages.push(appenddata);
-      //   }
-      //   setAllCommunityMessages(updatedMessages)
-      // })
+
     });
 
     return () => {
@@ -144,22 +130,13 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   var [text, setText] = useState("");
 
   const send = async () => {
-    console.log(text);
-
+   
     if (text.trim().length > 0 && selectedCommunity) {
-      setToxicCheckMessage(text);
-
       const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture };
       // console.log(messageData);
       if (socket) {
         socket.emit('sendMessage', messageData);
         setMessages((prev) => [...prev, messageData]);
-
-        // updationToggleFunc()
-        console.log(`sendfunc`);
-        console.log(allCommunityMessages);
-        console.log(`///`);
-        // console.log(messageData);
         const appenddata = { u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), message: text.trim() };
         // setCommunityMessages(prevMessages => [...prevMessages, appenddata]);
         setText("");
@@ -328,39 +305,6 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       console.log("error fetching Status")
     }
   }
-  //////////////////////////////////////commentfilter///////////////////////////////////////////
-  // async function query(data) {
-  //   const response = await fetch(
-  //     "https://api-inference.huggingface.co/models/unitary/toxic-bert",
-  //     {
-  //       headers: { Authorization: "Bearer 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" },
-  //       method: "POST",
-  //       body: JSON.stringify(data),
-  //     }
-  //   );
-  //   const result = await response.json();
-  //   return result;
-  // }
-
-  // query({ "inputs": ToxicCheckmessage }).then((response) => {
-
-  //   const toxicScore = response[0][0].score;
-  //   const insultScore = response[0][1].score;
-  //   const obsceneScore = response[0][2].score;
-  //   const identityHateScore = response[0][3].score;
-  //   const threatScore = response[0][4].score;
-  //   const severeToxicScore = response[0][5].score;
-
-  //   setToxicScore(toxicScore);
-  //   setInsultScore(insultScore);
-  //   setObsceneScore(obsceneScore);
-  //   setIdentityHateScore(identityHateScore);
-  //   setThreatScore(threatScore);
-  //   setSevereToxicScore(severeToxicScore);
-
-
-  // });
-  /////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////messageforward////////////////////////////////////////
   const [friendList, setFriendList] = useState([])
   const [CommunityList, setCommunityList] = useState([]);
@@ -396,7 +340,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     try {
       setForwarding(false);
       await axios.post('/MessageForward', {
-        message: message,
+        message: ForwardMessage,
         forwardTo: Selectedrecipients,
         u_id: localStorage.getItem('userid'),
         u_name: username,
@@ -582,7 +526,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                             <div className="message_items" onClick={() => {
                               sethandleForward_el(el);
                               setForwarding(true);
-                              // setForwardMessage(el.message);
+                              setForwardMessage(el.message);
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -665,7 +609,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                             <div className="message_items" onClick={() => {
                               sethandleForward_el(el);
                               setForwarding(true);
-                              // setForwardMessage(el.message);
+                              setForwardMessage(el.message);
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -715,7 +659,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   className="nobordershadow message_length"
                   onKeyPress={handleKeyPress}
                   placeholder="Type Here!!"
-                  onChange={(event) => { setText(event.target.value); }}
+                  onChange={(event) => setText(event.target.value)}
                   value={text}
                 />
               </div>
@@ -728,16 +672,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
                   <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage} />
                 </div>
-                <MdSend className="icon send nobordershadow" onClick={()=>{
-                        const toxicityThreshold = 0.5;
-                        if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
-                          identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
-                          // Message is toxic
-                          console.log('Message is toxic');
-                        } else {
-                         send()
-                        }
-                }} />
+                <MdSend className="icon send nobordershadow" onClick={send} />
               </div>
             </div>
           </>

@@ -356,7 +356,7 @@ router.post("/MessageForward", async (req, res) => {
         
     if(communityids.length>0){
       for(const id of communityids){
-        console.log(`hii`);
+        console.log(hii);
         const existingChat = await CommunityChats.findOne({ communityId: id });
         if (existingChat) {
           existingChat.messages.push({ u_id, message, u_name,profilePicture,forwarded:true });
@@ -411,8 +411,8 @@ router.post("/MessageForward", async (req, res) => {
     res.status(200).json({ success: true, message: 'Message forwarded successfully' });
   } catch (error) {
     console.error('Error forwarding message:', error);
-    res.status(500).json({ success: false, error: 'An error occurred while forwarding message' });
-  }
+    res.status(500).json({ success: false, error: 'An error occurred while forwarding message' });
+  }
 });
 ////////////////////////////////////////////////////////////////////////////////
 app.post('/filterQuery', async (req, res) => {

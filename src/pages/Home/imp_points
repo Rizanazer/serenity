@@ -1,84 +1,49 @@
-const Home = () => {
-  var [k,setK] = useState(["niyas","ashar","riza","shibili","fahad"]);
-//   usestate is used to declare a state
-
-  var [val,setVal] = useState("");
-//   setK,setval -> funtions
-//   k , val->variables
-
-  return (
-    <div className="container">
+const [ToxicCheckmessage, setToxicCheckMessage] = useState("");
+const [toxicScore, setToxicScore] = useState(null);
+const [insultScore, setInsultScore] = useState(null);
+const [obsceneScore, setObsceneScore] = useState(null);
+const [identityHateScore, setIdentityHateScore] = useState(null);
+const [threatScore, setThreatScore] = useState(null);
+const [severeToxicScore, setSevereToxicScore] = useState(null);
+ //////////////////////////////////////commentfilter///////////////////////////////////////////
+  async function query(data) {
+    const response = await fetch(
+      "https://api-inference.huggingface.co/models/unitary/toxic-bert",
       {
-        // .msg{
-        //     padding: 10px;
-        //     margin-left: 10px;
-        //     background: #d6e8ed;
-        //     border-radius: 5px 5px 5px 0;
-        //     max-width: 200px;
-        // }
-
-        k.map((el)=><p className="msg">{el}</p>)
-        // mapping to k array
+        headers: { Authorization: "Bearer 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" },
+        method: "POST",
+        body: JSON.stringify(data),
       }
-      <input type="text" onChange={(event)=>{setVal(event.target.value);}}/>
-         {/* event used to denote instance value of the target  */}
-      <button onClick={()=>{setK([...k,val])}}>click</button>
-      {/* [...k] here is used to get all the array elements */}
-    </div>
-  );
-};
+    );
+    const result = await response.json();
+    return result;
+  }
 
-// ()=>{} used as fn
+  query({ "inputs": ToxicCheckmessage }).then((response) => {
 
-import React, { useEffect, useState } from "react";
-import './Home.css'
-import { Link } from "react-router-dom";
-const Home1 = () => {
-  var [k,setK] = useState(["niyas","ashar","riza","shibili","fahad"]);
-  var [val,setVal] = useState("");
+    const toxicScore = response[0][0].score;
+    const insultScore = response[0][1].score;
+    const obsceneScore = response[0][2].score;
+    const identityHateScore = response[0][3].score;
+    const threatScore = response[0][4].score;
+    const severeToxicScore = response[0][5].score;
 
-  return (
-    <div className="container">
-      {
-        k.map((el)=><h1>❤️{el}</h1>)
-      }
-      {/* prints all elements with emot preceeding it. */}
-      <input type="text" onChange={(event)=>{setVal(event.target.value);}}/>
-      {/* if we use event.target we get info on instance of the target */}
-      <button onClick={()=>{setK([...k,"HELLO"])}}>click</button>
-      {/* in each press ,after click is pressed,"HELLO" is printed. */}
-    </div>
-  );
-};
-// export default Hom21;
+    setToxicScore(toxicScore);
+    setInsultScore(insultScore);
+    setObsceneScore(obsceneScore);
+    setIdentityHateScore(identityHateScore);
+    setThreatScore(threatScore);
+    setSevereToxicScore(severeToxicScore);
 
 
-import React, { useEffect, useState } from "react";
-import './Home.css'
-import { Link } from "react-router-dom";
-const Home2 = () => {
-  var [k,setK] = useState(10);
-  var [m,setM] = useState("💕");
-
-  useEffect(()=>{
-    if(k>15){
-      setM('❤️')
-    }
-  },[k]);
-  // useeffect is used to connect 2 states.it uses a fn and dependecy array. 
-  return (
-    <div className="container">
-      <nav>{m}</nav>
-      <main>{k}</main>
-      <button onClick={()=>{setK("niyas")}}>click</button>
-    </div>
-  );
-};
-export default Home;
-
-
-<div className="section3_features">
-                        <MdOutlinePersonAddAlt className="icon"/>
-                        <MdMessage className="icon"/>
-                        <IoMdHeartDislike className="icon"/>
-                    </div>
+  });
+  /////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////messageforward////////////////////////////////////////
+  const toxicityThreshold = 0.5;
+  if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
+    identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
+    // Message is toxic
+    console.log('Message is toxic');
+  } else {
+   send()
+  }
