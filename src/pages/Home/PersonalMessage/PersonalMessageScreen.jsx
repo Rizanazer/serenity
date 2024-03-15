@@ -30,7 +30,6 @@ function PersonalMsgScreen() {
       }
     }, 100);
   }, [messages, scrollPosition]);
-  const [selectedhistroyProfile, setselectedhistroyProfile] = useState(null);
   const [selectedMessage, setSelectedMessage] = useState(null);
   var [ViewChat, setViewChat] = useState(false);
   var [rightclk, setrightclk] = useState(true);
@@ -60,7 +59,7 @@ function PersonalMsgScreen() {
   const [selectedFriend, setSelectedFriend] = useState(null)
   const [selectedFriendName, setSelectedFriendName] = useState(null)
   const [chatId, setChatid] = useState(null)
-  const [selectedFriendIcon, setSelectedFriendIcon] = useState(null)
+  const [selectedFriendIcon,setSelectedFriendIcon] = useState(null)
   const refreshFlag = 0;
 
   useEffect(() => {
@@ -84,36 +83,14 @@ function PersonalMsgScreen() {
     try {
       const response = await axios.post("/fetchfriends", { u_id: u_id, friendids: userdata.friends })
       setContacts(response.data.frienddata.flat())
-      // setChats(response.data.chats)
+      setChats(response.data.chats)
       setFriends(userdata.friends.length);
-
-      function addProfilePicturesToChats(chats, frienddata) {
-        const profilePicturesMap = {};
-        frienddata.forEach((friend) => {
-          profilePicturesMap[friend._id] = friend.profilePicture;
-        });
-
-        const chatsWithProfilePictures = chats.map((chat) => {
-          const profilePicture = profilePicturesMap[chat.users[1].userid];
-          return {
-            ...chat,
-            profilePicture: profilePicture || 'default_profile_picture.jpg', // Provide a default picture if profile picture is not found
-          };
-        });
-
-        return chatsWithProfilePictures;
-      }
-      const chats = response.data.chats;
-      const frienddata = response.data.frienddata;
-      const chatsWithProfilePictures = addProfilePicturesToChats(chats, frienddata);
-      console.log("❤️😒😒😒😒😒😒😒😒😒❤️",chatsWithProfilePictures);
-      setChats(chatsWithProfilePictures)
     } catch (error) {
       console.log("error fetching friends")
     }
   }
   useEffect(() => {
-    fetchfriends()
+    fetchfriends();
   }, [refreshFlag])
 
   //delete chat fn
@@ -157,8 +134,8 @@ function PersonalMsgScreen() {
   var [messages, setMessages] = useState([]);
 
   async function onclickfriendchat(friend, friendname) {
-    const response = await axios.post('/getafriend', { u_id: friend })
-    if (response) {
+    const response = await axios.post('/getafriend',{u_id:friend})
+    if(response){
       console.log(response.data.profilePicture);
       setSelectedFriendIcon(response.data.profilepicture)
     }
@@ -273,12 +250,11 @@ function PersonalMsgScreen() {
                   <div
                     className="chat_info"
                     key={i}
-                    onClick={() =>{
-                      onclickfriendchat(el.users[0].userid === userid ? el.users[1].userid : el.users[0].userid, el.users[0].userid === userid ? el.users[1].username : el.users[0].username);
-                      setselectedhistroyProfile(el.profilePicture)
-                    }}
+                    onClick={() =>
+                      onclickfriendchat(el.users[0].userid === userid ? el.users[1].userid : el.users[0].userid, el.users[0].userid === userid ? el.users[1].username : el.users[0].username)
+                    }
                   >
-                    <img className="icon profile_chat_img" src={`uploads/profilePictures/${el.profilePicture}`} alt="" />
+                    <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
                     <div className=" profile_text">
                       <div className="textlength_head ">
                         <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username}</span>
@@ -312,7 +288,7 @@ function PersonalMsgScreen() {
             {Array.isArray(contacts) && contacts.map((el, i) =>
 
               <div className="box chat pointer nobordershadow ">
-                <div className="chat_info" key={i} onClick={() => {onclickfriend(el);setselectedhistroyProfile(el.profilePicture)}}>
+                <div className="chat_info" key={i} onClick={() => onclickfriend(el)}>
                   <img className="icon profile_chat_img" src={`uploads/profilePictures/${el.profilePicture}`} alt="" />
                   <div className=" profile_text">
                     <div className="textlength_head_friends ">
@@ -343,7 +319,7 @@ function PersonalMsgScreen() {
 
               {/* {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.username, "status": () => { setSideScreen(true);setMoreadj(true);} }} />} */}
               {<div className="center inputrow" onClick={() => { setSideScreen(true); setMoreadj(true); }}>
-                <img className="icon profile_chat_img" src={`uploads/profilePictures/${selectedhistroyProfile}`} alt="img" />
+                <img className="icon profile_chat_img" src={`uploads/profilePictures/${selectedFriendIcon}`} alt="" />
                 <span className="bold">{selectedFriendName}</span>
               </div>}
             </div>
@@ -439,7 +415,7 @@ function PersonalMsgScreen() {
                       )}
                     </div>
                 }
-
+               
 
               </React.Fragment>
             ))}
@@ -474,7 +450,7 @@ function PersonalMsgScreen() {
 
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        <SideScreenPersonalFn fetchfriends={fetchfriends} selectedFriend={selectedFriend} data={{ "image": selectedFriendIcon, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
+        <SideScreenPersonalFn fetchfriends={fetchfriends} selectedFriend={selectedFriend}data={{ "image": selectedFriendIcon, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
       </div>}
     </>
   );

@@ -137,8 +137,6 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
   }
 });
 app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'), async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
   try {
     // Extract necessary data from the request
     const { c_id, u_id, u_name } = req.body;
@@ -185,14 +183,10 @@ router.route("/register").post(profilePictureUpload.single('profilePicture'), as
     if (formData.hobbies) { formData.hobbies = formData.hobbies.split(' ') }
     formData.likes = formData.likes.split(' ')
     formData.dislikes = formData.dislikes.split(' ')
-    console.log(formData)
     const propic = formData.profilePicture
-    console.log(propic);
     formData.profilePicture = propic
     formData.profilePicture = req.file.filename
     const result = await User.create(formData);
-    // console.log('Data inserted Succesfully');
-    // console.log(formData);
 
     res.json({ "success": true, "result": result })
   } catch (error) {
@@ -235,15 +229,11 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     const existingChat = await CommunityChats.findOne({ communityId: c_id });
     const commDetails = await Community.find({ _id: c_id });
     if (existingChat) {
-      console.log(`succcess`);
       res.json({ "success": true, "messages": existingChat.messages, "commDetails": commDetails });
     } else {
-      console.log(`succcess`);
       res.json({ "success": true, "messages": [] });
     }
   } catch (error) {
-    console.log(`fail`);
-
     console.error("Error in fetching messages from db:", error);
     res.status(500).json({ "success": false, "error": "Internal server error." });
   }
@@ -259,11 +249,8 @@ router.route("/login").post(async (req, res) => {
   const maill = userdata.mail
   const ph = userdata.phone
   const query = { username: maill, password: pw };
-  console.log(maill);
   try {
     const result = await User.findOne(query);
-    console.log(result);
-    console.log(result._id)
     //res.json(result)
     if (result) {
       res.json({ "success": true, "userdata": result })
@@ -277,32 +264,6 @@ router.route("/login").post(async (req, res) => {
 
 });
 
-
-
-
-
-// router.route("/sendmessage").post(async (req, res) => {
-//   try {
-//     const { c_id, u_id, message,u_name} = req.body;
-//     console.log(req.body);
-//     if (!c_id || !u_id || !message) {
-//       return res.status(400).json({ "success": false, "error": "Missing required properties." });
-//     }
-//     const existingChat = await CommunityChats.findOne({ communityId: c_id });
-
-//     if (existingChat) {
-//       existingChat.messages.push({ u_id, message,u_name });
-//       await existingChat.save();
-//     } else {
-//       await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message }] });
-//     }
-//     res.json({ "success": true });
-//   } catch (error) {
-//     console.error("Error in sending message to db:", error);
-//     res.status(500).json({ "success": false, "error": "Internal server error." });
-//   }
-// });
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 router.route('/updateProfile').post(async (req, res) => {
   try {
     const { id, anonymity, status, email, phone, password, gender, dob, language, location } = req.body;
@@ -321,19 +282,15 @@ router.post("/fetchProfile", async (req, res) => {
     const u_id = req.body.u_id
     const profile = await User.findOne({ _id: u_id })
     if (profile) {
-      console.log("User profile fetched successfully:", profile);
       res.status(200).json({
         success: true, status: profile.status, anonymity: profile.anonymity,
         email: profile.email, phone: profile.phone, password: profile.password,
         gender: profile.gender, dob: profile.dob, language: profile.language, location: profile.location
       });
-      // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",phone);
     } else {
-      console.log("User not found with ID:", u_id);
       res.status(404).json({ success: false, message: 'User details not found' });
     }
   } catch (error) {
-    console.error('Error fetching profile:', error);
     res.status(500).json({ success: false, error: 'An error occurred while fetching profile' });
   }
 });
@@ -341,7 +298,6 @@ router.post("/fetchProfile", async (req, res) => {
 router.post("/MessageForward", async (req, res) => {
   try {
     const { message, forwardTo, u_id, profilePicture, u_name } = req.body;
-    console.log('Forwarding message:', message, 'to:', forwardTo);
     const userids = []
     const communityids = []
     const forwardTofiltered = forwardTo.filter((item, index) => forwardTo.indexOf(item) === index);
@@ -358,7 +314,6 @@ router.post("/MessageForward", async (req, res) => {
 
     if (communityids.length > 0) {
       for (const id of communityids) {
-        // console.log(hii);
         const existingChat = await CommunityChats.findOne({ communityId: id });
         if (existingChat) {
           existingChat.messages.push({ u_id, message, u_name, profilePicture, forwarded: true });
@@ -407,60 +362,16 @@ router.post("/MessageForward", async (req, res) => {
 
     }
 
-
-    // console.log(existingChat);
-
     res.status(200).json({ success: true, message: 'Message forwarded successfully' });
   } catch (error) {
     console.error('Error forwarding message:', error);
     res.status(500).json({ success: false, error: 'An error occurred while forwarding message' });
   }
 });
-////////////////////////////////////////////////////////////////////////////////
-// app.post('/filterQuery', async (req, res) => {
-//   const { inputs } = req.body;
 
-//   try {
-//     const response = await axios.post(
-//       'https://api-inference.huggingface.co/models/unitary/toxic-bert',
-//       {
-//         inputs: inputs
-//       },
-//       {
-//         headers: {
-//           Authorization: 'Bearer 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'
-//         }
-//       }
-//     );
-
-//     const result = response.data;
-
-//     // Extract scores for each toxicity label
-//     const toxicScore = result[0][0].score;
-//     const insultScore = result[0][1].score;
-//     const obsceneScore = result[0][2].score;
-//     const identityHateScore = result[0][3].score;
-//     const threatScore = result[0][4].score;
-//     const severeToxicScore = result[0][5].score;
-
-//     // Send the scores back as response
-//     res.json({
-//       toxicScore,
-//       insultScore,
-//       obsceneScore,
-//       identityHateScore,
-//       threatScore,
-//       severeToxicScore
-//     });
-//   } catch (error) {
-//     console.error('Error:', error);
-//     res.status(500).json({ error: 'An error occurred while querying the model' });
-//   }
-// });
 router.route('/convert').post(async (req, res) => {
   try {
     const { input_text, to_lang } = req.body;
-    console.log("❤️", input_text, to_lang);
 
     translate(input_text, { to: to_lang })
       .then(result => {
@@ -477,13 +388,10 @@ router.route('/convert').post(async (req, res) => {
   }
 });
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'), async (req, res) => {
   try {
 
     const communityData = req.body;
-    console.log(communityData.selectedMembers);
     const c_name = communityData.c_name;
     const c_desc = communityData.c_desc;
     const c_purpose = communityData.c_purpose;
@@ -492,9 +400,6 @@ router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'
     const admins = communityData.createdby || [];
     let members = communityData.selectedMembers || [];
 
-    console.log("---------------members");
-    console.log(typeof (members));
-    console.log(req.body);
     if (!Array.isArray(members)) {
       members = [members];
     }
@@ -517,7 +422,6 @@ router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'
     }
 
 
-    console.log('Community created successfully:', result);
     res.json({ "success": true, "result": result });
   } catch (error) {
     console.error('Error creating community:', error);
@@ -530,7 +434,6 @@ router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'
 router.route("/getallcommunities").post(async (req, res) => {
   try {
     const allCommunities = await Community.find();
-    console.log(allCommunities);
     res.json({ "success": true, "communities": allCommunities });
   } catch {
     console.error(error);
@@ -541,12 +444,10 @@ router.route("/getallcommunities").post(async (req, res) => {
 });
 
 router.route("/getcommunities").get(async (req, res) => {
-  console.log("userid :" + req.query.userid);
   try {
     const allCommunities = await Community.find();
     const userid = req.query.userid;
     const memberCommunities = await Community.find({ members: userid });
-    console.log("memberof :" + memberCommunities);
     res.json({ "success": true, "communities": allCommunities, "memberof": memberCommunities });
   } catch {
     console.error(error);
@@ -557,11 +458,9 @@ router.route("/getcommunities").get(async (req, res) => {
 });
 
 router.route("/communitydetails").post(async (req, res) => {
-  console.log("c_id :" + req.body.c_id);
   try {
     const existingChat = await CommunityChats.find({ communityId: req.body.c_id });
     res.json({ "success": true, "existingChat": existingChat.messages });
-    //console.log([existingChat.messages]);
   } catch {
     console.error(error);
     res.status(500).json({ "success": false });
@@ -574,7 +473,6 @@ router.route("/joincommunity").post(async (req, res) => {
   try {
     const c_id = req.body.c_id
     const u_id = req.body.u_id
-    //console.log(c_id+" "+u_id);
     const updateTargetCommunity = await Community.findByIdAndUpdate(
       c_id,
       { $addToSet: { members: u_id } },
@@ -585,7 +483,6 @@ router.route("/joincommunity").post(async (req, res) => {
       { $addToSet: { communities: c_id } },
       { new: true }
     );
-    //console.log(updateTargetCommunity);
     res.json({ "success": true, "result": updateTargetCommunity });
   } catch {
     console.error(error);
@@ -600,7 +497,6 @@ router.post('/addfriend', async (req, res) => {
   try {
     const userid = req.body.userid
     const friendtobe = req.body.friendtobe
-    console.log(friendtobe)
     const result = await User.findByIdAndUpdate(
       userid,
       { $addToSet: { friendrequestssent: friendtobe } },
@@ -611,7 +507,6 @@ router.post('/addfriend', async (req, res) => {
       { $addToSet: { friendrequests: userid } },
       { new: true }
     )
-    console.log(result);
     if (result && result2) {
       res.json({ "success": true });
     } else {
@@ -667,7 +562,6 @@ router.post("/loadchat", async (req, res) => {
 
       allChats.push({ communityId, chats });
     }
-    console.log(allChats);
     res.json(allChats);
   } catch (error) {
     console.error(error);
@@ -681,7 +575,6 @@ router.post("/fetchrequests", async (req, res) => {
 
     const result = await User.findOne({ _id: u_id })
     const requests = result.friendrequests
-    console.log(requests);
     const allrequestdetails = []
     for (const item of requests) {
       const userDetails = await User.findById(item);
@@ -740,15 +633,11 @@ router.post("/accept", async (req, res) => {
       }]
     });
     if (result1 != null && result2 != null && savedDirectChat != null) {
-      console.log(tobefriend);
-      console.log("request accepted")
-      console.log(result1);
       res.json({ "success": true })
     } else {
       res.json({ "success": false })
     }
   } catch (error) {
-    console.log("error ocuurred while accepting")
     res.json({ "success": false })
   }
 })
@@ -758,14 +647,12 @@ router.post("/getachat", async (req, res) => {
     const user1 = req.body.user1;
     const user2 = req.body.user2;
 
-    // Find chats where both user IDs are present in the users array
     const result = await DirectChats.find({
       users: { $all: [user1, user2] }
-    }).sort({ dateAdded: 1 }); // Adjust sort condition as per your requirement
+    }).sort({ dateAdded: 1 });
 
     res.json(result);
   } catch (error) {
-    console.log("Error in getting chat:", error);
     res.status(500).json({ error: "Error in getting chat" });
   }
 });
@@ -789,15 +676,11 @@ router.post("/reject", async (req, res) => {
       { new: true }
     );
     if (result1 != null && result2 != null) {
-      console.log(tobefriend);
-      console.log("request rejected")
-      console.log(result1);
       res.json({ "success": true })
     } else {
       res.json({ "success": false })
     }
   } catch (error) {
-    console.log("error ocuurred while accepting")
     res.json({ "success": false })
   }
 })
@@ -807,10 +690,8 @@ router.post("/getafriend", async (req, res) => {
   try {
     const u_id = req.body.u_id
     const result = await User.findById(u_id)
-    console.log("df" + result);
     res.send(result)
   } catch (error) {
-    console.log("error ocuurred while accepting")
     res.json({ "success": false })
   }
 })
@@ -839,7 +720,6 @@ router.post('/getCommunitylist', async (req, res) => {
       communities.push(result)
     }
     res.send(communities)
-    console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",communities);
   } catch (error) {
     res.send("error")
   }
@@ -850,13 +730,11 @@ router.post("/fetchfriends", async (req, res) => {
   try {
     const u_id = req.body.u_id;
     const friendids = req.body.friendids
-    // console.log(friendids);
 
     const chats = await DirectChats.find({ $or: [{ "users.userid": u_id }, { "users.userid": u_id }] }).sort({ dateAdded: -1 });
     const frienddata = []
     for (let i = 0; i < friendids.length; i++) {
       const friendquery = await User.find({ _id: friendids[i] })
-      // console.log("33333333333####################333333333333",friendquery[0].profilePicture);
       if (friendquery) {
         frienddata.push(friendquery)
       } else {
@@ -865,10 +743,10 @@ router.post("/fetchfriends", async (req, res) => {
       }
 
     }
-    //console.log(chats + "sdsds");
+
+    console.log(chats[0].users[0]);
     res.json({ "success": true, "chats": chats, "frienddata": frienddata.flat() });
   } catch (error) {
-    console.log("error ocuurred while loading friends")
     res.json({ "success": false })
   }
 })
@@ -878,16 +756,12 @@ router.post("/fetchfriends", async (req, res) => {
 router.post("/fetchpersonal", async (req, res) => {
 
   try {
-    // const u_id = req.body.u_id;
-    // const chats = await DirectChats.find({ $or: [{ "users.userid": u_id }, { "users.userid": u_id }] }).sort({ dateAdded: -1 });
     const { f_id, u_id } = req.body
     const chats = await DirectChats.findOne({
       'users.userid': { $all: [f_id, u_id] }
     });
-    //console.log(chats);
     res.json({ "success": true, "chats": chats });
   } catch (error) {
-    console.log("error ocuurred while loading personalchat")
     res.json({ "success": false })
   }
 })
@@ -898,7 +772,6 @@ router.post("/getallgroupnames", async (req, res) => {
     const groups = await Community.find()
     res.json({ "success": true, "groups": groups });
   } catch (error) {
-    console.log("error ocuurred while loading community names")
     res.json({ "success": false })
   }
 })
@@ -910,7 +783,6 @@ router.post("/searchcommunity", async (req, res) => {
     const groups = await Community.find({ communityName: { $regex: searchText, $options: 'i' } });
     res.json({ "success": true, "groups": groups });
   } catch (error) {
-    console.log("error ocuurred while loading community names")
     res.json({ "success": false })
   }
 })
@@ -929,7 +801,6 @@ router.post("/get_c_messages", async (req, res) => {
       res.json({ "success": true, "chats": [] });
     }
   } catch (error) {
-    console.log("error ocuurred while loading community chat")
     res.json({ "success": false, "chats": [] })
   }
 })
@@ -940,7 +811,6 @@ router.post("/checkjoinstatus", async (req, res) => {
   try {
     const c_id = req.body.c_id
     const u_id = req.body.u_id
-    console.log(c_id + "  " + u_id);
     const community = await Community.findById(c_id)
     if (!community) {
       return res.json({ "success": false, "message": "Community not found" });
@@ -953,7 +823,6 @@ router.post("/checkjoinstatus", async (req, res) => {
 
     }
   } catch (error) {
-    console.log(error);
     res.json({ "success": false })
   }
 })
@@ -966,7 +835,6 @@ router.post('/delete_p_chat', async (req, res) => {
   } else {
     res.json({ "success": false })
   }
-  // console.log(chats);
 })
 
 
@@ -978,12 +846,10 @@ router.post('/delete_a_personal_message', async (req, res) => {
       (message) => message._id.toString() === m_id
     );
     if (messageIndex === -1) {
-      console.log(`message not found`);
     }
     chat.messages.splice(messageIndex, 1);
     await chat.save();
     res.json({ "success": true, "m_id": m_id })
-    // console.log(m_id+"---  ---"+c_id);
   } else {
     res.json({ "success": false })
   }
@@ -1012,11 +878,9 @@ router.post("/getmemberdata", async (req, res) => {
 
   try {
     const c_id = req.body.c_id
-    console.log(c_id);
+
     const community = await Community.findById(c_id)
-    console.log(community.members);
     const members = community.members
-    console.log(typeof (members))
     const names = []
 
     for (let index = 0; index < members.length; index++) {
@@ -1024,51 +888,17 @@ router.post("/getmemberdata", async (req, res) => {
       if (result) {
         names.push(result.username)
       }
-      console.log(`namessss`);
-      //console.log(names);
     }
     res.json({ "success": true, "names": names });
   } catch (error) {
-    console.log("error   ocuurred while loading community member data")
     res.json({ "success": false })
   }
 })
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// router.post("/fetchProfile",async (req,res)=>{
-
-//   try {  
-//   const c_id = req.body.c_id
-//   console.log(c_id);
-//   const community = await Community.findById(c_id)
-//    console.log(community.members);
-//    const members = community.members
-//    console.log(typeof(members))
-//    const names = []
-
-//   for (let index = 0; index < members.length; index++) {
-//     const result = await User.findById(members[index])
-//     if(result){
-//       names.push(result.username)
-//     }
-//     console.log(`namessss`);
-//     //console.log(names);
-//    }
-//   res.json({ "success": true,"names":names});
-//   } catch (error) {
-//     console.log("error   ocuurred while loading community member data")
-//     res.json({"success":false})
-//   }
-// })
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 router.post('/sidescreengroupnames', async (req, res) => {
   try {
     const u_id = req.body.u_id
     const result = await User.findById(u_id)
-    const communities = result.communities
-    console.log(communities);
+    const communities = result.communities;
     const names = []
     for (let i = 0; i < communities.length; i++) {
       const name = await Community.findById(communities[i])
@@ -1084,7 +914,6 @@ router.post('/sidescreengroupnames', async (req, res) => {
 app.use('/', router)
 
 io.on('connection', (socket) => {
-  console.log('Socket Client connected');
 
   socket.on('send_p_message', async (msg) => {
     const { from, to, fromname, toname, message } = msg;
@@ -1098,7 +927,6 @@ io.on('connection', (socket) => {
       }
     });
 
-    // console.log(existingChat);
     if (existingChat) {
       existingChat.messages.push({
         from: { userid: from, username: fromname },
@@ -1108,8 +936,6 @@ io.on('connection', (socket) => {
       });
       await existingChat.save();
     } else {
-      console.log(`to ` + to + `fr` + from);
-      // console.log(to);
       const savedDirectChat = await DirectChats.create({
         users: [
           { userid: from, username: fromname },
@@ -1129,16 +955,11 @@ io.on('connection', (socket) => {
         }]
       });
     }
-    // console.log(existingChat.users);
     io.emit("recieve_p_message", { "to": to, "from": from, "toname": toname, "fromname": fromname, "messageBody": message, "messageType": "text" });
   });
 
-  //personal message area end
-
   socket.on('send-image-community', async ({ image, u_name }) => {
 
-    console.log("image--------------------")
-    console.log(u_name)
   });
 
 
@@ -1146,7 +967,6 @@ io.on('connection', (socket) => {
   const axios = require('axios')
 
   socket.on('sendMessage', async ({ c_id, u_name, message, u_id, profilePicture }) => {
-    console.log(c_id, +" " + message + " " + u_name + " " + u_id);
     try {
       if (!c_id || !u_id || !message) {
         return socket.emit({ success: false, "error": "Missing required properties." });
@@ -1166,34 +986,19 @@ io.on('connection', (socket) => {
         );
 
         const result = response.data;
-        console.log("response.data-------------------------------------------");
-        console.log(response.data);
-        // Extract scores for each toxicity label
         const toxicScore = result[0][0].score;
         const insultScore = result[0][1].score;
         const obsceneScore = result[0][2].score;
         const identityHateScore = result[0][3].score;
         const threatScore = result[0][4].score;
         const severeToxicScore = result[0][5].score;
-        console.log(threatScore);
         const toxicityThreshold = 0.5;
         if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
           identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
-          console.log('Message is toxic');
           message = "this was a toxic comment"
         }
-        // Send the scores back as response
-        // res.json({
-        //   toxicScore,
-        //   insultScore,
-        //   obsceneScore,
-        //   identityHateScore,
-        //   threatScore,
-        //   severeToxicScore
-        // });
       } catch (error) {
         console.error('Error:', error);
-        // res.status(500).json({ error: 'An error occurred while querying the model' });
       }
 
 
@@ -1206,30 +1011,16 @@ io.on('connection', (socket) => {
       } else {
         await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture }] });
       }
-
-      // Emit the new message to all connected clients
       io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture });
-      //socket.emit({ success: true });
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });
     }
   });
-
-
-
 });
-
-
-
-
-
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-// server.listen(socketIoPort, () => {
-//   console.log(`Socket Server is running on port ${socketIoPort}`);
-// });
 
 
