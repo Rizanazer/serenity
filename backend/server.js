@@ -794,7 +794,6 @@ router.post("/get_c_messages", async (req, res) => {
     const { c_id } = req.body
     console.log(c_id);
     const chats = await CommunityChats.findOne({ communityId: c_id })
-    //  console.log(chats);
     if (chats) {
       res.json({ "success": true, "chats": chats });
     } else {
