@@ -185,6 +185,7 @@
     /* Change to inline-block */
     max-width: fit-content;
     width: auto;
+    height: fit-content;
     /* Allow the width to adjust dynamically */
     box-shadow: var(--shadow);
     position: relative;

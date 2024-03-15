@@ -10,7 +10,7 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
-import { FaCross } from "react-icons/fa6";
+import { FaCirclePlay } from "react-icons/fa6";
 function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
 
   const userdata = JSON.parse(localStorage.getItem('userdata'));
@@ -122,7 +122,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   var [text, setText] = useState("");
 
   const send = async () => {
-   
+
     if (text.trim().length > 0 && selectedCommunity) {
       const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture };
       // console.log(messageData);
@@ -262,7 +262,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     }
   };
 
- 
+
   const toggleTranslation = () => {
     set_Translate(prevState => !prevState);
   }
@@ -278,13 +278,13 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         console.error('Error:', error);
         console.log('Error occurred while translating');
       });
-  
+
   }
   async function fetchProfileUpdate() {
     const u_id = localStorage.getItem('userid')
     try {
       const response = await axios.post("/fetchProfile", { u_id: u_id, })
-   
+
 
       setLanguage(response.data.language)
     } catch (error) {
@@ -311,7 +311,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   }
   async function fetchcommunities() {
     try {
-      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",userdata.communities);
+      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", userdata.communities);
       const response = await axios.post('/getCommunitylist', { communityids: userdata.communities })
       setCommunityList(response.data)
     } catch (error) {
@@ -319,7 +319,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     }
   }
   useEffect(() => {
-    
+
     fetchcommunities();
     fetchfriends();
   }, [])
@@ -346,7 +346,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       setSelectedRecipients(prevState => [...prevState, memberId]);
     } else {
       setSelectedRecipients(prevState => prevState.filter(id => id !== memberId));
-  
+
     }
   };
 
@@ -495,7 +495,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   {
                     rightclk && el.u_name === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
-                        
+
                         {rightclk && selectedMessage === el && (
                           <div className="message_options center option-rightside">
                             <div className="message_items" onClick={() => {
@@ -671,16 +671,16 @@ function Video({ src }) {
     <video src={src} controls={true} />
     <MdClose size={50} color="#fff" className="close-button" onClick={() => { setOpen(false) }} />
   </div> :
-    <div className="center">
-      
+    <div className="center" style={{ position: "relative", width: '300px', height: '300px' }} onClick={() => setOpen(true)}>
+      <FaCirclePlay color="#fff" size={50} style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }} />
       <video style={{ width: '300px', height: '300px' }} src={src} controls={false} onClick={() => setOpen(true)} />
-      </div>
+    </div>
 }
 function Image({ src }) {
   const [open, setOpen] = useState(false);
   return open ? <div className="videoPlayer">
-    <img src={src}  />
+    <img src={src} />
     <MdClose size={50} color="#fff" className="close-button" onClick={() => { setOpen(false) }} />
   </div> :
-    <img style={{ width: '300px', height: '300px' }} src={src}  onClick={() => setOpen(true)} />
+    <img style={{ width: '300px', height: '300px' }} src={src} onClick={() => setOpen(true)} />
 }
