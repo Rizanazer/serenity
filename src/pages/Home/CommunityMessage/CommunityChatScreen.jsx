@@ -10,9 +10,10 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
-import { FaCirclePlay } from "react-icons/fa6";
+import { FaCirclePlay,FaMicrophone } from "react-icons/fa6";
 function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
-
+  const [question, setQuestion] = useState('');
+  const [listening, setListening] = useState(false);
   const userdata = JSON.parse(localStorage.getItem('userdata'));
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [allCommunityMessages, setAllCommunityMessages] = useState([]);
@@ -291,6 +292,37 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       console.log("error fetching Status")
     }
   }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const handleListen = () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition;
+      if (!SpeechRecognition) {
+        console.error('Speech recognition not supported in this browser');
+        return;
+      }
+    
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+    
+      recognition.onstart = () => {
+        setListening(true);
+      };
+    
+      recognition.onresult = event => {
+        const question = event.results[0][0].transcript;
+        setText(question);
+        setListening(false);
+      };
+    
+      recognition.onerror = event => {
+        console.error('Speech recognition error detected: ', event.error);
+        setListening(false);
+      };
+    
+      recognition.start();
+    };
+    
+    ///////////////////////////////////////////////////////////////////////////
   ////////////////////////////messageforward////////////////////////////////////////
   const [friendList, setFriendList] = useState([])
   const [CommunityList, setCommunityList] = useState([]);
@@ -638,6 +670,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
               </div>
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
+                  <FaMicrophone className="icon icon_small nobordershadow" onClick={handleListen} style={{ cursor: 'pointer' }} />
                   <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" />
                   <input type="file" accept="video/*" ref={fileVideoInputRef} style={{ display: 'none' }} onChange={handleFileVideoChange} />
                   <MdVideoFile className="icon icon_small nobordershadow" onClick={sendvideo} />
@@ -661,6 +694,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       </div>}
     </>
   );
+  
 }
 export default CommunityMsgScreen;
 
@@ -684,3 +718,4 @@ function Image({ src }) {
   </div> :
     <img style={{ width: '300px', height: '300px' }} src={src} onClick={() => setOpen(true)} />
 }
+
