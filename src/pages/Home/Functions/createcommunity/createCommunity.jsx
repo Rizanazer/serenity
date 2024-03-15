@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
     const [Next, setNext] = useState(false);
     const [friendList, setFriendList] = useState([])
+    const [imageSrc, setImageSrc] = useState('');
     const userdata = JSON.parse(localStorage.getItem('userdata'))
     async function fetchfriends() {
         try {
@@ -22,6 +23,7 @@ var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
     const [createCommunityData, setCreateCommunityData] = useState({
         c_name: '',
         c_desc: "",
+        c_purpose: "",
         communityIcon: null,
         selectedMembers: []
     })
@@ -33,6 +35,16 @@ var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         setCreateCommunityData({ ...createCommunityData, communityIcon: file });
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImageSrc(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+        else{
+            console.log("error");
+        }
     };
     const handleCheckboxChange = (event, memberId) => {
         const isChecked = event.target.checked;
@@ -113,14 +125,23 @@ var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
 
                     :
                     <div className="box create center flexcolumn">
-                        <div className="name_image flexrow center">
-                            <img src="images/profilepic.jpg" className="circle" alt="" />
-                            <div className="groupname flexcolumn">
+                        <div className="name_image flex center">
+                            <img src={imageSrc} className="circle" alt="" />
+                            <div className="groupname flex flexcolumn">
                                 <input type="file" accept="image/*" name="communityIcon" onChange={handleImageChange} />
                                 <span className="bold">Group Name</span>
                                 <input type="text" value={createCommunityData.c_name} name="c_name" onChange={handleInputChange} />
                                 <span className="light">Group Description</span>
                                 <input type="text" value={createCommunityData.c_desc} name="c_desc" onChange={handleInputChange} />
+                                <span className="light">Group Purpose</span>
+                                <select id='dropmenu' onChange={handleInputChange} name="c_purpose" value={createCommunityData.c_purpose}>
+                                    <option value="health">health</option>
+                                    <option value="sports">sports</option>
+                                    <option value="games">games</option>
+                                    <option value="depression">depression</option>
+                                    <option value="intoverts">intoverts</option>
+                                </select>
+
                             </div>
                         </div>
                         <div className="txtbtn flexrow gap20">

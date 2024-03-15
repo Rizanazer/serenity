@@ -1,7 +1,7 @@
 // 
 import React, { useEffect, useState, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
-import { MdForward, MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
+import { MdForward, MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon, MdVideoFile } from "react-icons/md";
 import GroupList from "../Functions/GroupList";
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
 import UpperChatInfo from "../Functions/UpperChatInfo";
@@ -34,14 +34,6 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   var [text, setText] = useState("");
   const [Neration, setNeration] = useState(false);
   const [Deletefn, setDeletefn] = useState(false);
-  const [ToxicCheckmessage, setToxicCheckMessage] = useState("");
-  const [toxicScore, setToxicScore] = useState(null);
-  const [insultScore, setInsultScore] = useState(null);
-  const [obsceneScore, setObsceneScore] = useState(null);
-  const [identityHateScore, setIdentityHateScore] = useState(null);
-  const [threatScore, setThreatScore] = useState(null);
-  const [severeToxicScore, setSevereToxicScore] = useState(null);
-
   const [Translate, set_Translate] = useState(false);
   const [messageTtext, setmessageTtext] = useState("");
   const [language, setLanguage] = useState(null);
@@ -136,7 +128,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       // console.log(messageData);
       if (socket) {
         socket.emit('sendMessage', messageData);
-        setMessages((prev) => [...prev, messageData]);
+        // setMessages((prev) => [...prev, messageData]);
         const appenddata = { u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), message: text.trim() };
         // setCommunityMessages(prevMessages => [...prevMessages, appenddata]);
         setText("");
@@ -270,13 +262,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     }
   };
 
-  //translation
-
-  // const handleText = (event) => {
-  //   setmessageTtext(event.target.value);
-  // }
-
-
+ 
   const toggleTranslation = () => {
     set_Translate(prevState => !prevState);
   }
@@ -292,13 +278,13 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         console.error('Error:', error);
         console.log('Error occurred while translating');
       });
-    // set_Translate(true);
+  
   }
   async function fetchProfileUpdate() {
     const u_id = localStorage.getItem('userid')
     try {
       const response = await axios.post("/fetchProfile", { u_id: u_id, })
-      console.log("##################", response.data.language)
+   
 
       setLanguage(response.data.language)
     } catch (error) {
@@ -325,6 +311,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   }
   async function fetchcommunities() {
     try {
+      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",userdata.communities);
       const response = await axios.post('/getCommunitylist', { communityids: userdata.communities })
       setCommunityList(response.data)
     } catch (error) {
@@ -332,6 +319,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     }
   }
   useEffect(() => {
+    
     fetchcommunities();
     fetchfriends();
   }, [])
@@ -355,14 +343,10 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const handleCheckboxChange = (event, memberId) => {
     const isChecked = event.target.checked;
     if (isChecked) {
-      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", memberId)
       setSelectedRecipients(prevState => [...prevState, memberId]);
-      // setForwardMessage(forwardmessage)
-      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", memberId)
-      console.log(Selectedrecipients);
     } else {
       setSelectedRecipients(prevState => prevState.filter(id => id !== memberId));
-      console.log("❤️❤️❤️❤️❤️errrrrrorrrr forward❤️❤️❤️❤️❤️ ",)
+  
     }
   };
 
@@ -511,22 +495,14 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   {
                     rightclk && el.u_name === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
-                        {/* {forwarding && (
-                          <div className="box">
-        
-                            {recipients.map((recipient) => (
-                              <div key={recipient.id} className="recipient" onClick={() => handleRecipientSelect(recipient)}>
-                                {recipient.name}
-                              </div>
-                            ))}
-                          </div>
-                        )} */}
+                        
                         {rightclk && selectedMessage === el && (
                           <div className="message_options center option-rightside">
                             <div className="message_items" onClick={() => {
                               sethandleForward_el(el);
                               setForwarding(true);
                               setForwardMessage(el.message);
+                              fetchcommunities()
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -543,10 +519,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
                           {el.messagetype === "image" && (
-                            <img
+                            <Image
                               src={`uploads/communityMessageImages/${el.filename}`}
-                              style={{ width: '300px', height: '300px' }}
-                              onClick={() => window.open(`uploads/communityMessageImages/${el.filename}`, '_blank')}
                             />
                           )}
 
@@ -577,10 +551,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
                         <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
                           {el.messagetype === "image" && (
-                            <img
+                            <Image
                               src={`uploads/communityMessageImages/${el.filename}`}
-                              style={{ width: '300px', height: '300px' }}
-                              onClick={() => window.open(`uploads/communityMessageImages/${el.filename}`, '_blank')}
                             />
                           )}
 
@@ -610,6 +582,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                               sethandleForward_el(el);
                               setForwarding(true);
                               setForwardMessage(el.message);
+                              fetchcommunities()
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -665,9 +638,9 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
               </div>
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
-                  <MdOutlineKeyboardVoice className="icon icon_small nobordershadow" />
+                  <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" />
                   <input type="file" accept="video/*" ref={fileVideoInputRef} style={{ display: 'none' }} onChange={handleFileVideoChange} />
-                  <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" onClick={sendvideo} />
+                  <MdVideoFile className="icon icon_small nobordershadow" onClick={sendvideo} />
                   <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
 
                   <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage} />
@@ -698,5 +671,16 @@ function Video({ src }) {
     <video src={src} controls={true} />
     <MdClose size={50} color="#fff" className="close-button" onClick={() => { setOpen(false) }} />
   </div> :
-    <video style={{ width: '300px', height: '300px' }} src={src} controls={false} onClick={() => setOpen(true)} />
+    <div className="center">
+      
+      <video style={{ width: '300px', height: '300px' }} src={src} controls={false} onClick={() => setOpen(true)} />
+      </div>
+}
+function Image({ src }) {
+  const [open, setOpen] = useState(false);
+  return open ? <div className="videoPlayer">
+    <img src={src}  />
+    <MdClose size={50} color="#fff" className="close-button" onClick={() => { setOpen(false) }} />
+  </div> :
+    <img style={{ width: '300px', height: '300px' }} src={src}  onClick={() => setOpen(true)} />
 }

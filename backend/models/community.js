@@ -7,6 +7,7 @@ const communitySchema = mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   email: String,
   description: String,
+  purpose: {type:String,default:""},
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], 
   admins : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], 
   timeStamp: {

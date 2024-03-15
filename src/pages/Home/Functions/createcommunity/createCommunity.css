@@ -2,7 +2,7 @@
     position: absolute;
     z-index: inherit;
     height: fit-content;
-    width: 300px;
+    /* width: 300px; */
     gap:30px !important;
     padding: 10px 20px;
 }

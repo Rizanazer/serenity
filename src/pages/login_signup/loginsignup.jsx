@@ -143,7 +143,6 @@ const handleInputChange = (event) =>{
   const [regData, setRegData] = useState({
       username: '',
       password:'',
-      age: '',
       email:'',
       phone:'',
       gender:'',
@@ -154,7 +153,11 @@ const handleInputChange = (event) =>{
       });
       const handleImageChange = (event) => {
         const file = event.target.files[0];
+        console.log(file)
+
         setRegData({ ...regData, profilePicture: file });
+        console.log("regData---------------------------------")
+        console.log(regData)
       };
       
       const handeleregchange = (event) =>{
