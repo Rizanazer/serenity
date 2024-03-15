@@ -10,9 +10,10 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
-import { FaCirclePlay,FaMicrophone } from "react-icons/fa6";
+import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
 function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
-  const [question, setQuestion] = useState('');
+  
+  const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
   const userdata = JSON.parse(localStorage.getItem('userdata'));
   const [selectedMessage, setSelectedMessage] = useState(null);
@@ -292,37 +293,40 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       console.log("error fetching Status")
     }
   }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    const handleListen = () => {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition;
-      if (!SpeechRecognition) {
-        console.error('Speech recognition not supported in this browser');
-        return;
-      }
-    
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
-      recognition.interimResults = false;
-    
-      recognition.onstart = () => {
-        setListening(true);
-      };
-    
-      recognition.onresult = event => {
-        const question = event.results[0][0].transcript;
-        setText(question);
-        setListening(false);
-      };
-    
-      recognition.onerror = event => {
-        console.error('Speech recognition error detected: ', event.error);
-        setListening(false);
-      };
-    
-      recognition.start();
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  const handleListen = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.error('Speech recognition not supported in this browser');
+      setListening(true);
+      seterror("'Speech recognition not supported in this browser'")
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      
     };
-    
-    ///////////////////////////////////////////////////////////////////////////
+
+    recognition.onresult = event => {
+      const question = event.results[0][0].transcript;
+      setText(question);
+     
+    };
+
+    recognition.onerror = event => {
+      console.error('Speech recognition error detected: ', event.error);
+      setListening(true);
+      seterror(event.error);
+    };
+
+    recognition.start();
+  };
+
+  ///////////////////////////////////////////////////////////////////////////
   ////////////////////////////messageforward////////////////////////////////////////
   const [friendList, setFriendList] = useState([])
   const [CommunityList, setCommunityList] = useState([]);
@@ -507,6 +511,10 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
                 </div>
               </div>}
+              {listening&&<div class="alert alert-success">
+                <strong>error!</strong> {error}
+                <MdClose onClick={()=>{setListening(false);seterror("")}}/>
+              </div>}
               {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
                 <div className=" nopadding more_items " onClick={() => {
                   toggleNeration()
@@ -568,6 +576,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                               onMouseLeave={cancelHoverTimer}
                               onContextMenu={(e) => handleContextMenu(e, el)}
                             >
+
+                              {el?.forwarded === true ? <p className="light">forwarded</p> : <></>}
                               {Translate && selectedMessage === el ? messageTtext : el.message}
                             </p>
                           )}
@@ -694,7 +704,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       </div>}
     </>
   );
-  
+
 }
 export default CommunityMsgScreen;
 

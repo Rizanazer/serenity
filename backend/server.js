@@ -850,17 +850,18 @@ router.post("/fetchfriends", async (req, res) => {
   try {
     const u_id = req.body.u_id;
     const friendids = req.body.friendids
-    console.log(friendids);
+    // console.log(friendids);
 
     const chats = await DirectChats.find({ $or: [{ "users.userid": u_id }, { "users.userid": u_id }] }).sort({ dateAdded: -1 });
     const frienddata = []
     for (let i = 0; i < friendids.length; i++) {
       const friendquery = await User.find({ _id: friendids[i] })
+      // console.log("33333333333####################333333333333",friendquery[0].profilePicture);
       if (friendquery) {
         frienddata.push(friendquery)
       } else {
 
-        frienddata.push("friendquery")
+        frienddata.push(friendquery)
       }
 
     }
