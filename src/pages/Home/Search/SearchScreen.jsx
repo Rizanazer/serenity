@@ -166,8 +166,8 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
 }
 function GroupList_1({ userid, data, HandleClick, setViewChat }) {
   const isJoined = data.members && data.members.includes(userid);
-  const stylenotjoined = { color: "red", border: '1px solid red', borderRadius: '10px', textAlign: 'center' }
-  const stylejoined = { color: "green", border: '1px solid green', borderRadius: '10px', textAlign: 'center' }
+  const stylenotjoined = { color: "red", borderRadius: '10px', textAlign: 'center',display:'flex',position:'relative'}
+  const stylejoined = { color: "green", borderRadius: '10px', textAlign: 'center',display:'flex',position:'relative' }
   return (
 
     <div className="box chat pointer" onClick={() => { setViewChat(true); HandleClick(data._id, data.communityName); }}>
@@ -175,15 +175,17 @@ function GroupList_1({ userid, data, HandleClick, setViewChat }) {
       <div className="chat_info " >
         <img className="icon profile_chat_img" src={`uploads/communityIcons/${data.communityIcon}`} alt="" />
         <div className=" profile_text">
-          <div className="textlength_head ">
+          <div className="textlength_head flex spacebetween">
             <span className="bold ">{data.communityName}</span>
+           
           </div>
           <div className="textlength_para">
             <span className="light ">{data.description}</span>
           </div>
         </div>
+        {isJoined === true ? <span className="light center" style={stylejoined}>Joined</span> : <span className="light center" style={stylenotjoined}>Not joined</span>}
       </div>
-      {isJoined === true ? <span className="light" style={stylejoined}>Joined</span> : <span className="light" style={stylenotjoined}>Not joined</span>}
+     
     </div>
 
   )

@@ -386,19 +386,16 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
   return (
     <>
-      <div className="section1 section_margin box">
-        <div className="box searchbox flexrow spacebetween">
+      <div className="section1 section_margin box relative_pos">
+        <div className="box searchbox flexrow spacebetween relative_pos min_boxwidth">
           <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={() => { }} />
           <Menu setScreen={screen} setCreateAlert={create} />
         </div>
-        {/* {GroupName.map((el, i) => <GroupList data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)} */}
         {individualCommunity.map((el, i) =>
-          // <GroupList data={{el,selectedCommunity,allCommunityMessages,chatByCommunity}} key={i} actions={{setChatByCommunity,setViewChat,setSelectedCommunity,setSelectedCommunityName}}/>
-
-          <div className="box chat pointer ">
-            <div className="chat_info" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
+          <div className="box chat pointer min_boxwidth relative_pos ">
+            <div className="chat_info relative_pos" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
               <img className="icon profile_chat_img" src={`uploads/communityIcons/${el.communityIcon}`} alt="" />
-              <div className=" profile_text">
+              <div className=" profile_text relative_pos">
                 <div className="textlength_head ">
                   <span className="bold ">{el.communityName}</span>
                 </div>

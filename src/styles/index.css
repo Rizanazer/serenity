@@ -300,3 +300,9 @@ color: #5E4AE3;
 .alert-success strong {
   color: #571515;
 }
+.relative_pos{
+  position: relative;
+}
+.min_boxwidth{
+  min-width: 100px;
+}

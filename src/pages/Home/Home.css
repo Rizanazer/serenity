@@ -82,7 +82,8 @@
     padding: 10px !important;
     border-radius: 5px;
     align-items: center;
-
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .chat_info {
