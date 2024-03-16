@@ -733,9 +733,12 @@ router.post("/fetchfriends", async (req, res) => {
 
     const chats = await DirectChats.find({ $or: [{ "users.userid": u_id }, { "users.userid": u_id }] }).sort({ dateAdded: -1 });
     const frienddata = []
+    // const lastMessage = ''
+
     for (let i = 0; i < friendids.length; i++) {
       const friendquery = await User.find({ _id: friendids[i] })
       if (friendquery) {
+        // console.log("🤣🤣🤣",friendquery.chats);
         frienddata.push(friendquery)
       } else {
 

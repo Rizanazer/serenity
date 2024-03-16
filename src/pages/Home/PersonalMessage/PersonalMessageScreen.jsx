@@ -31,6 +31,7 @@ function PersonalMsgScreen() {
     }, 100);
   }, [messages, scrollPosition]);
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [LastMessage, setLastMessage] = useState([]);
   var [ViewChat, setViewChat] = useState(false);
   var [rightclk, setrightclk] = useState(true);
   var [SideScreen, setSideScreen] = useState(false);
@@ -85,10 +86,25 @@ function PersonalMsgScreen() {
       setContacts(response.data.frienddata.flat())
       setChats(response.data.chats)
       setFriends(userdata.friends.length);
+      // console.log(" fetching friends",response.data.chats)
+
+    // const lastMessages = getLastMessages(response.data.chats);
+    //  console.log("Last Messages:", lastMessages);
+    // setLastMessage(lastMessages)
+
     } catch (error) {
       console.log("error fetching friends")
     }
   }
+//   function getLastMessages(chats) {
+//     const lastMessages = chats.map(chat => {
+//         const messages = chat.messages;
+//         const lastMessage = messages[messages.length - 1]; // Get the last message in the messages array
+//         return lastMessage;
+//     });
+//     return lastMessages;
+    
+// }
   useEffect(() => {
     fetchfriends();
   }, [refreshFlag])
