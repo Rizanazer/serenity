@@ -12,7 +12,7 @@ import axios from "axios";
 import { io } from "socket.io-client"
 import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
 function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
-  
+
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
   const userdata = JSON.parse(localStorage.getItem('userdata'));
@@ -43,12 +43,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   useEffect(() => {
     setLanguage(userdata.language)
     fetchProfileUpdate()
-
   }, []);
 
-  const openImageViewer = (imageUrl) => {
-    window.open(imageUrl, '_blank');
-  };
   const profilePicture = userdata.profilePicture
   useEffect(() => {
     setTimeout(() => {
@@ -63,27 +59,21 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     setViewChat(true);
     setSelectedCommunityName(name);
     setselectedCommunityStatus(desc);
-    setSelectedCommunityIcon(icon)
-    // console.log(selectedCommunity);
-    setSelectedCommunity(id)
-    console.log(id);
+    setSelectedCommunityIcon(icon);
+    setSelectedCommunity(id);
+    // console.log(id);
 
   }
   useEffect(() => {
     async function get_c_messages() {
       try {
         const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
-        console.log(response.data.chats.messages);
         const msgs = response.data.chats.messages
-        console.log("msgs-open"); console.log(msgs);
         if (msgs.length > 0) {
           setMessages(response.data.chats.messages)
-          console.log("msgs"); console.log(msgs); console.log(typeof (msgs)); console.log(msgs.length);
         } else {
           setMessages({})
-          console.log("blank-msgs"); console.log(msgs); console.log(typeof (msgs));
         }
-        //console.log(messages);
       } catch (error) {
         console.log("error in fetching selected community messages")
       }
@@ -108,37 +98,27 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
     return () => {
       newSocket.disconnect();
-      console.log('Disconnected from the server');
+      console.error('Disconnected from the server')
     };
   }, [allCommunityMessages]);
-
-  // var [ViewChat, setViewChat] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
   var [selectedChat, setSelectedChat] = useState(null);
   const [selectedCommunityIcon, setSelectedCommunityIcon] = useState(null)
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
-
   var [Member, setMember] = useState(false);
   var [text, setText] = useState("");
-
   const send = async () => {
-
     if (text.trim().length > 0 && selectedCommunity) {
       const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture };
-      // console.log(messageData);
       if (socket) {
         socket.emit('sendMessage', messageData);
-        // setMessages((prev) => [...prev, messageData]);
         const appenddata = { u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), message: text.trim() };
-        // setCommunityMessages(prevMessages => [...prevMessages, appenddata]);
         setText("");
         setScrollPosition(scrollPosition + 1);
       }
-      // setMessages([...messages, text]);
-
-      setAllCommunityMessages(prevCommunityMessages => {
+   setAllCommunityMessages(prevCommunityMessages => {
         const index = prevCommunityMessages.findIndex(chat => selectedCommunity === messageData.c_id);
         if (index !== -1) {
           const updatedCommunityMessages = [...prevCommunityMessages];
@@ -165,7 +145,9 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   const handleContextMenu = (e, message) => {
     e.preventDefault(); // Prevent default context menu
     togglerightclick(); // Set rightclk state to true
-    setSelectedMessage(message); // Set the selected message
+    setSelectedMessage(message);
+    setmessageTtext(selectedMessage.message)
+   
   };
 
   const togglerightclick = () => {
@@ -232,6 +214,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         setMessages([...messages, newmessage])
 
       } catch (error) {
+        seterror('Error uploading image:', error)
+        setListening(true)
         console.error('Error uploading image:', error);
       }
     }
@@ -259,6 +243,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         }
         setMessages([...messages, newmessage])
       } catch (error) {
+        seterror('Error uploading video:', error)
+        setListening(true)
         console.error('Error uploading video:', error);
       }
     }
@@ -269,16 +255,20 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     set_Translate(prevState => !prevState);
   }
   const handleTranslate = () => {
+    console.log("lan",messageTtext);
     axios.post('/convert', {
       input_text: messageTtext,
       to_lang: language
+     
     })
       .then(response => {
         setmessageTtext(response.data.translated_text);
       })
       .catch(error => {
         console.error('Error:', error);
-        console.log('Error occurred while translating');
+        seterror('Error occurred while translating', error)
+        setListening(true)
+       
       });
 
   }
@@ -290,7 +280,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
       setLanguage(response.data.language)
     } catch (error) {
-      console.log("error fetching Status")
+      seterror('error fetching Status')
+        setListening(true)
     }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -308,13 +299,13 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     recognition.interimResults = false;
 
     recognition.onstart = () => {
-      
+
     };
 
     recognition.onresult = event => {
       const question = event.results[0][0].transcript;
       setText(question);
-     
+
     };
 
     recognition.onerror = event => {
@@ -343,11 +334,12 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       setFriendList(response.data)
     } catch (error) {
       console.error(error)
+      
     }
   }
   async function fetchcommunities() {
     try {
-      console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", userdata.communities);
+      // console.log("❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️", userdata.communities);
       const response = await axios.post('/getCommunitylist', { communityids: userdata.communities })
       setCommunityList(response.data)
     } catch (error) {
@@ -373,6 +365,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
     } catch (error) {
       console.error('Error forwarding message:', error);
+      seterror('Error forwarding message:', error)
+        setListening(true)
 
     }
   };
@@ -511,10 +505,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
                 </div>
               </div>}
-              {listening&&<div class="alert alert-success">
-                <strong>error!</strong> {error}
-                <MdClose onClick={()=>{setListening(false);seterror("")}}/>
-              </div>}
+              <ErrorMessage error={error} listening={listening} setListening={setListening} seterror={seterror} />
               {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
                 <div className=" nopadding more_items " onClick={() => {
                   toggleNeration()
@@ -543,6 +534,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                               setForwarding(true);
                               setForwardMessage(el.message);
                               fetchcommunities()
+                             
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -619,12 +611,14 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                           </div>
                         </div>
                         {rightclk && selectedMessage === el && (
-                          <div className="message_options center">
+                          <div className="message_options center" >
                             <div className="message_items" onClick={() => {
+                              
                               sethandleForward_el(el);
                               setForwarding(true);
                               setForwardMessage(el.message);
                               fetchcommunities()
+                         
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -728,4 +722,20 @@ function Image({ src }) {
   </div> :
     <img style={{ width: '300px', height: '300px' }} src={src} onClick={() => setOpen(true)} />
 }
+function ErrorMessage({ error, listening, setListening, seterror }) {
+  setTimeout(() => {
+    if (listening) {
+      setListening(false);
+      seterror("");
+    }
+  }, 3000);
 
+  return (
+    listening && (
+      <div className="alerterror alert-success center spacebetween">
+        <span><strong>Error!</strong> {error}</span> 
+        <MdClose className="icon_search" onClick={() => { setListening(false); seterror("") }} />
+      </div>
+    )
+  );
+}
