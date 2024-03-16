@@ -146,7 +146,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     e.preventDefault(); // Prevent default context menu
     togglerightclick(); // Set rightclk state to true
     setSelectedMessage(message);
-    setmessageTtext(selectedMessage.message)
+    setmessageTtext(message.message)
    
   };
 
