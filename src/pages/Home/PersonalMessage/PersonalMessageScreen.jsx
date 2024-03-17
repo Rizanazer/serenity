@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
 import { FaCircleDot } from "react-icons/fa6";
+import { IoMdContact } from "react-icons/io";
 import './personalMessage.css';
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
 import { MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
@@ -60,7 +61,7 @@ function PersonalMsgScreen() {
   const [selectedFriend, setSelectedFriend] = useState(null)
   const [selectedFriendName, setSelectedFriendName] = useState(null)
   const [chatId, setChatid] = useState(null)
-  const [selectedFriendIcon,setSelectedFriendIcon] = useState(null)
+  const [selectedFriendIcon, setSelectedFriendIcon] = useState(null)
   const refreshFlag = 0;
 
   useEffect(() => {
@@ -88,23 +89,23 @@ function PersonalMsgScreen() {
       setFriends(userdata.friends.length);
       // console.log(" fetching friends",response.data.chats)
 
-    // const lastMessages = getLastMessages(response.data.chats);
-    //  console.log("Last Messages:", lastMessages);
-    // setLastMessage(lastMessages)
+      // const lastMessages = getLastMessages(response.data.chats);
+      //  console.log("Last Messages:", lastMessages);
+      // setLastMessage(lastMessages)
 
     } catch (error) {
       console.log("error fetching friends")
     }
   }
-//   function getLastMessages(chats) {
-//     const lastMessages = chats.map(chat => {
-//         const messages = chat.messages;
-//         const lastMessage = messages[messages.length - 1]; // Get the last message in the messages array
-//         return lastMessage;
-//     });
-//     return lastMessages;
-    
-// }
+  //   function getLastMessages(chats) {
+  //     const lastMessages = chats.map(chat => {
+  //         const messages = chat.messages;
+  //         const lastMessage = messages[messages.length - 1]; // Get the last message in the messages array
+  //         return lastMessage;
+  //     });
+  //     return lastMessages;
+
+  // }
   useEffect(() => {
     fetchfriends();
   }, [refreshFlag])
@@ -150,8 +151,8 @@ function PersonalMsgScreen() {
   var [messages, setMessages] = useState([]);
 
   async function onclickfriendchat(friend, friendname) {
-    const response = await axios.post('/getafriend',{u_id:friend})
-    if(response){
+    const response = await axios.post('/getafriend', { u_id: friend })
+    if (response) {
       console.log(response.data.profilePicture);
       setSelectedFriendIcon(response.data.profilepicture)
     }
@@ -260,25 +261,30 @@ function PersonalMsgScreen() {
             <MdDelete className="icon nobordershadow" color={Deletefn ? "#5E4AE3" : "#000"} onClick={() => { toggleDeletefn(); console.log("utasgduygeiyr"); }} />
           </div>
           {Array.isArray(chats) && chats.length > 0 ? (
+
             chats.map((el, i) => (
+              
               <div className={Deletefn ? "flexrow swipe-container" : "flexrow"}>
                 <div className="box chat pointer word_shrink">
                   <div
                     className="chat_info"
                     key={i}
-                    onClick={() =>
-                      onclickfriendchat(el.users[0].userid === userid ? el.users[1].userid : el.users[0].userid, el.users[0].userid === userid ? el.users[1].username : el.users[0].username)
+                    onClick={() => {
+                      onclickfriendchat(el.users[0].userid === userid ? el.users[1].userid : el.users[0].userid, el.users[0].userid === userid ? el.users[1].username : el.users[0].username);
+
+                    }
                     }
                   >
-                    <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                    {/* <IoMdContact className="icon profile_chat_img"/> */}
+                    <img className="icon profile_chat_img" src={`images/chathistory.jpg`} alt="" />
                     <div className=" profile_text">
                       <div className="textlength_head ">
                         <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username}</span>
-                        {/* <span className="bold ">{el.username}sssssss</span> */}
+                        
                       </div>
-                      <div className="textlength_para ">
+                      {/* <div className="textlength_para ">
                         <span className="light">messsage lorum ipsum la about the new era of time</span>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="incomingchat circle center">1</div>
@@ -431,7 +437,7 @@ function PersonalMsgScreen() {
                       )}
                     </div>
                 }
-               
+
 
               </React.Fragment>
             ))}
@@ -466,7 +472,7 @@ function PersonalMsgScreen() {
 
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        <SideScreenPersonalFn fetchfriends={fetchfriends} selectedFriend={selectedFriend}data={{ "image": selectedFriendIcon, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
+        <SideScreenPersonalFn fetchfriends={fetchfriends} selectedFriend={selectedFriend} data={{ "image": selectedFriendIcon, "username": selectedChat?.username }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />
       </div>}
     </>
   );
