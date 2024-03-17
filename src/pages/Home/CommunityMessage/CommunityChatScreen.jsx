@@ -11,7 +11,7 @@ import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember
 import axios from "axios";
 import { io } from "socket.io-client"
 import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
-function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({ fetchCommunityDetails,setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput,setsearchinput] = useState('')
 
   const [error, seterror] = useState("");
@@ -120,16 +120,24 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         setText("");
         setScrollPosition(scrollPosition + 1);
       }
-   setAllCommunityMessages(prevCommunityMessages => {
-        const index = prevCommunityMessages.findIndex(chat => selectedCommunity === messageData.c_id);
-        if (index !== -1) {
-          const updatedCommunityMessages = [...prevCommunityMessages];
-          updatedCommunityMessages[index].messages.push(messageData);
-          return updatedCommunityMessages;
-        } else {
-          return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [messageData] }];
-        }
-      });
+  //  setAllCommunityMessages(prevCommunityMessages => {
+  //       const index = prevCommunityMessages.findIndex(chat => selectedCommunity === messageData.c_id);
+  //       if (index !== -1) {
+  //         const updatedCommunityMessages = [...prevCommunityMessages];
+  //         updatedCommunityMessages[index].messages.push(messageData);
+  //         return updatedCommunityMessages;
+  //       } else {
+  //         return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [messageData] }];
+  //       }
+  //     });
+  // setIndividualCommunity(prevState => {
+  //   return prevState.map(community => {
+  //     if (community._id === selectedCommunity) {
+  //       return { ...community, lastmessage: "last message" };
+  //     }
+  //     return community;
+  //   });
+  // });
     }
   };
 
@@ -381,7 +389,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
     }
   };
-  ////////////////////////search chat begin////////////////
+  ////////////////////////search chat message begin////////////////
 
   useEffect(()=>{
     async function searchcommunitychat(){
@@ -402,13 +410,27 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   }
   
 
-  //////////////////////////////////////////////////////////////////////////////////
-
+  //////////////////////////////////search chat name begin////////////////////////////////////////////////
+  const [searchCText,setSearchCText] = useState('')
+  useEffect(()=>{
+    
+    async function searchcommunityName(){
+      console.log(`individ-------------------------`);
+      console.log(searchCText);
+      const response = await axios.post('/search_communityname',{text:searchCText,communities:userdata.communities})
+      setIndividualCommunity(response.data.groups)
+    }
+    searchcommunityName()
+  },[searchCText])
+  
+  const handleSearchCommunityName = (event)=>{
+    setSearchCText(event.target.value)
+  }
   return (
     <>
       <div className="section1 section_margin box relative_pos">
         <div className="box searchbox flexrow spacebetween relative_pos min_boxwidth">
-          <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={() => { }} />
+          <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={handleSearchCommunityName} />
           <Menu setScreen={screen} setCreateAlert={create} />
         </div>
         {individualCommunity.map((el, i) =>

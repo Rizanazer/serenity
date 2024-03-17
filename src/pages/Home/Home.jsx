@@ -138,7 +138,7 @@ const Home = () => {
     }
   }, []);
 
-  console.log(individualCommunity);
+  // console.log(individualCommunity);
   return (
     <>
       <div className="container center ">
@@ -191,6 +191,7 @@ const Home = () => {
         <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} />
         {Screen === "PersonalMessage" && <PersonalMsgScreen />}
         {Screen === "CommunityMessage" && <CommunityMsgScreen
+          fetchCommunityDetails={fetchCommunityDetails}
           ViewChat={ViewChat}
           setViewChat={setViewChat}
           setSelectedCommunityName={setSelectedCommunityName}

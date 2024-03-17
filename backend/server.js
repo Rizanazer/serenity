@@ -843,6 +843,31 @@ router.post("/searchpersonalmessage", async (req, res) => {
   }
 });
 
+router.post("/search_communityname", async (req, res) => {
+  try {
+    const { text, communities } = req.body;
+    const userCommunities = [];
+    
+    for (const c_id of communities) {
+      const community = await Community.findOne({ _id: c_id }); 
+      if (community) {
+        userCommunities.push(community);
+      }
+    }
+    const filteredCommunities = userCommunities.filter(community => {
+      const regex = new RegExp(text, 'i');
+      return regex.test(community.communityName);
+    });
+
+    console.log(`------------------------------------------------`);
+    console.log(filteredCommunities);
+    res.json({ "success": true, "groups": filteredCommunities });
+  } catch (error) {
+    console.error(error);
+    res.json({ "success": false });
+  }
+});
+
 router.post("/get_c_messages", async (req, res) => {
 
   try {
