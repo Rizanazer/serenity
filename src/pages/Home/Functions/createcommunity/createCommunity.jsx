@@ -135,11 +135,17 @@ var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
                                 <input type="text" value={createCommunityData.c_desc} name="c_desc" onChange={handleInputChange} />
                                 <span className="light">Group Purpose</span>
                                 <select id='dropmenu' onChange={handleInputChange} name="c_purpose" value={createCommunityData.c_purpose}>
-                                    <option value="health">health</option>
-                                    <option value="sports">sports</option>
+                                    <option value="music">music</option>
+                                    <option value="gaming">games</option>
                                     <option value="games">games</option>
-                                    <option value="depression">depression</option>
-                                    <option value="intoverts">intoverts</option>
+                                    <option value="movies">movies</option>
+                                    <option value="mental_health">mental_health</option>
+                                    <option value="books">books</option>
+                                    <option value="technology">technology</option>
+                                    <option value="cooking">cooking</option>
+                                    <option value="fitness">fitness</option>
+                                    <option value="travel">travel</option>
+  
                                 </select>
 
                             </div>
