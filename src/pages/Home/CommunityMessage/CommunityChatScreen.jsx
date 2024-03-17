@@ -400,7 +400,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   <span className="bold ">{el.communityName}</span>
                 </div>
                 <div className="textlength_para ">
-                  <span className="light ">{el.message}</span>
+                  <span className="light">{el.lastmessagesender}: {el.lastmessage}</span>
                 </div>
               </div>
             </div>
