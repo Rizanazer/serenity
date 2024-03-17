@@ -19,7 +19,7 @@ function PersonalMsgScreen() {
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const chatAreaRef = useRef(null);
-  
+
   useEffect(() => {
     // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
@@ -28,7 +28,7 @@ function PersonalMsgScreen() {
       }
     }, 100);
   }, [messages, scrollPosition]);
-  const [searchinput,setsearchinput] = useState('')
+  const [searchinput, setsearchinput] = useState('')
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [LastMessage, setLastMessage] = useState([]);
   var [ViewChat, setViewChat] = useState(false);
@@ -250,16 +250,16 @@ function PersonalMsgScreen() {
     }
   };
   ////////////////////////////search begin here
-  useEffect(()=>{
-    async function searchmessage(){
-      const response = await axios.post('/searchpersonalmessage',{u_id:userid,f_id:selectedFriend,text:searchinput})
+  useEffect(() => {
+    async function searchmessage() {
+      const response = await axios.post('/searchpersonalmessage', { u_id: userid, f_id: selectedFriend, text: searchinput })
       setMessages(response.data.messages)
       console.log(searchinput);
     }
     searchmessage()
-  },[searchinput])
-  
-  const handlesearchinput = (event)=> {
+  }, [searchinput])
+
+  const handlesearchinput = (event) => {
     setsearchinput(event.target.value);
 
   }
@@ -276,7 +276,7 @@ function PersonalMsgScreen() {
           {Array.isArray(chats) && chats.length > 0 ? (
 
             chats.map((el, i) => (
-              
+
               <div className={Deletefn ? "flexrow swipe-container" : "flexrow"}>
                 <div className="box chat pointer word_shrink">
                   <div
@@ -293,7 +293,7 @@ function PersonalMsgScreen() {
                     <div className=" profile_text">
                       <div className="textlength_head ">
                         <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username}</span>
-                        
+
                       </div>
                       {/* <div className="textlength_para ">
                         <span className="light">messsage lorum ipsum la about the new era of time</span>
@@ -354,7 +354,12 @@ function PersonalMsgScreen() {
 
               {/* {<UpperChatInfo data={{ "image": selectedChat?.image, "username": selectedChat?.username, "status": () => { setSideScreen(true);setMoreadj(true);} }} />} */}
               {<div className="center inputrow" onClick={() => { setSideScreen(true); setMoreadj(true); }}>
-                <img className="icon profile_chat_img" src={`uploads/profilePictures/${selectedFriendIcon}`} alt="" />
+                <img
+                  className="icon profile_chat_img"
+                  src={selectedFriendIcon ? `uploads/profilePictures/${selectedFriendIcon}` : `images/chathistory.jpg`}
+                  alt=""
+                />
+
                 <span className="bold">{selectedFriendName}</span>
               </div>}
             </div>
