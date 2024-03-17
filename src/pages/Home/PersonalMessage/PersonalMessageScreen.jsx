@@ -19,10 +19,7 @@ function PersonalMsgScreen() {
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const chatAreaRef = useRef(null);
-  useEffect(() => {
-    console.log('----------------chats----------------')
-    console.log(chats);
-  })
+  
   useEffect(() => {
     // Ensure chatAreaRef.current is not null before attempting to scroll
     setTimeout(() => {
@@ -31,6 +28,7 @@ function PersonalMsgScreen() {
       }
     }, 100);
   }, [messages, scrollPosition]);
+  const [searchinput,setsearchinput] = useState('')
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [LastMessage, setLastMessage] = useState([]);
   var [ViewChat, setViewChat] = useState(false);
@@ -251,6 +249,21 @@ function PersonalMsgScreen() {
       send();
     }
   };
+  ////////////////////////////search begin here
+  useEffect(()=>{
+    async function searchmessage(){
+      const response = await axios.post('/searchpersonalmessage',{u_id:userid,f_id:selectedFriend,text:searchinput})
+      setMessages(response.data.messages)
+      console.log(searchinput);
+    }
+    searchmessage()
+  },[searchinput])
+  
+  const handlesearchinput = (event)=> {
+    setsearchinput(event.target.value);
+
+  }
+  /////////////////////////////////
   return (
     <>
       <div className="section1 section_margin box spacebetween">
@@ -352,7 +365,7 @@ function PersonalMsgScreen() {
                 {ChatSearch ?
                   <>
                     <MdClose className="icon_search" color="" onClick={() => { SetChatSearch(false) }} />
-                    <input type="text" onChange={() => { }} />
+                    <input type="text" value={searchinput} onChange={handlesearchinput} />
                   </>
 
                   :

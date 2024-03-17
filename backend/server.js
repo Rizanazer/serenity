@@ -815,6 +815,33 @@ router.post("/searchcommunitymessage", async (req, res) => {
   }
 });
 
+router.post("/searchpersonalmessage", async (req, res) => {
+  try {
+    const {text,f_id,u_id} = req.body
+    const existingChat = await DirectChats.findOne({
+      users: {
+        $all: [
+          { $elemMatch: { userid: u_id } },
+          { $elemMatch: { userid: f_id } }
+        ]
+      }
+    });
+    let messages = [];
+  if (existingChat && existingChat.messages) {
+  messages = existingChat.messages.filter(message =>
+    message.messageBody.match(new RegExp(text, "i"))
+  );
+}
+    console.log(text);
+    messages.map((m)=>{
+      console.log(m.messageBody);
+    })
+   res.json({"messages":messages,"success":true})
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, err: error });
+  }
+});
 
 router.post("/get_c_messages", async (req, res) => {
 
