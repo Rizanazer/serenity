@@ -747,7 +747,7 @@ router.post("/fetchfriends", async (req, res) => {
 
     }
 
-    console.log(chats[0].users[0]);
+    // console.log(chats[0].users[0]);
     res.json({ "success": true, "chats": chats, "frienddata": frienddata.flat() });
   } catch (error) {
     res.json({ "success": false })
@@ -791,11 +791,36 @@ router.post("/searchcommunity", async (req, res) => {
 })
 
 
+router.post("/searchcommunitymessage", async (req, res) => {
+  try {
+    const text = req.body.text;
+    const c_id = req.body.c_id;
+    console.log(req.body);
+    const communityChat = await CommunityChats.findOne({ communityId: c_id });
+    if (!communityChat) {
+      return res.json({ success: false, message: "Community not found." });
+    }
+    let messages = [];
+    if (communityChat.messages) {
+      messages = communityChat.messages.filter(message =>
+        message.message.match(new RegExp(text, "i"))
+      );
+    }
+
+    console.log(communityChat.messages);
+    res.json({ success: true, messages: messages });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, err: error });
+  }
+});
+
+
 router.post("/get_c_messages", async (req, res) => {
 
   try {
     const { c_id } = req.body
-    console.log(c_id);
+    // console.log(c_id);
     const chats = await CommunityChats.findOne({ communityId: c_id })
     if (chats) {
       res.json({ "success": true, "chats": chats });

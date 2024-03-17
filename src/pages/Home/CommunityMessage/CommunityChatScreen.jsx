@@ -12,6 +12,7 @@ import axios from "axios";
 import { io } from "socket.io-client"
 import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
 function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+  const [searchinput,setsearchinput] = useState('')
 
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
@@ -65,6 +66,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
   }
   async function get_c_messages() {
+    setsearchinput('')
     try {
       const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
       const msgs = response.data.chats.messages
@@ -380,37 +382,25 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     }
   };
   ////////////////////////search chat begin////////////////
-  const [searchinput,setsearchinput] = useState('')
-  const messages_copy = messages
+
+  useEffect(()=>{
+    async function searchcommunitychat(){
+      console.log("search input changed")
+
+      const response = await axios.post('/searchcommunitymessage',{c_id:selectedCommunity,text:searchinput})
+      if(response){
+
+        setMessages(response.data.messages)
+      }
+      console.log(`--------------------------------====================================`);
+      console.log(messages);
+    }
+    searchcommunitychat()
+  },[searchinput])
   const searchinputchange = (event) =>{
     setsearchinput(event.target.value)
-    searchcommunitychat(searchinput)
   }
-  const handleKeyDown = (event) => {
-    if (event.keyCode === 8) {
-      setsearchinput(event.target.value)
-      if(searchinput === '' || searchinput.length<1){
-        get_c_messages()
-      }else{
-        setsearchinput(searchinput);
-      }
-
-      searchcommunitychat(searchinput);
-    }
-  }
-  async function searchcommunitychat(query){
-    const searchTerm = query.toLowerCase();
-    const matchingMessages = [];
-    
-    messages.forEach(message => {
-        if (message.message?.toLowerCase().includes(searchTerm)) {
-            matchingMessages.push(message);
-            console.log(message.message)
-        }
-        // console.log("");
-    });
-    await setMessages(matchingMessages)
-  }
+  
 
   //////////////////////////////////////////////////////////////////////////////////
 
@@ -461,7 +451,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   {ChatSearch ?
                     <>
                       <MdClose className="icon_search" color="" onClick={() => { SetChatSearch(false) }} />
-                      <input type="text" value={searchinput} onKeyDown={handleKeyDown} onChange={searchinputchange} />
+                      <input type="text" value={searchinput} onChange={searchinputchange} />
                     </>
 
                     :
