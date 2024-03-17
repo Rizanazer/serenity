@@ -64,20 +64,20 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     // console.log(id);
 
   }
-  useEffect(() => {
-    async function get_c_messages() {
-      try {
-        const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
-        const msgs = response.data.chats.messages
-        if (msgs.length > 0) {
-          setMessages(response.data.chats.messages)
-        } else {
-          setMessages({})
-        }
-      } catch (error) {
-        console.log("error in fetching selected community messages")
+  async function get_c_messages() {
+    try {
+      const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
+      const msgs = response.data.chats.messages
+      if (msgs.length > 0) {
+        setMessages(response.data.chats.messages)
+      } else {
+        setMessages({})
       }
+    } catch (error) {
+      console.log("error in fetching selected community messages")
     }
+  }
+  useEffect(() => {
     get_c_messages()
   }, [selectedCommunity])
 
@@ -379,8 +379,38 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
     }
   };
+  ////////////////////////search chat begin////////////////
+  const [searchinput,setsearchinput] = useState('')
+  const messages_copy = messages
+  const searchinputchange = (event) =>{
+    setsearchinput(event.target.value)
+    searchcommunitychat(searchinput)
+  }
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 8) {
+      setsearchinput(event.target.value)
+      if(searchinput === '' || searchinput.length<1){
+        get_c_messages()
+      }else{
+        setsearchinput(searchinput);
+      }
 
-
+      searchcommunitychat(searchinput);
+    }
+  }
+  async function searchcommunitychat(query){
+    const searchTerm = query.toLowerCase();
+    const matchingMessages = [];
+    
+    messages.forEach(message => {
+        if (message.message?.toLowerCase().includes(searchTerm)) {
+            matchingMessages.push(message);
+            console.log(message.message)
+        }
+        // console.log("");
+    });
+    await setMessages(matchingMessages)
+  }
 
   //////////////////////////////////////////////////////////////////////////////////
 
@@ -400,7 +430,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   <span className="bold ">{el.communityName}</span>
                 </div>
                 <div className="textlength_para ">
-                  <span className="light ">{el.message}</span>
+                  {el.lastmessage && el.lastmessagesender && <span className="light">{el.lastmessagesender}: {el.lastmessage}</span>}
                 </div>
               </div>
             </div>
@@ -431,13 +461,13 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                   {ChatSearch ?
                     <>
                       <MdClose className="icon_search" color="" onClick={() => { SetChatSearch(false) }} />
-                      <input type="text" onChange={() => { }} />
+                      <input type="text" value={searchinput} onKeyDown={handleKeyDown} onChange={searchinputchange} />
                     </>
 
                     :
                     <>
                       <CgSearch color="" onClick={() => { SetChatSearch(true) }} />
-                      <span className="light " onClick={() => { SetChatSearch(true) }}>Search</span>
+                      <span className="light " onClick={() => { SetChatSearch(true) }}>Searchll</span>
                     </>
                   }
                 </div>
