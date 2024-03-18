@@ -79,15 +79,15 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data, 
                     <MdGroups className="icon_search" />
                 </div>
                 <div className="box nopadding nobordershadow padding5 scroll nocircleradius">
+                        <div className="Group_Participations box nobordershadow  flexcolumn spacebetween flex " >
                 {memberNames && memberNames.map((elem, i) => (
-                        <div className="Group_Participations box nobordershadow  flexrow spacebetween flex " key={i}>
-                            <div className="group_box " onClick={() => { member() }}>
+                            <div className="group_box flex " onClick={() => { member() }} key={i}>
                                 <img src="images/profileimg_chat.jpg" className="icon_search" />
                                 <span className="bold pointer">{elem}</span>
                             </div>
-                            <span className="light">active</span>
+                            ))}
+                            {/* <span className="light">active</span> */}
                         </div>
-                        ))}
                     </div>
             </div>
 

@@ -5,7 +5,7 @@ const communitySchema = mongoose.Schema({
   communityName: String,
   lastmessage:{type:String},
   lastmessagesender:String,
-  communityIcon:{type:String,default:'community-default.png'},
+  communityIcon:{type:String,default:'groupprofile.jpg'},
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   email: String,
   description: String,

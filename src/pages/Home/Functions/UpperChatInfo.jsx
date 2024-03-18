@@ -1,7 +1,7 @@
 function UpperChatInfo({ data ,sidescreen}) {
     return (
       <>
-        <img className="icon profile_chat_img" src={`uploads/communityIcons/${data.selectedCommunityIcon}`} alt="" onClick={sidescreen}/>
+        <img className="icon profile_chat_img" src={data.selectedCommunityIcon?`uploads/communityIcons/${data.selectedCommunityIcon}`:'images/groupprofile.jpg'} alt="" onClick={sidescreen}/>
         <span className="bold">{data.selectedCommunityName}</span>
       </>
     );

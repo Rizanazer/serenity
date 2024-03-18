@@ -102,7 +102,7 @@ const uploadCommunityIcon = multer({ storage: storeCommunityIcon });
 app.post('/community_upload_image', uploadCommunityMessageImage.single('image'), async (req, res) => {
   try {
     // Extract necessary data from the request
-    const { c_id, u_id, u_name } = req.body;
+    const { c_id, u_id, u_name,profilePicture } = req.body;
     const filename = req.file.filename;
 
     // Check if a chat exists for the given communityId
@@ -112,6 +112,7 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
       existingChat.messages.push({
         u_id,
         u_name,
+        profilePicture,
         filename,
         messagetype: "image",
         caption: "caption by user available soon"
@@ -123,6 +124,7 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
         messages: [{
           u_id,
           u_name,
+          profilePicture,
           filename,
           messagetype: "image",
           caption: "caption by user available soon"
@@ -139,7 +141,7 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
 app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'), async (req, res) => {
   try {
     // Extract necessary data from the request
-    const { c_id, u_id, u_name } = req.body;
+    const { c_id, u_id, u_name,profilePicture } = req.body;
     const filename = req.file.filename;
 
     // Check if a chat exists for the given communityId
@@ -150,6 +152,7 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
         u_id,
         u_name,
         filename,
+        profilePicture,
         messagetype: "video",
         caption: "caption by user available soon"
       });
@@ -160,6 +163,7 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
         messages: [{
           u_id,
           u_name,
+          profilePicture,
           filename,
           messagetype: "video",
           caption: "caption by user available soon"
@@ -1041,7 +1045,7 @@ io.on('connection', (socket) => {
 
   const axios = require('axios')
 
-  socket.on('sendMessage', async ({ c_id, u_name, message, u_id, profilePicture }) => {
+  socket.on('sendMessage', async ({ c_id, u_name, message, u_id, profilePicture ,anonymity}) => {
     try {
       if (!c_id || !u_id || !message) {
         return socket.emit({ success: false, "error": "Missing required properties." });
@@ -1107,12 +1111,12 @@ io.on('connection', (socket) => {
       const existingChat = await CommunityChats.findOne({ communityId: c_id });
 
       if (existingChat) {
-        existingChat.messages.push({ u_id, message, u_name, profilePicture });
+        existingChat.messages.push({ u_id, message, u_name, profilePicture,anonymity });
         await existingChat.save();
       } else {
-        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture }] });
+        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture,anonymity }] });
       }
-      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture });
+      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture,anonymity });
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });
