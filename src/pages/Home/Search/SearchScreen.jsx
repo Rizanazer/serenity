@@ -17,6 +17,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
   const [Status, setStatus] = useState(false);
   const [Moreadj, setMoreadj] = useState(false);
   var [GroupName, setGroupName] = useState([]);
+  var [GroupIcon, setGroupIcon] = useState('');
   const [selectedChatName, setSelectedChatName] = useState(null)
   useEffect(() => {
     async function fetchgroups() {
@@ -63,9 +64,10 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
   
 
 
-  async function handleclick(c_id, c_name) {
+  async function handleclick(c_id, c_name,c_image) {
     setSelectedChat(c_id)
     setSelectedChatName(c_name)
+    setGroupIcon(c_image)
   }
   const [searchText,setSearchText] = useState('')
   const handlesearchtext = (event)=>{
@@ -100,7 +102,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
             <span className="bold">Community Reccomendations</span>
           </div>
           <div className="box nopadding nobordershadow reccomendationBoxContnt nogap">
-            {GroupName.map((el, i) => <GroupList_2 data={el} key={i} HandleClick={() => { setSelectedChat(el) }} />)}
+            {GroupName.map((el, i) => <GroupList_2 data={el} key={i} HandleClick={() => { setSelectedChat(el) ;setGroupIcon(el.communityIcon)}} />)}
           </div>
 
 
@@ -117,7 +119,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
               <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
               {<>
                 {/* <img className="icon profile_chat_img" src="uploads/img.png" alt="" onClick={sidescreen}/> */}
-                <img className="icon profile_chat_img" src="uploads/img.png" alt="" />
+                <img className="icon profile_chat_img" src={GroupIcon?`uploads/communityIcons/${GroupIcon}`: 'uploads/img.png' } alt="" />
                 <span className="bold">{selectedChatName}</span>
               </>}
               {/* {<UpperChatInfo data={{ "image": "uploads/img.png", "username": "ddd", "status": () => { setSideScreen(true); setMoreadj(true); } }} />} */}
@@ -170,7 +172,7 @@ function GroupList_1({ userid, data, HandleClick, setViewChat }) {
   const stylejoined = { color: "green", borderRadius: '10px', textAlign: 'center',display:'flex',position:'relative' }
   return (
 
-    <div className="box chat pointer" onClick={() => { setViewChat(true); HandleClick(data._id, data.communityName); }}>
+    <div className="box chat pointer" onClick={() => { setViewChat(true); HandleClick(data._id, data.communityName,data.communityIcon); }}>
 
       <div className="chat_info " >
         <img className="icon profile_chat_img" src={`uploads/communityIcons/${data.communityIcon}`} alt="" />

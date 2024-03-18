@@ -129,3 +129,32 @@ width: 140px;
 .option-rightside {
   position: relative;
 }
+.emoji-Fn{
+  display: grid !important;
+  grid-template-columns: auto auto auto;
+  height: 100%;
+  width: 100%;
+  /* background-color: #2196F3; */
+  padding: 10px;
+
+ 
+overflow: auto;
+ 
+}
+.emoji-box{
+ 
+  
+  height: 20%;
+  width: 20%;
+
+  position: absolute;
+  z-index: 2;
+overflow: auto;
+  right: 0;
+  bottom: 0;
+}
+.emoji-items{
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  text-align: center;
+}
