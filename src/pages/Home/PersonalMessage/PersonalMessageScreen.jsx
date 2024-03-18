@@ -76,14 +76,19 @@ function PersonalMsgScreen() {
       setMessages((prev) => [...prev, newmessage])
     })
   }, [])
-
+  useEffect(()=>{
+    fetchfriends()
+  },[])
   async function fetchfriends() {
     const u_id = localStorage.getItem('userid')
 
     try {
       const response = await axios.post("/fetchfriends", { u_id: u_id, friendids: userdata.friends })
+      console.log(response.data.frienddata);
       setContacts(response.data.frienddata.flat())
       setChats(response.data.chats)
+      console.log(`-----------------------------chatts`);
+      console.log(response.data.chats);
       setFriends(userdata.friends.length);
       // console.log(" fetching friends",response.data.chats)
 
@@ -104,9 +109,9 @@ function PersonalMsgScreen() {
   //     return lastMessages;
 
   // }
-  useEffect(() => {
-    fetchfriends();
-  }, [refreshFlag])
+  // useEffect(() => {
+  //   fetchfriends();
+  // }, [refreshFlag])
 
   //delete chat fn
   const toggleDeletefn = () => {
@@ -148,23 +153,31 @@ function PersonalMsgScreen() {
 
   var [messages, setMessages] = useState([]);
 
-  async function onclickfriendchat(friend, friendname) {
-    const response = await axios.post('/getafriend', { u_id: friend })
+  async function onclickfriendchat(friendid, friendname,friendicon,chatid) {
+    //this request below might be unnecessary after update .marked as possible unnecessary request -arif
+    const response = await axios.post('/getafriend', { u_id: friendid })
     if (response) {
-      console.log(response.data.profilePicture);
-      setSelectedFriendIcon(response.data.profilepicture)
+      // console.log(response.data.profilePicture);
+      console.log(`got response`);
     }
-    console.log(friend)
-    setViewChat(true)
-    setSelectedFriendIcon(friend.profilePicture)
-    setSelectedFriend(friend)
+    setSelectedFriend(friendid)
+
+    console.log('---------------selectedfriend-------------------');
+    console.log(friendid)
+    setChatid(chatid)
+    setSelectedFriendIcon(friendicon)
     setSelectedFriendName(friendname)
+    setViewChat(true)
+
     try {
-      const response = await axios.post('/fetchpersonal', { f_id: friend, u_id: u_id, f_name: friendname })
-      console.log(friend);
-      setChatid(response.data.chats._id)
-      console.log(response.data.chats.messages);
+      // const response = await axios.post('/fetchpersonal', { f_id: friendid, u_id: u_id, f_name: friendname })
+      const response = await axios.post('/fetchpersonal', { chatid:chatid })
+      // console.log(friend);
+      // setChatid(response.data.chats._id)
+      // console.log(response.data.chats.messages);
       setMessages(response.data.chats.messages)
+      console.log("messages---------------------------------------");
+      console.log(messages);
     } catch (error) {
       setMessages([])
       console.log('personal message fetch error')
@@ -186,7 +199,7 @@ function PersonalMsgScreen() {
     const trimmedText = text.trim();
     console.log("selectedChat");
     console.log(selectedChat);
-    const senddata = { "fromname": username, "from": u_id, "toname": selectedFriendName, "to": selectedFriend, "message": trimmedText }
+    const senddata = { "from": u_id,  "to": selectedFriend, "message": trimmedText,"chatid":chatId }
     mySocket.emit("send_p_message", senddata);
     setText("");
     setScrollPosition(scrollPosition + 1);
@@ -283,16 +296,22 @@ function PersonalMsgScreen() {
                     className="chat_info"
                     key={i}
                     onClick={() => {
-                      onclickfriendchat(el.users[0].userid === userid ? el.users[1].userid : el.users[0].userid, el.users[0].userid === userid ? el.users[1].username : el.users[0].username);
+                      onclickfriendchat(
+                        el.users[0]._id === userid ? el.users[1]._id : el.users[0]._id,
+                        el.users[0]._id === userid ? el.users[1].username : el.users[0].username,
+                        el.users[0]._id === userid ? el.users[1].profilePicture : el.users[0].profilePicture,
+                        el._id
+                      );
 
                     }
                     }
                   >
                     {/* <IoMdContact className="icon profile_chat_img"/> */}
-                    <img className="icon profile_chat_img" src={`images/chathistory.jpg`} alt="" />
+                    {el.users[0].username === username?<img className="icon profile_chat_img" src={`uploads/profilePictures/${el.users[1].profilePicture}`} alt="" />
+                    :<img className="icon profile_chat_img" src={`uploads/profilePictures/${el.users[0].profilePicture}`} alt="" />}
                     <div className=" profile_text">
                       <div className="textlength_head ">
-                        <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username}</span>
+                        <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username} chats-not friendslist</span>
 
                       </div>
                       {/* <div className="textlength_para ">
@@ -402,7 +421,7 @@ function PersonalMsgScreen() {
               </div>
             </div>}
 
-            {messages.length > 0 && messages.map((el, i) => (
+            {messages?.length > 0 && messages.map((el, i) => (
               <React.Fragment key={i}>
                 {
                   rightclk && el.from.username === username ?

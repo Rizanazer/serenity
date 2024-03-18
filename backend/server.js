@@ -443,6 +443,7 @@ router.route("/getallcommunities").post(async (req, res) => {
 
 });
 
+
 router.route("/getcommunities").get(async (req, res) => {
   try {
     const allCommunities = await Community.find();
@@ -615,19 +616,10 @@ router.post("/accept", async (req, res) => {
       { new: true }
     );
     const savedDirectChat = await DirectChats.create({
-      users: [
-        { userid: u_id, username: username },
-        { userid: tobefriend, username: tobefriend_username }
-      ],
+      users: [ u_id, tobefriend],
       messages: [{
-        from: {
-          userid: tobefriend,
-          username: tobefriend_username
-        },
-        to: {
-          userid: u_id,
-          username: username
-        },
+        from:  tobefriend,
+        to:  u_id,
         messageBody: "Welcome to the chat",
         messageType: "text"
       }]
@@ -731,21 +723,24 @@ router.post("/fetchfriends", async (req, res) => {
     const u_id = req.body.u_id;
     const friendids = req.body.friendids
 
-    const chats = await DirectChats.find({ $or: [{ "users.userid": u_id }, { "users.userid": u_id }] }).sort({ dateAdded: -1 });
+    const chats = await DirectChats.find({
+      users: { $elemMatch: { $eq: u_id } }
+    }).populate('users').populate('messages.from').populate('messages.to').sort({ dateAdded: -1 });
+    
     const frienddata = []
     // const lastMessage = ''
+    // console.log(chats);
+    // for (let i = 0; i < friendids.length; i++) {
+    //   const friendquery = await User.find({ _id: friendids[i] })
+    //   if (friendquery) {
+    //     // console.log("🤣🤣🤣",friendquery.chats);
+    //     frienddata.push(friendquery)
+    //   } else {
 
-    for (let i = 0; i < friendids.length; i++) {
-      const friendquery = await User.find({ _id: friendids[i] })
-      if (friendquery) {
-        // console.log("🤣🤣🤣",friendquery.chats);
-        frienddata.push(friendquery)
-      } else {
+    //     frienddata.push(friendquery)
+    //   }
 
-        frienddata.push(friendquery)
-      }
-
-    }
+    // }
 
     // console.log(chats[0].users[0]);
     res.json({ "success": true, "chats": chats, "frienddata": frienddata.flat() });
@@ -759,10 +754,13 @@ router.post("/fetchfriends", async (req, res) => {
 router.post("/fetchpersonal", async (req, res) => {
 
   try {
-    const { f_id, u_id } = req.body
-    const chats = await DirectChats.findOne({
-      'users.userid': { $all: [f_id, u_id] }
-    });
+    // const { f_id, u_id,chatid } = req.body
+    const { chatid } = req.body
+    // const chats = await DirectChats.findOne({
+    //   'users.userid': { $all: [f_id, u_id] }
+    // });
+    const chats = await DirectChats.findOne({_id:chatid}).populate('messages.from').populate('messages.to')
+    console.log(chats);
     res.json({ "success": true, "chats": chats });
   } catch (error) {
     res.json({ "success": false })
@@ -795,19 +793,26 @@ router.post("/searchcommunitymessage", async (req, res) => {
   try {
     const text = req.body.text;
     const c_id = req.body.c_id;
-    console.log(req.body);
+    // console.log(req.body);
     const communityChat = await CommunityChats.findOne({ communityId: c_id });
     if (!communityChat) {
       return res.json({ success: false, message: "Community not found." });
     }
     let messages = [];
-    if (communityChat.messages) {
-      messages = communityChat.messages.filter(message =>
-        message.message.match(new RegExp(text, "i"))
-      );
+    if(text === " " || text.length < 1 ){
+      if(communityChat.messages){
+        messages = communityChat.messages
+      }
+    }else{
+      if (communityChat.messages) {
+        messages = communityChat.messages.filter(message =>
+          message.message?.match(new RegExp(text, "i"))
+        );
+      }
     }
+   
 
-    console.log(communityChat.messages);
+    // console.log(communityChat.messages);
     res.json({ success: true, messages: messages });
   } catch (error) {
     console.log(error);
@@ -832,14 +837,37 @@ router.post("/searchpersonalmessage", async (req, res) => {
     message.messageBody.match(new RegExp(text, "i"))
   );
 }
-    console.log(text);
-    messages.map((m)=>{
-      console.log(m.messageBody);
-    })
+    // console.log(text);
+    // messages.map((m)=>{
+    //   console.log(m.messageBody);
+    // })
    res.json({"messages":messages,"success":true})
   } catch (error) {
     console.log(error);
     res.json({ success: false, err: error });
+  }
+});
+
+router.post("/search_communityname", async (req, res) => {
+  try {
+    const { text, communities } = req.body;
+    const userCommunities = [];
+    
+    for (const c_id of communities) {
+      const community = await Community.findOne({ _id: c_id }); 
+      if (community) {
+        userCommunities.push(community);
+      }
+    }
+    const filteredCommunities = userCommunities.filter(community => {
+      const regex = new RegExp(text, 'i');
+      return regex.test(community.communityName);
+    });
+
+    res.json({ "success": true, "groups": filteredCommunities });
+  } catch (error) {
+    console.error(error);
+    res.json({ "success": false });
   }
 });
 
@@ -970,46 +998,39 @@ app.use('/', router)
 io.on('connection', (socket) => {
 
   socket.on('send_p_message', async (msg) => {
-    const { from, to, fromname, toname, message } = msg;
-
+    const { from, to, chatid, message } = msg;
     const existingChat = await DirectChats.findOne({
-      users: {
-        $all: [
-          { $elemMatch: { userid: from } },
-          { $elemMatch: { userid: to } }
-        ]
-      }
+      $or: [
+        { users: [from, to] },
+        { users: [to, from] }
+      ]
     });
-
+    
     if (existingChat) {
-      existingChat.messages.push({
-        from: { userid: from, username: fromname },
-        to: { userid: to, username: toname },
+      existingChat?.messages.push({
+        from: from,
+        to: to,
         messageBody: message,
         messageType: "text"
       });
       await existingChat.save();
     } else {
+      console.log(`else parttttttttttttttttttttt`);
       const savedDirectChat = await DirectChats.create({
         users: [
-          { userid: from, username: fromname },
-          { userid: to, username: toname }
+          from,
+          to
         ],
         messages: [{
-          from: {
-            userid: to,
-            username: toname
-          },
-          to: {
-            userid: from,
-            username: fromname
-          },
+          from: from,
+          to: to,
           messageBody: message,
           messageType: "text"
         }]
       });
     }
-    io.emit("recieve_p_message", { "to": to, "from": from, "toname": toname, "fromname": fromname, "messageBody": message, "messageType": "text" });
+    io.emit("recieve_p_message", { "to": to, "from": from, "messageBody": message, "messageType": "text" });
+    // io.emit("recieve_p_message", { "to": to, "from": from, "toname": toname, "fromname": fromname, "messageBody": message, "messageType": "text" });
   });
 
   socket.on('send-image-community', async ({ image, u_name }) => {
@@ -1047,9 +1068,35 @@ io.on('connection', (socket) => {
         const threatScore = result[0][4].score;
         const severeToxicScore = result[0][5].score;
         const toxicityThreshold = 0.5;
+
         if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
           identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
+            const existingChat = await CommunityChats.findOne({ communityId: c_id });
           message = "this was a toxic comment"
+          const today = new Date()
+          const threemonthsback = new Date()
+          threemonthsback.setMonth(threemonthsback.getMonth() -3)
+          // console.log(threemonthsback);
+          let toxiccount = 0
+          let messagecount = 0
+          if(existingChat?.messages.length>0){
+            console.log("len",existingChat.messages.length);
+            existingChat.messages.map((msg)=>{
+              if (msg.u_id.equals(new mongoose.Types.ObjectId(u_id)) && msg.timeStamp >= threemonthsback && msg.timeStamp < today) {
+                if( msg.message === "this was a toxic comment"){
+                  toxiccount += 1
+                }
+                messagecount +=1
+              }
+            })
+            const toreduce = toxiccount/messagecount
+            const user = await User.findOneAndUpdate({_id:u_id},
+            {$inc:{serenityscore : -toreduce}},
+            {new:true})
+            console.log(`toxic : `,toxiccount);
+            console.log(`total : `,messagecount);
+            console.log(`toreduce : `,toreduce);
+          }
         }
       } catch (error) {
         console.error('Error:', error);

@@ -11,8 +11,8 @@ import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember
 import axios from "axios";
 import { io } from "socket.io-client"
 import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
-function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
-  const [searchinput, setsearchinput] = useState('')
+function CommunityMsgScreen({ fetchCommunityDetails,setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+  const [searchinput,setsearchinput] = useState('')
 
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
@@ -30,6 +30,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
   var [messages, setMessages] = useState([]);
   const [ChatSearch, SetChatSearch] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
+  var [selectedChat, setSelectedChat] = useState(null);
   const [More, setMore] = useState(false);
   const [Moreadj, setMoreadj] = useState(false);
   var [Member, setMember] = useState(false);
@@ -69,13 +70,13 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     try {
       const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
       const msgs = response.data.chats.messages
-      if (msgs.length > 0) {
+      if (msgs?.length > 0) {
         setMessages(response.data.chats.messages)
       } else {
-        setMessages({})
+        setMessages([])
       }
     } catch (error) {
-      console.log("error in fetching selected community messages")
+      console.log(error)
     }
   }
   useEffect(() => {
@@ -93,6 +94,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     newSocket.on('newMessage', (message) => {
 
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message }
+      
       setMessages((prev) => [...prev, appenddata])
 
     });
@@ -119,16 +121,24 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         setText("");
         setScrollPosition(scrollPosition + 1);
       }
-      setAllCommunityMessages(prevCommunityMessages => {
-        const index = prevCommunityMessages.findIndex(chat => selectedCommunity === messageData.c_id);
-        if (index !== -1) {
-          const updatedCommunityMessages = [...prevCommunityMessages];
-          updatedCommunityMessages[index].messages.push(messageData);
-          return updatedCommunityMessages;
-        } else {
-          return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [messageData] }];
-        }
-      });
+  //  setAllCommunityMessages(prevCommunityMessages => {
+  //       const index = prevCommunityMessages.findIndex(chat => selectedCommunity === messageData.c_id);
+  //       if (index !== -1) {
+  //         const updatedCommunityMessages = [...prevCommunityMessages];
+  //         updatedCommunityMessages[index].messages.push(messageData);
+  //         return updatedCommunityMessages;
+  //       } else {
+  //         return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [messageData] }];
+  //       }
+  //     });
+  // setIndividualCommunity(prevState => {
+  //   return prevState.map(community => {
+  //     if (community._id === selectedCommunity) {
+  //       return { ...community, lastmessage: "last message" };
+  //     }
+  //     return community;
+  //   });
+  // });
     }
   };
 
@@ -148,7 +158,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     togglerightclick(); // Set rightclk state to true
     setSelectedMessage(message);
     setmessageTtext(message.message)
-
+   
   };
 
   const togglerightclick = () => {
@@ -166,21 +176,6 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     window.speechSynthesis.speak(speech);
   };
 
-  const [showEmojiPanel, setShowEmojiPanel] = useState(false);
-
-  function toggleEmojiPanel(e) {
-         // Simulate Windows key + ">" key press
-    const event = new KeyboardEvent('keydown', {
-      key: '>',              // Key representing ">"
-      code: 'BracketRight',  // Key code for ">"
-      metaKey: true,         // Simulate Windows key
-    });
-
-    // Dispatch the keyboard event
-    document.dispatchEvent(event);
-          
-      
-  }
   const startHoverTimer = (message) => {
     hoverTimer.current = setTimeout(() => {
       setHoveredMessage(message);
@@ -271,11 +266,11 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     set_Translate(prevState => !prevState);
   }
   const handleTranslate = () => {
-    console.log("lan", messageTtext);
+    console.log("lan",messageTtext);
     axios.post('/convert', {
       input_text: messageTtext,
       to_lang: language
-
+     
     })
       .then(response => {
         setmessageTtext(response.data.translated_text);
@@ -284,7 +279,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
         console.error('Error:', error);
         seterror('Error occurred while translating', error)
         setListening(true)
-
+       
       });
 
   }
@@ -297,7 +292,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       setLanguage(response.data.language)
     } catch (error) {
       seterror('error fetching Status')
-      setListening(true)
+        setListening(true)
     }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,7 +345,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       setFriendList(response.data)
     } catch (error) {
       console.error(error)
-
+      
     }
   }
   async function fetchcommunities() {
@@ -382,7 +377,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
     } catch (error) {
       console.error('Error forwarding message:', error);
       seterror('Error forwarding message:', error)
-      setListening(true)
+        setListening(true)
 
     }
   };
@@ -395,14 +390,14 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
     }
   };
-  ////////////////////////search chat begin////////////////
+  ////////////////////////search chat message begin////////////////
 
-  useEffect(() => {
-    async function searchcommunitychat() {
+  useEffect(()=>{
+    async function searchcommunitychat(){
       console.log("search input changed")
 
-      const response = await axios.post('/searchcommunitymessage', { c_id: selectedCommunity, text: searchinput })
-      if (response) {
+      const response = await axios.post('/searchcommunitymessage',{c_id:selectedCommunity,text:searchinput})
+      if(response){
 
         setMessages(response.data.messages)
       }
@@ -410,19 +405,34 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
       console.log(messages);
     }
     searchcommunitychat()
-  }, [searchinput])
-  const searchinputchange = (event) => {
+  },[searchinput])
+  const searchinputchange = (event) =>{
     setsearchinput(event.target.value)
   }
+  
 
-
-  //////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////search chat name begin////////////////////////////////////////////////
+  const [searchCText,setSearchCText] = useState('')
+  useEffect(()=>{
+    
+    async function searchcommunityName(){
+      console.log(`individ-------------------------`);
+      console.log(searchCText);
+      const response = await axios.post('/search_communityname',{text:searchCText,communities:userdata.communities})
+      setIndividualCommunity(response.data.groups)
+    }
+    searchcommunityName()
+  },[searchCText])
+  
+  const handleSearchCommunityName = (event)=>{
+    setSearchCText(event.target.value)
+  }
 
   return (
     <>
       <div className="section1 section_margin box relative_pos">
         <div className="box searchbox flexrow spacebetween relative_pos min_boxwidth">
-          <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={() => { }} />
+          <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={handleSearchCommunityName} />
           <Menu setScreen={screen} setCreateAlert={create} />
         </div>
         {individualCommunity.map((el, i) =>
@@ -552,7 +562,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
 
 
-              {messages && messages.map((el, i) => (
+              {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
                   {
                     rightclk && el.u_name === username ?
@@ -565,7 +575,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                               setForwarding(true);
                               setForwardMessage(el.message);
                               fetchcommunities()
-
+                             
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -644,12 +654,12 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
                         {rightclk && selectedMessage === el && (
                           <div className="message_options center" >
                             <div className="message_items" onClick={() => {
-
+                              
                               sethandleForward_el(el);
                               setForwarding(true);
                               setForwardMessage(el.message);
                               fetchcommunities()
-
+                         
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
                                 <span className="bold padding5">Forward</span>
@@ -686,7 +696,8 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
 
 
 
-              
+
+
 
             </div>
 
@@ -705,8 +716,7 @@ function CommunityMsgScreen({ setIndividualCommunity, setViewChat, ViewChat, scr
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
                   <FaMicrophone className="icon icon_small nobordershadow" onClick={handleListen} style={{ cursor: 'pointer' }} />
-                
-                  <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" onClick={toggleEmojiPanel} style={{ cursor: 'pointer' }} />
+                  <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" />
                   <input type="file" accept="video/*" ref={fileVideoInputRef} style={{ display: 'none' }} onChange={handleFileVideoChange} />
                   <MdVideoFile className="icon icon_small nobordershadow" onClick={sendvideo} />
                   <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
@@ -764,13 +774,9 @@ function ErrorMessage({ error, listening, setListening, seterror }) {
   return (
     listening && (
       <div className="alerterror alert-success center spacebetween">
-        <span><strong>Error!</strong> {error}</span>
+        <span><strong>Error!</strong> {error}</span> 
         <MdClose className="icon_search" onClick={() => { setListening(false); seterror("") }} />
       </div>
     )
   );
 }
-
-
-
-
