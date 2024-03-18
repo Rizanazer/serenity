@@ -1079,9 +1079,36 @@ io.on('connection', (socket) => {
         const threatScore = result[0][4].score;
         const severeToxicScore = result[0][5].score;
         const toxicityThreshold = 0.5;
+
         if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
           identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
+            const existingChat = await CommunityChats.findOne({ communityId: c_id });
           message = "this was a toxic comment"
+          const today = new Date()
+          const threemonthsback = new Date()
+          threemonthsback.setMonth(threemonthsback.getMonth() -3)
+          console.log(threemonthsback);
+          const usermessages = []
+          let toxiccount = 0
+          let messagecount = 0
+          if(existingChat?.messages.length>0){
+            console.log("len",existingChat.messages.length);
+            existingChat.messages.map((msg)=>{
+              if (msg.u_id.equals(new mongoose.Types.ObjectId(u_id)) && msg.timeStamp >= threemonthsback && msg.timeStamp < today) {
+                if( msg.message === "this was a toxic comment"){
+                  toxiccount += 1
+                }
+                messagecount +=1
+              }
+            })
+            const toreduce = toxiccount/messagecount
+            const user = await User.findOneAndUpdate({_id:u_id},
+            {$inc:{serenityscore : -toreduce}},
+            {new:true})
+            console.log(`toxic : `,toxiccount);
+            console.log(`total : `,messagecount);
+            console.log(`toreduce : `,toreduce);
+          }
         }
       } catch (error) {
         console.error('Error:', error);
