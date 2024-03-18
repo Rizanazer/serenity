@@ -661,7 +661,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                               }
                             }}
                             />
-                           {el.anonymity? <p className="bold">anonymous</p>:<p className="bold">{el.u_name}</p>}
+                           {el.anonymity? <p className="bold">S'user</p>:<p className="bold">{el.u_name}</p>}
                           </div>
                         </div>
                         {rightclk && selectedMessage === el && (
