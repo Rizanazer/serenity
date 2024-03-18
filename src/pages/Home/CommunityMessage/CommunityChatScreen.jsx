@@ -426,6 +426,7 @@ function CommunityMsgScreen({ fetchCommunityDetails,setIndividualCommunity, setV
   const handleSearchCommunityName = (event)=>{
     setSearchCText(event.target.value)
   }
+
   return (
     <>
       <div className="section1 section_margin box relative_pos">

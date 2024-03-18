@@ -201,6 +201,7 @@ const Home = () => {
           screen={setScreen}
           create={setCreateAlert}
           individualCommunity={individualCommunity}
+          setIndividualCommunity={setIndividualCommunity}
           selectedCommunityStatus={selectedCommunityStatus}
           setselectedCommunityStatus={setSelectedCommunityStatus}
         />}
