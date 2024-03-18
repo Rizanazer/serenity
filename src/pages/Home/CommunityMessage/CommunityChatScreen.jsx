@@ -13,7 +13,7 @@ import { io } from "socket.io-client"
 import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
 function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
-  const [AnonymsGps, setAnonymsGps] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
   const userdata = JSON.parse(localStorage.getItem('userdata'));
@@ -44,12 +44,12 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   useEffect(() => {
     setAnonymity(userdata.anonymity)
     setLanguage(userdata.language)
-    
+
     fetchProfileUpdate()
   }, [])
 
   const profilePicture = userdata.profilePicture
-  const [anonymity,setAnonymity] = useState(null);
+  const [anonymity, setAnonymity] = useState(null);
   useEffect(() => {
     setTimeout(() => {
       if (chatAreaRef.current) {
@@ -65,7 +65,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
     setselectedCommunityStatus(desc);
     setSelectedCommunityIcon(icon);
     setSelectedCommunity(id);
-   
+
   }
   async function get_c_messages() {
     setsearchinput('')
@@ -96,7 +96,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
 
     newSocket.on('newMessage', (message) => {
 
-      const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,"anonymity":message.anonymity }
+      const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profile": message.profilePicture }
 
       setMessages((prev) => [...prev, appenddata])
 
@@ -116,8 +116,9 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   var [Member, setMember] = useState(false);
   var [text, setText] = useState("");
   const send = async () => {
+    // setProfile(userdata.profilePicture)
     if (text.trim().length > 0 && selectedCommunity) {
-      const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture,anonymity:anonymity };
+      const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture, anonymity: anonymity };
       if (socket) {
         socket.emit('sendMessage', messageData);
         const appenddata = { u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), message: text.trim() };
@@ -251,7 +252,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
             'Content-Type': 'multipart/form-data'
           }
         });
-        
+
         let newmessage = {
           messagetype: 'video',
           u_name: userdata.username,
@@ -622,7 +623,9 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                           )}
 
                           <div className="flex flexcolumn center">
-                            <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => { }} />
+                             {/* needs adjustment here */}
+                            <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'chathistory.jpg'}`}
+                              className="icon_search circle" alt="" srcSet="" onClick={() => { }} />
                             <p className="bold">{el.u_name}</p>
                           </div>
                         </div>
@@ -653,7 +656,9 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                             </p>
                           )}
                           <div className="flex flexcolumn center">
-                            <img src={`uploads/profilePictures/${el.profilePicture}`} className="icon_search circle" alt="" srcSet="" onClick={() => {
+                            {/* needs adjustment here */}
+                            <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : userdata.profilePicture}`}
+                             className="icon_search circle" alt="" srcSet="" onClick={() => {
                               if (el.u_name != username) {
                                 setSelectedUser({ username: el.u_name, userid: el.u_id });
                                 setMember(true);
@@ -661,7 +666,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                               }
                             }}
                             />
-                           {el.anonymity? <p className="bold">S'user</p>:<p className="bold">{el.u_name}</p>}
+                            {el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_name}</p>}
                           </div>
                         </div>
                         {rightclk && selectedMessage === el && (
