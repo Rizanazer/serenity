@@ -801,11 +801,18 @@ router.post("/searchcommunitymessage", async (req, res) => {
       return res.json({ success: false, message: "Community not found." });
     }
     let messages = [];
-    if (communityChat.messages) {
-      messages = communityChat.messages.filter(message =>
-        message.message.match(new RegExp(text, "i"))
-      );
+    if(text === "" || text.length < 1 ){
+      if(communityChat.messages){
+        messages = communityChat.messages
+      }
+    }else{
+      if (communityChat.messages) {
+        messages = communityChat.messages.filter(message =>
+          message.message?.match(new RegExp(text, "i"))
+        );
+      }
     }
+   
 
     console.log(communityChat.messages);
     res.json({ success: true, messages: messages });
