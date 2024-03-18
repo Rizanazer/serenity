@@ -70,13 +70,13 @@ function CommunityMsgScreen({ fetchCommunityDetails,setIndividualCommunity, setV
     try {
       const response = await axios.post('/get_c_messages', { c_id: selectedCommunity })
       const msgs = response.data.chats.messages
-      if (msgs.length > 0) {
+      if (msgs?.length > 0) {
         setMessages(response.data.chats.messages)
       } else {
-        setMessages({})
+        setMessages([])
       }
     } catch (error) {
-      console.log("error in fetching selected community messages")
+      console.log(error)
     }
   }
   useEffect(() => {
@@ -94,6 +94,7 @@ function CommunityMsgScreen({ fetchCommunityDetails,setIndividualCommunity, setV
     newSocket.on('newMessage', (message) => {
 
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message }
+      
       setMessages((prev) => [...prev, appenddata])
 
     });
@@ -561,7 +562,7 @@ function CommunityMsgScreen({ fetchCommunityDetails,setIndividualCommunity, setV
 
 
 
-              {messages && messages.map((el, i) => (
+              {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
                   {
                     rightclk && el.u_name === username ?
