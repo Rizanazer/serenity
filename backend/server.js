@@ -794,21 +794,26 @@ router.post("/searchcommunity", async (req, res) => {
 
 
 
+
+
 router.post("/recommendedcommunity", async (req, res) => {
   try {
-    const priorityList = req.body.priorityList;
-    console.log("Received priority list:", priorityList);
-
-    // const groups = await Community.find({ purpose: { $in: priorityList } });
-   
-    // res.json({ "success": true, "groups": groups });
-    // console.log("Recommended groups:", groups);
+    const userProfile = req.body.user_profile;
+    const response = await fetch('http://127.0.0.1:8000/recommend_groups',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({ user_profile:userProfile })
+    }).then(res=>res.json());
+    
+    const recommendedcommunity = await Community.find({ purpose: { $in: response.recommended_groups } });
+    res.json({ success: true ,data:recommendedcommunity});
   } catch (error) {
     console.error("Error fetching recommended groups:", error);
-    res.json({ "success": false, "error": error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
-
 
 
 

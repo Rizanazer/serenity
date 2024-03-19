@@ -24,35 +24,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
   var [GroupIcon, setGroupIcon] = useState('');
   const [selectedChatName, setSelectedChatName] = useState(null)
 
-  const [userProfile, setUserProfile] = useState({});
-  const [recommendedGroups, setRecommendedGroups] = useState([]);
-
-  useEffect(() => {
-      const userDataString = localStorage.getItem('userdata');
-      if (userDataString) {
-          try {
-              const userdata = JSON.parse(userDataString);
-              setUserProfile({ likes: userdata.likes, dislikes: userdata.dislikes, hobbies: userdata.hobbies });
-          } catch (error) {
-              console.error('Error parsing userdata:', error);
-          }
-      }
-      
-  }, []);
-
-  const handleSubmit = async (e) => {
-      e.preventDefault();
-      const response = await fetch('http://127.0.0.1:8000/recommend_groups', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ user_profile: userProfile }),
-      });
-      const data = await response.json();
-      setRecommendedGroups(data.recommended_groups || []);
-      console.log(recommendedGroups);
-  };
+  
 
   // useEffect(() => {
   //   async function fetchgroups() {
@@ -62,6 +34,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
   //   }
   //   // fetchgroups()
   // }, [])
+
   var [text, setText] = useState("");
   var [messages, setMessages] = useState([]);
   const userid = localStorage.getItem('userid')
@@ -118,17 +91,59 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
     searchcommunity()
   },[searchText])
 
- async function Reccomendcommunity(){
-    try{
-      const response = await axios.post('/reccomendedcommunity',{priorityList:recommendedGroups})
-      setReccomendedGroupName(response.data.sortedGroups)
-    }catch(error){
-      console.error(error)
+
+
+  const [userProfile, setUserProfile] = useState({});
+  const [recommendedGroups, setRecommendedGroups] = useState([]);
+
+  useEffect(() => {
+    const userDataString = localStorage.getItem('userdata');
+    if (userDataString) {
+      try {
+        const userdata = JSON.parse(userDataString);
+        setUserProfile({ likes: userdata.likes, dislikes: userdata.dislikes, hobbies: userdata.hobbies });
+      } catch (error) {
+        console.error('Error parsing userdata:', error);
+      }
     }
-  }
+    
+  }, []);
+  
   useEffect(()=>{
-    Reccomendcommunity()
-  },[])
+    if(userProfile){
+      getRecommendations()
+    }
+  },[userProfile])
+
+  const getRecommendations = async () => {
+      const response = await fetch('/recommendedcommunity', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_profile: userProfile }),
+      });
+      const data = await response.json();
+    if(!data.error){
+      setRecommendedGroups(data.data);
+    }
+  };
+
+
+
+
+
+//  async function Reccomendcommunityfetch(){
+//     try{
+//       const response = await axios.post('/reccomendedcommunity',{priorityList:recommendedGroups})
+//       setReccomendedGroupName(response.data.sortedGroups)
+//     }catch(error){
+//       console.error(error)
+//     }
+//   }
+//   useEffect(()=>{
+//     Reccomendcommunityfetch()
+//   },[])
   return (
     <>
       <div className="section1 section_margin box gap20 scroll">
@@ -144,12 +159,10 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
         <div className="box reccomendation_box">
           <div className=" searchbox flexrow">
             <span className="bold">Community Reccomendations</span>
-       
-                <IoReload className="icon_search" onClick={handleSubmit}/>
     
           </div>
           <div className="box nopadding nobordershadow reccomendationBoxContnt nogap">
-            {reccomendedGroupName&&(reccomendedGroupName.map((el, i) => <GroupList_2 data={el} key={i} HandleClick={() => { setSelectedChat(el) ;setGroupIcon(el.communityIcon)}} />))}
+            {recommendedGroups&&(recommendedGroups.map((el, i) => <GroupList_1 setViewChat={setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />))}
           </div>
 
 
@@ -239,22 +252,5 @@ function GroupList_1({ userid, data, HandleClick, setViewChat }) {
 
   )
 }
-function GroupList_2({ data, HandleClick }) {
 
-  return (
-    <div onClick={() => { data.viewchat(); HandleClick(); }}>
-      <div className="box chat pointer nobordershadow ">
-
-        <div className="chat_info" >
-          <img className="icon profile_chat_img" src={data.image} alt="" />
-          <div className=" profile_text">
-            <span className="bold">groupname</span>
-            <span className="light">messaga</span>
-          </div>
-        </div>
-        {data.status && <span className="light">joined</span>}
-      </div>
-    </div>
-  )
-}
 export default SearchScreen;
