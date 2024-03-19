@@ -734,7 +734,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
                   <FaMicrophone className="icon icon_small nobordershadow" onClick={handleListen} style={{ cursor: 'pointer' }} />
-                  <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" />
+                  {/* <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" /> */}
                   <input type="file" accept="video/*" ref={fileVideoInputRef} style={{ display: 'none' }} onChange={handleFileVideoChange} />
                   <MdVideoFile className="icon icon_small nobordershadow" onClick={sendvideo} />
                   <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
