@@ -1080,8 +1080,7 @@ io.on('connection', (socket) => {
       });
       await existingChat.save();
     } else {
-      console.log(`else parttttttttttttttttttttt`);
-      const savedDirectChat = await DirectChats.create({
+      await DirectChats.create({
         users: [
           from,
           to
