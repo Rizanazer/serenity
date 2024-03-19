@@ -39,11 +39,11 @@ function SettingsScreen({ handleClick, setscreen, profileView, accounts, account
            >
             Theme
           </div>
-          <div className={notificationcheck ? " box joinbtn selectedBtn" : " box joinbtn"}
+          {/* <div className={notificationcheck ? " box joinbtn selectedBtn" : " box joinbtn"}
             onClick={notification}
            >
             Notification
-          </div>
+          </div> */}
           <div className=" box joinbtn" onClick={() => { logout(); closeother() }}>
             LogOut
           </div>
