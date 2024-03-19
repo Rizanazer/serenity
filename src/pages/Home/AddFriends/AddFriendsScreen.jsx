@@ -10,7 +10,7 @@ function AddFriendsScreen() {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [selectedUserData, setSelectedUserdata] = useState(null)
   const u_id = localStorage.getItem('userid')
-
+  const userdata = JSON.parse(localStorage.getItem('userdata'))
   async function retrieverequests() {
     try {
       const u_id = localStorage.getItem('userid')
@@ -43,6 +43,9 @@ function AddFriendsScreen() {
     if (response.success === true) {
       setAddFriends((prev) => prev.filter(item => item._id !== tobefriend))
     }
+    //////////localstorage updation
+    userdata.friends.push(response.data.tobefriend)
+    localStorage.setItem('userdata',JSON.stringify(userdata))
 
   }
 

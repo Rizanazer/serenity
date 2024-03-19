@@ -83,6 +83,9 @@ var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
             const response = await axios.post('/createcommunity', formData);
             setCreateAlert(false);
             console.log("❤️");
+            //////////localstorage updation
+            userdata.communities.push(response.data.result._id)
+            localStorage.setItem('userdata',JSON.stringify(userdata))
             await fetchCommunityDetails();
             console.log(response.data);
         } catch (error) {
