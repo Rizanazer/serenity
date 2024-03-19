@@ -34,7 +34,6 @@ const UserProfileForm = () => {
         <div>
             <h1>User Profile Form</h1>
             <form onSubmit={handleSubmit}>
-                {/* Your form fields to collect user profile information */}
                 <button type="submit">Submit</button>
             </form>
             <h2>Recommended Groups:</h2>

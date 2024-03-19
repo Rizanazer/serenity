@@ -76,7 +76,7 @@ body {
   flex-direction: column;
   gap: 10px;
   box-shadow: var(--shadow);
-  min-height: 70px;
+  /* min-height: 70px; */
 }
 
 .horiz {

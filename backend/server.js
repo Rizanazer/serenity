@@ -821,6 +821,30 @@ router.post("/searchcommunity", async (req, res) => {
 })
 
 
+
+
+
+router.post("/recommendedcommunity", async (req, res) => {
+  try {
+    const userProfile = req.body.user_profile;
+    const response = await fetch('http://127.0.0.1:8000/recommend_groups',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({ user_profile:userProfile })
+    }).then(res=>res.json());
+    
+    const recommendedcommunity = await Community.find({ purpose: { $in: response.recommended_groups } });
+    res.json({ success: true ,data:recommendedcommunity});
+  } catch (error) {
+    console.error("Error fetching recommended groups:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+
+
 router.post("/searchcommunitymessage", async (req, res) => {
   try {
     const text = req.body.text;

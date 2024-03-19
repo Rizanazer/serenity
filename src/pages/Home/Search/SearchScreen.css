@@ -15,6 +15,9 @@
     overflow-y: auto;
     
 }
+.minheight{
+    min-height: 70px;
+}
 .textlength_head{
     inline-size: 200px;
     overflow: hidden;
