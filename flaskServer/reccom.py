@@ -18,7 +18,8 @@ def recommend_chat_groups(user_profile, chat_communities, num_recommendations=3)
 
     similarities = {}
     for community, topics in chat_communities.items():
-        if community in user_profile['dislikes']:
+        # Check if 'dislikes' key exists in user_profile
+        if 'dislikes' in user_profile and community in user_profile['dislikes']:
             continue
         
         related_topics = [topic for topic in topics if topic in user_profile_text]
@@ -34,8 +35,8 @@ def recommend_chat_groups(user_profile, chat_communities, num_recommendations=3)
     sorted_communities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
 
     top_recommendations = [community for community, _ in sorted_communities[:num_recommendations]]
-    # print(top_recommendations)
     return top_recommendations
+
 
 @app.route('/recommend_groups', methods=['POST'])
 def recommend_groups():
