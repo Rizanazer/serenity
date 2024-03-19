@@ -793,6 +793,25 @@ router.post("/searchcommunity", async (req, res) => {
 })
 
 
+
+router.post("/recommendedcommunity", async (req, res) => {
+  try {
+    const priorityList = req.body.priorityList;
+    console.log("Received priority list:", priorityList);
+
+    // const groups = await Community.find({ purpose: { $in: priorityList } });
+   
+    // res.json({ "success": true, "groups": groups });
+    // console.log("Recommended groups:", groups);
+  } catch (error) {
+    console.error("Error fetching recommended groups:", error);
+    res.json({ "success": false, "error": error.message });
+  }
+});
+
+
+
+
 router.post("/searchcommunitymessage", async (req, res) => {
   try {
     const text = req.body.text;
