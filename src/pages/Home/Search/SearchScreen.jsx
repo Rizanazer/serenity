@@ -152,7 +152,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
             <input type="text" placeholder="Search for New Communities" className="nobordershadow widthmax" name="searchbox" onChange={handlesearchtext}/>
           </div>
           <div className="box nopadding nobordershadow searchBoxContnt">
-            {GroupName.map((el, i) => <GroupList_1 setViewChat={setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />)}
+            {searchText.length>0 && GroupName.map((el, i) => <GroupList_1 setViewChat={setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />)}
           </div>
         </div>
 

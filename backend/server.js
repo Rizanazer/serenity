@@ -629,7 +629,7 @@ router.post("/accept", async (req, res) => {
       }]
     });
     if (result1 != null && result2 != null && savedDirectChat != null) {
-      res.json({ "success": true })
+      res.json({ "success": true ,"friend":tobefriend})
     } else {
       res.json({ "success": false })
     }
