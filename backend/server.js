@@ -3,7 +3,7 @@ const cors = require('cors');
 //const mongoose = require('mongoose');
 const translate = require('@iamtraction/google-translate');
 
-
+const twilio = require('twilio'); 
 const router = express.Router()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -1073,6 +1073,51 @@ router.post('/sidescreengroupnames', async (req, res) => {
     res.send("failure")
   }
 })
+
+
+const accountSid = "ACc09b732d0906f9ffa434c4e71e5502ca";
+const authToken = "994c394db12d04247e3659d84749516d";
+const verifySid = "VA3200ba5ec6da33350c42b679a0cdf306";
+const client = require("twilio")(accountSid, authToken);
+
+router.post('/send-otp', (req, res) => {
+  const { mobilenumber } = req.body;
+
+  const cleanedNumber = String(mobilenumber).replace(/\D/g, '');
+  const phoneNumber = "+91" + cleanedNumber; 
+  client.verify.v2.services(verifySid)
+    .verifications.create({ to: phoneNumber, channel: 'sms' })
+    .then((verification) => {
+      console.log('OTP Sent:', verification.status);
+      res.json({ message: 'OTP sent successfully' });
+    })
+    .catch((err) => {
+      console.error('Error sending OTP:', err);
+      res.status(500).json({ error: 'Failed to send OTP' });
+    });
+});
+
+
+router.post('/verify-otp', (req, res) => {
+  const { mobilenumber, otpCode } = req.body;
+  const cleanedNumber = String(mobilenumber).replace(/\D/g, '');
+  const phoneNumber = "+91" + cleanedNumber; 
+
+  client.verify.services(verifySid) 
+    .verificationChecks.create({ to: phoneNumber, code: otpCode })
+    .then((verification_check) => {
+      console.log('OTP Verification:', verification_check.status);
+      res.json({ message: 'OTP verified successfully' });
+    })
+    .catch((err) => {
+      console.error('Error verifying OTP:', err);
+      res.status(500).json({ error: 'Failed to verify OTP,retry Reentering' });
+    });
+});
+
+
+
+
 
 app.use('/', router)
 

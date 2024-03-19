@@ -96,31 +96,80 @@ const CreateAccount_details = ({ actions  }) =>
   </div>
 
 );
-const MobileNumberInput = ({ actions }) =>
-(
 
-  <div className="box_login box center">
-    <input type='tel' placeholder='MobileNumber' maxLength="10" onChange={NumberCheck}/>
-    <button onClick={()=>actions.handleActionChange("VALIDATE")}>GetOTP</button>
-    <button onClick={()=>actions.handleActionChange("LOGIN")}>BACK</button>
-  </div>
+const MobileNumberInput = ({ actions,phno,setPhno }) => {
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [notification, setNotification] = useState(null);
 
-);
-const OTPInput = ({ actions }) =>
-(
+  const handleNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
+    setPhno(e.target.value)
+  };
 
-  <div className="box_login box center">
-    <div className="center inputrow flexrow">
-    <input className='input_otp ' type='text' maxLength="1" onChange={NumberCheck}/>
-    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
-    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
-    <input className='input_otp' type='text' maxLength="1" onChange={NumberCheck}/>
+  const sendOTP = async () => {
+    try {
+      const response = await axios.post('/send-otp', { mobilenumber: phoneNumber });
+      setNotification(response.data.message);
+      // Optionally, you can handle success actions here
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      // Optionally, you can handle error actions here
+    }
+  };
+  
+
+  return (
+    <div className="box_login box center">
+      <input type='tel' placeholder='MobileNumber' maxLength="10" value={phoneNumber} onChange={handleNumberChange}/>
+      {notification&&( 
+      <div className="box">{notification}</div>
+        )}
+      {notification&&( setTimeout(() => {
+    actions.handleActionChange("VALIDATE"); }, 3000))}
+      <button onClick={sendOTP}>GetOTP</button>
+      <button onClick={() => actions.handleActionChange("LOGIN")}>BACK</button>
     </div>
-    <button onClick={()=>{window.location="/dashboard"}}>VALIDATE</button>
-    <button onClick={()=>actions.handleActionChange("GetOTP")}>BACK</button>
-  </div>
+  );
+};
 
-);
+const OTPInput = ({ actions,phno,setPhno }) => {
+  const [otp, setOTP] = useState('');
+  const [notification, setNotification] = useState(null);
+  const handleOTPChange = (e) => {
+    setOTP(e.target.value);
+  };
+
+  const verifyOTP = async () => {
+    try {
+     const response =  await axios.post('/verify-otp', { mobilenumber: phno, otpCode: otp });
+    
+      window.location = "/dashboard";
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      setNotification(error)
+      // Optionally, you can handle error actions here
+    }
+  };
+
+  return (
+    <div className="box_login box center">
+      <div className="center inputrow flexrow">
+        <input className='input' type='text' maxLength="6" onChange={handleOTPChange}/>
+        {/* <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
+        <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
+        <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
+        <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
+        <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/> */}
+      </div>
+      {notification&&( 
+      <div className="box">{notification}</div>
+        )}
+      <button onClick={verifyOTP}>VALIDATE</button>
+      <button onClick={() => actions.handleActionChange("GetOTP")}>BACK</button>
+    </div>
+  );
+};
+
 const Loginsignup = (props) => {
   const [action, setAction] = useState("LOGIN");
 
@@ -131,7 +180,7 @@ const Loginsignup = (props) => {
   ////////////////////////////////////////////////////////
 const navigate = useNavigate()
 const [viewError, setViewError] = useState(false);
-
+const[phno,setPhno]=useState(null);
 const [userData, setUserData] = useState({
   mail: '',
   pass: ''
@@ -225,8 +274,8 @@ const handlereg = ()=>{
 return (
   <div className="container bg center" >
     {action === "LOGIN" && <Login actions={{handleActionChange, handleInputChange, handleClick,handlereg,setViewError}} userData={{userData,viewError}} />}
-    {action === "GetOTP" && <MobileNumberInput actions={{handleActionChange}} />}
-    {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} />}
+    {action === "GetOTP" && <MobileNumberInput actions={{handleActionChange}} phno={phno} setPhno={setPhno}/>}
+    {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} phno={phno} setPhno={setPhno}/>}
     {action === "More_Details"&&<CreateAccount_details actions={{handleActionChange,register,handeleregchange}} />}
     {action === "Create_Account"&&<CreateAccount actions={{handleActionChange,handeleregchange,handleImageChange}} />}
   </div>
