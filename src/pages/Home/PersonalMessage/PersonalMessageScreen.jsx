@@ -229,6 +229,7 @@ function PersonalMsgScreen() {
     const senddata = { "from": u_id,  "to": selectedFriend, "message": trimmedText,"chatid":chatId }
     mySocket.emit("send_p_message", senddata);
     setText("");
+    setSearchChatInput('')
     setScrollPosition(scrollPosition + 1);
     if (messages.length <= 1) {
       fetchfriends();
@@ -287,14 +288,27 @@ function PersonalMsgScreen() {
     setsearchinput(event.target.value);
 
   }
-  /////////////////////////////////
+  /////////////////////////////////search chat name begins here
+  const [searchChatInput,setSearchChatInput] = useState('')
+  async function searchchatname(){
+    try{
+      const response = await axios.post('/search_p_chatname',{u_id:userid,text:searchChatInput})
+      setChats(response.data.chats)
+    }catch(error){
+      console.error(error)
+    }
+  }
+  useEffect(()=>{
+    searchchatname()
+  },[searchChatInput])
+  ///////////////////////////////////
   return (
     <>
       <div className="section1 section_margin box spacebetween">
 
         <div className="box nobordershadow nopadding chathistory">
           <div className="box searchbox flexrow">
-            <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" />
+            <input type="text" placeholder="Search for Esxisting Chats" value={searchChatInput}onChange={(e)=>{setSearchChatInput(e.target.value)}}className="nobordershadow widthmax" />
             <MdDelete className="icon nobordershadow" color={Deletefn ? "#5E4AE3" : "#000"} onClick={() => { toggleDeletefn(); console.log("utasgduygeiyr"); }} />
           </div>
           {Array.isArray(chats) && chats.length > 0 ? (
@@ -346,7 +360,7 @@ function PersonalMsgScreen() {
 
         <div className="box friends scrollbehaiviour_smooth">
           <div className=" searchbox friendstext spacebetween">
-            <span className="bold">friends</span>
+            <span className="bold">Friends</span>
             <span className="bold">{Friends}</span>
           </div>
           <div className="box nopadding nobordershadow nogap friendslist">

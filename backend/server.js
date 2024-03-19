@@ -936,6 +936,22 @@ router.post("/search_communityname", async (req, res) => {
   }
 });
 
+router.post("/search_p_chatname", async (req, res) => {
+  try {
+    const { text, u_id } = req.body;
+    const result = await DirectChats.find({ users: { $elemMatch: { $eq: u_id } } }).populate('users');
+    console.log(`--------------------------------`);
+    const filteredChat = result.filter(chat=>{
+      const regex = new RegExp(text,"i")
+      return regex.test(chat.users[0].username) || regex.test(chat.users[1].username)
+    })
+    console.log();
+    res.json({ "success": true, "chats": filteredChat});
+  } catch (error) {
+    console.error(error);
+    res.json({ "success": false ,"chats": []});
+  }
+});
 router.post("/get_c_messages", async (req, res) => {
 
   try {
