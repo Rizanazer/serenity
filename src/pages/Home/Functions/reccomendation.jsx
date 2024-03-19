@@ -18,8 +18,6 @@ const UserProfileForm = () => {
     }, []);
 
     const handleSubmit = async (e) => {
-        console.log("udddddddddddddddddddddddddddddddddddd")
-        console.log(userProfile)
         e.preventDefault();
         const response = await fetch('http://127.0.0.1:8000/recommend_groups', {
             method: 'POST',
@@ -31,20 +29,6 @@ const UserProfileForm = () => {
         const data = await response.json();
         setRecommendedGroups(data.recommended_groups || []);
     };
-    // const handleSubmit = async (e) => {
-    //     console.log("udddddddddddddddddddddddddddddddddddd")
-    //     console.log(userProfile)
-    //     e.preventDefault();
-    //     const response = await fetch('http://127.0.0.1:8000/recommend_groups', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({ user_profile: userProfile }),
-    //     });
-    //     const data = await response.json();
-    //     setRecommendedGroups(data.recommended_groups || []);
-    // };
 
     return (
         <div>
