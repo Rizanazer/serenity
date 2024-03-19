@@ -10,11 +10,11 @@ const UserProfileForm = () => {
             try {
                 const userdata = JSON.parse(userDataString);
                 setUserProfile({ likes: userdata.likes, dislikes: userdata.dislikes, hobbies: userdata.hobbies });
-                console.log(userProfile);
             } catch (error) {
                 console.error('Error parsing userdata:', error);
             }
         }
+        
     }, []);
 
     const handleSubmit = async (e) => {
