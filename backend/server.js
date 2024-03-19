@@ -721,6 +721,18 @@ router.post('/getCommunitylist', async (req, res) => {
   }
 })
 
+router.post("/fetchcontacts", async (req, res) => {
+
+  try {
+    const u_id = req.body.u_id
+    console.log(req.body);
+    const friends = await User.findOne({_id:u_id}).populate('friends')
+    res.json({ "success": true,"friends":friends.friends});
+  } catch (error) {
+    res.json({ "success": false })
+  }
+})
+
 router.post("/fetchfriends", async (req, res) => {
 
   try {
@@ -754,7 +766,22 @@ router.post("/fetchfriends", async (req, res) => {
 })
 
 
+router.post("/fetchpersonal1", async (req, res) => {
+  const {f_id,u_id} = req.body
+  const existingChat = await DirectChats.findOne({
+    $or: [
+      { users: [f_id, u_id] },
+      { users: [u_id, f_id] }
+    ]
+  }).populate('users.from').populate('users.to');
+  if(existingChat){
+    res.json({"success":true,messages:existingChat.messages})
+  }else{
+    res.json({"success":true,messages:[]})
+  }
+  
 
+})
 router.post("/fetchpersonal", async (req, res) => {
 
   try {
@@ -763,6 +790,7 @@ router.post("/fetchpersonal", async (req, res) => {
     // const chats = await DirectChats.findOne({
     //   'users.userid': { $all: [f_id, u_id] }
     // });
+    c
     const chats = await DirectChats.findOne({_id:chatid}).populate('messages.from').populate('messages.to')
     console.log(chats);
     res.json({ "success": true, "chats": chats });
@@ -822,6 +850,9 @@ router.post("/searchcommunitymessage", async (req, res) => {
     const text = req.body.text;
     const c_id = req.body.c_id;
     // console.log(req.body);
+    if (!mongoose.isValidObjectId(c_id)) {
+      return res.json({ success: false, message: "Invalid community ID." });
+    }
     const communityChat = await CommunityChats.findOne({ communityId: c_id });
     if (!communityChat) {
       return res.json({ success: false, message: "Community not found." });
@@ -851,14 +882,20 @@ router.post("/searchcommunitymessage", async (req, res) => {
 router.post("/searchpersonalmessage", async (req, res) => {
   try {
     const {text,f_id,u_id} = req.body
+    // const existingChat = await DirectChats.findOne({
+    //   users: {
+    //     $all: [
+    //       { $elemMatch: { userid: u_id } },
+    //       { $elemMatch: { userid: f_id } }
+    //     ]
+    //   }
+    // });
     const existingChat = await DirectChats.findOne({
-      users: {
-        $all: [
-          { $elemMatch: { userid: u_id } },
-          { $elemMatch: { userid: f_id } }
-        ]
-      }
-    });
+      $or: [
+        { users: [f_id, u_id] },
+        { users: [u_id, f_id] }
+      ]
+    }); 
     let messages = [];
   if (existingChat && existingChat.messages) {
   messages = existingChat.messages.filter(message =>
@@ -939,7 +976,7 @@ router.post("/checkjoinstatus", async (req, res) => {
 
 router.post('/delete_p_chat', async (req, res) => {
   const { f_id, u_id } = req.body
-  const chats = await DirectChats.findOneAndDelete({ 'users.userid': { $all: [f_id, u_id] } });
+  const chats = await DirectChats.findOneAndDelete({ 'users': { $all: [f_id, u_id] } });
   if (chats) {
     res.json({ "success": true })
   } else {

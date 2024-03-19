@@ -77,15 +77,25 @@ function PersonalMsgScreen() {
     })
   }, [])
   useEffect(()=>{
+    fetchcontacts()
     fetchfriends()
   },[])
+  async function fetchcontacts(){
+    try{
+      const response =await axios.post('/fetchcontacts',{u_id:userid})
+      console.log(response);
+      setContacts(response.data.friends)
+    } catch(error){
+      console.error(error)
+    }
+  }
   async function fetchfriends() {
     const u_id = localStorage.getItem('userid')
 
     try {
       const response = await axios.post("/fetchfriends", { u_id: u_id, friendids: userdata.friends })
       console.log(response.data.frienddata);
-      setContacts(response.data.frienddata.flat())
+      // setContacts(response.data.frienddata)
       setChats(response.data.chats)
       console.log(`-----------------------------chatts`);
       console.log(response.data.chats);
@@ -151,8 +161,25 @@ function PersonalMsgScreen() {
   };
   //texttospeech
 
-  var [messages, setMessages] = useState([]);
-
+  var [messages, setMessages] = useState([]);   
+  async function onclickfriend(friend) {
+    console.log(friend._id)
+    setSelectedChat(friend._id)
+    setSelectedFriendIcon(friend.profilePicture)
+    setSelectedFriend(friend)
+    setSelectedFriendName(friend.username)
+    
+    try {
+      const response = await axios.post('/fetchpersonal1', { f_id: friend, u_id: u_id })
+      console.log(friend);
+      console.log(response.data.messages);
+      setMessages(response.data.messages)
+    } catch (error) {
+      setMessages([])
+      console.log('personal message fetch error')
+    }
+    setViewChat(true)
+  }
   async function onclickfriendchat(friendid, friendname,friendicon,chatid) {
     //this request below might be unnecessary after update .marked as possible unnecessary request -arif
     const response = await axios.post('/getafriend', { u_id: friendid })
@@ -171,11 +198,11 @@ function PersonalMsgScreen() {
 
     try {
       // const response = await axios.post('/fetchpersonal', { f_id: friendid, u_id: u_id, f_name: friendname })
-      const response = await axios.post('/fetchpersonal', { chatid:chatid })
+      const response = await axios.post('/fetchpersonal1', { f_id: friendid, u_id: u_id })
       // console.log(friend);
       // setChatid(response.data.chats._id)
       // console.log(response.data.chats.messages);
-      setMessages(response.data.chats.messages)
+      setMessages(response.data.messages)
       console.log("messages---------------------------------------");
       console.log(messages);
     } catch (error) {
@@ -209,23 +236,7 @@ function PersonalMsgScreen() {
   }
 
 
-  async function onclickfriend(friend) {
-    console.log(friend)
-    setViewChat(true)
-    setSelectedChat(friend)
-    setSelectedFriendIcon(friend.profilePicture)
-    setSelectedFriend(friend)
-    setSelectedFriendName(friend.username)
-    try {
-      const response = await axios.post('/fetchpersonal', { f_id: friend, u_id: u_id })
-      console.log(friend);
-      console.log(response.data.chats.messages);
-      setMessages(response.data.chats.messages)
-    } catch (error) {
-      setMessages([])
-      console.log('personal message fetch error')
-    }
-  }
+ 
 
   //rightclk
   const handleContextMenu = (e, message) => {
@@ -323,7 +334,7 @@ function PersonalMsgScreen() {
                 </div>
                 {Deletefn && (
                   <div className="swipe-actions">
-                    <button onClick={() => handleDeleteChat(el.users[0].userid === userid ? el.users[1].userid : el.users[0].userid)}>Delete</button>
+                    <button onClick={() => handleDeleteChat(el.users[0] === userid ? el.users[1] : el.users[0])}>Delete</button>
                   </div>
                 )}
               </div>
