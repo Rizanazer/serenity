@@ -130,12 +130,13 @@ const MobileNumberInput = ({ actions,phno,setPhno }) => {
     <div className="box_login box center">
       <input type='tel' placeholder='MobileNumber' maxLength="10" value={phoneNumber} onChange={handleNumberChange}/>
       {notification&&( 
-      <div className="box">{notification}</div>
+      <div className="box nopadding">{notification}</div>
         )}
 
       {next&&( setTimeout(() => {
     actions.handleActionChange("VALIDATE"); }, 3000))}
       <button onClick={sendOTP}>GetOTP</button>
+      {/* <button onClick={() => actions.handleActionChange("VALIDATE")}>next</button> */}
       <button onClick={() => actions.handleActionChange("LOGIN")}>BACK</button>
     </div>
   );
@@ -151,12 +152,14 @@ const OTPInput = ({ actions,phno,setPhno }) => {
   const verifyOTP = async () => {
     try {
      const response =  await axios.post('/verify-otp', { mobilenumber: phno, otpCode: otp });
-    
+    if(response){
       window.location = "/dashboard";
+    }
+      
     } catch (error) {
       console.error('Error verifying OTP:', error);
       setNotification(error)
-      // Optionally, you can handle error actions here
+  
     }
   };
 
@@ -171,10 +174,50 @@ const OTPInput = ({ actions,phno,setPhno }) => {
         <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/> */}
       </div>
       {notification&&( 
-      <div className="box">{notification}</div>
+      <div className="box nopadding">{notification}</div>
         )}
       <button onClick={verifyOTP}>VALIDATE</button>
+      
+      {/* <button onClick={() =>window.location = "/dashboard" }>VALIDATE</button> */}
       <button onClick={() => actions.handleActionChange("GetOTP")}>BACK</button>
+    </div>
+  );
+};
+
+const OTPInputRegister = ({ actions,phno,setPhno }) => {
+  const [otp, setOTP] = useState('');
+  const [notification, setNotification] = useState(null);
+  const handleOTPChange = (e) => {
+    setOTP(e.target.value);
+  };
+
+  const verifyOTP = async () => {
+    try {
+     const response =  await axios.post('/verify-otp', { mobilenumber: phno, otpCode: otp });
+    if(response){
+      window.location = "/dashboard";
+    }
+      
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      setNotification(error)
+  
+    }
+  };
+
+  return (
+    <div className="box_login box center">
+      <div className="center inputrow flexrow">
+        <input className='input' type='text' maxLength="6" onChange={handleOTPChange}/>
+
+      </div>
+      {notification&&( 
+      <div className="box nopadding">{notification}</div>
+        )}
+      <button onClick={verifyOTP}>VALIDATE</button>
+      
+      {/* <button onClick={() =>window.location = "/dashboard" }>VALIDATE</button> */}
+      <button onClick={() => actions.handleActionChange("Create_Account")}>BACK</button>
     </div>
   );
 };
@@ -287,6 +330,7 @@ return (
     {action === "VALIDATE" && <OTPInput actions={{handleActionChange}} phno={phno} setPhno={setPhno}/>}
     {action === "More_Details"&&<CreateAccount_details actions={{handleActionChange,register,handeleregchange}} />}
     {action === "Create_Account"&&<CreateAccount actions={{handleActionChange,handeleregchange,handleImageChange}} />}
+    {action === "VALIDATE_Register" && <OTPInputRegister actions={{handleActionChange}} phno={phno} setPhno={setPhno}/>}
   </div>
 );
 };
