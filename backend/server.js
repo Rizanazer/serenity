@@ -2,8 +2,6 @@ const express = require('express');
 const cors = require('cors');
 //const mongoose = require('mongoose');
 const translate = require('@iamtraction/google-translate');
-
-const twilio = require('twilio'); 
 const router = express.Router()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -18,7 +16,6 @@ const http = require('http')
 const server = http.createServer(app);
 const io = socketIo(server);
 app.use('/uploads', express.static(path.join(__dirname, '/uploads/')));
-
 const Community = require('./models/community');
 const CommunityChats = require('./models/communityChats');
 const DirectChats = require('./models/directchats');
@@ -26,7 +23,6 @@ const { default: mongoose } = require('mongoose');
 const { log } = require('console');
 app.use(cors());
 app.use(express.json());
-
 connectDB();
 const storeProfilePicture = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -38,8 +34,6 @@ const storeProfilePicture = multer.diskStorage({
   }
 })
 const profilePictureUpload = multer({ storage: storeProfilePicture });
-
-
 //////////////////////////////////////////////multer community message storing
 const storeCommunityMessageImage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -53,7 +47,6 @@ const storeCommunityMessageImage = multer.diskStorage({
     cb(null, fname);
   }
 });
-
 const storeCommunityMessagevideo = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, '/uploads/communityMessageVideos'));
@@ -66,10 +59,8 @@ const storeCommunityMessagevideo = multer.diskStorage({
     cb(null, fname);
   }
 });
-
 const uploadCommunityMessageImage = multer({ storage: storeCommunityMessageImage });
 const uploadCommunityMessagevideo = multer({ storage: storeCommunityMessagevideo });
-
 /////////////////////////////////////////////////////////multer community message storing end here
 const storePersonalMessageImage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -80,10 +71,7 @@ const storePersonalMessageImage = multer.diskStorage({
     cb(null, 'personalMessageImage-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
-
 const uploadPersonalMessageImage = multer({ storage: storePersonalMessageImage });
-
-
 //////////////////////////////////////////////multer community icon storing
 const storeCommunityIcon = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -94,20 +82,15 @@ const storeCommunityIcon = multer.diskStorage({
     cb(null, 'communityIcon-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
-
 const uploadCommunityIcon = multer({ storage: storeCommunityIcon });
-
 /////////////////////////////////////////////////////////multer community icon storing end here
-
 app.post('/community_upload_image', uploadCommunityMessageImage.single('image'), async (req, res) => {
   try {
     // Extract necessary data from the request
-    const { c_id, u_id, u_name,profilePicture } = req.body;
+    const { c_id, u_id, u_name, profilePicture } = req.body;
     const filename = req.file.filename;
-
     // Check if a chat exists for the given communityId
     let existingChat = await CommunityChats.findOne({ communityId: c_id });
-
     if (existingChat) {
       existingChat.messages.push({
         u_id,
@@ -141,12 +124,10 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
 app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'), async (req, res) => {
   try {
     // Extract necessary data from the request
-    const { c_id, u_id, u_name,profilePicture } = req.body;
+    const { c_id, u_id, u_name, profilePicture } = req.body;
     const filename = req.file.filename;
-
     // Check if a chat exists for the given communityId
     let existingChat = await CommunityChats.findOne({ communityId: c_id });
-
     if (existingChat) {
       existingChat.messages.push({
         u_id,
@@ -170,7 +151,6 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
         }]
       });
     }
-
     // Send success response
     res.json({ "success": true, "filename": req.filename });
   } catch (error) {
@@ -178,7 +158,6 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
     res.json({ "success": false });
   }
 });
-
 router.route("/register").post(profilePictureUpload.single('profilePicture'), async (req, res) => {
   try {
     const formData = req.body
@@ -191,14 +170,12 @@ router.route("/register").post(profilePictureUpload.single('profilePicture'), as
     formData.profilePicture = propic
     formData.profilePicture = req.file.filename
     const result = await User.create(formData);
-
     res.json({ "success": true, "result": result })
   } catch (error) {
     console.error('Error inserting data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 router.post('/getUsersCommunities', async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.body.id });
@@ -210,7 +187,6 @@ router.post('/getUsersCommunities', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
 router.post('/individualcommunity', async (req, res) => {
   try {
     const communityIds = req.body.data;
@@ -221,15 +197,12 @@ router.post('/individualcommunity', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-
 router.route("/fetchcommunitydetails").post(async (req, res) => {
   try {
     const { c_id } = req.body;
     if (!c_id) {
       return res.status(400).json({ "success": false, "error": "Missing required property: c_id." });
     }
-
     const existingChat = await CommunityChats.findOne({ communityId: c_id });
     const commDetails = await Community.find({ _id: c_id });
     if (existingChat) {
@@ -242,10 +215,6 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
     res.status(500).json({ "success": false, "error": "Internal server error." });
   }
 });
-
-
-
-
 router.route("/login").post(async (req, res) => {
   const userdata = req.body
   //insertData(req.body.name,req.body.age);
@@ -264,23 +233,18 @@ router.route("/login").post(async (req, res) => {
   } catch {
     res.json({ "success": false })
   }
-
-
 });
-
 router.route('/updateProfile').post(async (req, res) => {
   try {
     const { id, anonymity, status, email, phone, password, gender, dob, language, location } = req.body;
     // Update the data in the database
     await User.updateOne({ _id: id }, { $set: { anonymity, status, email, phone, password, gender, dob, language, location } });
-
     res.status(200).json({ message: 'Data updated successfully' });
   } catch (error) {
     console.error('Error updating data:', error);
     res.status(500).json({ error: 'An error occurred while updating data' });
   }
 })
-
 router.post("/fetchProfile", async (req, res) => {
   try {
     const u_id = req.body.u_id
@@ -305,7 +269,6 @@ router.post("/MessageForward", async (req, res) => {
     const userids = []
     const communityids = []
     const forwardTofiltered = forwardTo.filter((item, index) => forwardTo.indexOf(item) === index);
-
     for (const id of forwardTofiltered) {
       const result = await User.findById(id)
       if (result) {
@@ -314,8 +277,6 @@ router.post("/MessageForward", async (req, res) => {
         communityids.push(id)
       }
     }
-
-
     if (communityids.length > 0) {
       for (const id of communityids) {
         const existingChat = await CommunityChats.findOne({ communityId: id });
@@ -326,7 +287,6 @@ router.post("/MessageForward", async (req, res) => {
           await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture }] });
         }
       }
-
     }
     if (userids.length > 0) {
       for (const id of userids) {
@@ -362,21 +322,16 @@ router.post("/MessageForward", async (req, res) => {
           });
         }
       }
-
-
     }
-
     res.status(200).json({ success: true, message: 'Message forwarded successfully' });
   } catch (error) {
     console.error('Error forwarding message:', error);
     res.status(500).json({ success: false, error: 'An error occurred while forwarding message' });
   }
 });
-
 router.route('/convert').post(async (req, res) => {
   try {
     const { input_text, to_lang } = req.body;
-
     translate(input_text, { to: to_lang })
       .then(result => {
         const translated_text = result.text;
@@ -391,19 +346,15 @@ router.route('/convert').post(async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 });
-
 router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'), async (req, res) => {
   try {
-
     const communityData = req.body;
     const c_name = communityData.c_name;
     const c_desc = communityData.c_desc;
     const c_purpose = communityData.c_purpose;
-
     const createdby = communityData.createdby;
     const admins = communityData.createdby || [];
     let members = communityData.selectedMembers || [];
-
     if (!Array.isArray(members)) {
       members = [members];
     }
@@ -424,17 +375,12 @@ router.route("/createcommunity").post(uploadCommunityIcon.single('communityIcon'
         { new: true }
       );
     }
-
-
     res.json({ "success": true, "result": result });
   } catch (error) {
     console.error('Error creating community:', error);
     res.json({ "success": false });
   }
-
 });
-
-
 router.route("/getallcommunities").post(async (req, res) => {
   try {
     const allCommunities = await Community.find();
@@ -443,11 +389,7 @@ router.route("/getallcommunities").post(async (req, res) => {
     console.error(error);
     res.status(500).json({ "success": false });
   }
-
-
 });
-
-
 router.route("/getcommunities").get(async (req, res) => {
   try {
     const allCommunities = await Community.find();
@@ -458,10 +400,7 @@ router.route("/getcommunities").get(async (req, res) => {
     console.error(error);
     res.status(500).json({ "success": false });
   }
-
-
 });
-
 router.route("/communitydetails").post(async (req, res) => {
   try {
     const existingChat = await CommunityChats.find({ communityId: req.body.c_id });
@@ -470,11 +409,8 @@ router.route("/communitydetails").post(async (req, res) => {
     console.error(error);
     res.status(500).json({ "success": false });
   }
-
 });
-
 router.route("/joincommunity").post(async (req, res) => {
-
   try {
     const c_id = req.body.c_id
     const u_id = req.body.u_id
@@ -493,11 +429,7 @@ router.route("/joincommunity").post(async (req, res) => {
     console.error(error);
     res.status(500).json({ "success": false });
   }
-
-
 });
-
-
 router.post('/addfriend', async (req, res) => {
   try {
     const userid = req.body.userid
@@ -517,8 +449,6 @@ router.post('/addfriend', async (req, res) => {
     } else {
       res.json({ "success": false });
     }
-
-
   } catch (error) {
     console.error(error)
     res.json({ "success": false });
@@ -542,29 +472,22 @@ router.post('/unfriend', async (req, res) => {
       },
       { new: true }
     );
-
     if (result && result2) {
       res.json({ "success": true });
     } else {
       res.json({ "success": false });
     }
-
-
   } catch (error) {
     console.error(error)
     res.json({ "success": false });
   }
 })
-
 router.post("/loadchat", async (req, res) => {
   try {
     const communityList = req.body.communitylist; // Array of community IDs
-
     const allChats = [];
-
     for (const communityId of communityList) {
       const chats = await CommunityChats.find({ communityId });
-
       allChats.push({ communityId, chats });
     }
     res.json(allChats);
@@ -573,11 +496,9 @@ router.post("/loadchat", async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 router.post("/fetchrequests", async (req, res) => {
   try {
     const u_id = req.body.u_id
-
     const result = await User.findOne({ _id: u_id })
     const requests = result.friendrequests
     const allrequestdetails = []
@@ -595,9 +516,7 @@ router.post("/fetchrequests", async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 router.post("/accept", async (req, res) => {
-
   try {
     const u_id = req.body.u_id
     const tobefriend = req.body.tobefriend
@@ -620,16 +539,17 @@ router.post("/accept", async (req, res) => {
       { new: true }
     );
     const savedDirectChat = await DirectChats.create({
-      users: [ u_id, tobefriend],
+      users: [u_id, tobefriend],
       messages: [{
-        from:  tobefriend,
-        to:  u_id,
+        from: tobefriend,
+        to: u_id,
         messageBody: "Welcome to the chat",
         messageType: "text"
       }]
     });
     if (result1 != null && result2 != null && savedDirectChat != null) {
-      res.json({ "success": true ,"friend":tobefriend})
+      res.json({ "success": true })
+      res.json({ "success": true, "friend": tobefriend })
     } else {
       res.json({ "success": false })
     }
@@ -637,23 +557,19 @@ router.post("/accept", async (req, res) => {
     res.json({ "success": false })
   }
 })
-
 router.post("/getachat", async (req, res) => {
   try {
     const user1 = req.body.user1;
     const user2 = req.body.user2;
-
     const result = await DirectChats.find({
       users: { $all: [user1, user2] }
     }).sort({ dateAdded: 1 });
-
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: "Error in getting chat" });
   }
 });
 router.post("/reject", async (req, res) => {
-
   try {
     const u_id = req.body.u_id
     const tobefriend = req.body.tobefriend
@@ -680,9 +596,7 @@ router.post("/reject", async (req, res) => {
     res.json({ "success": false })
   }
 })
-
 router.post("/getafriend", async (req, res) => {
-
   try {
     const u_id = req.body.u_id
     const result = await User.findById(u_id)
@@ -691,8 +605,6 @@ router.post("/getafriend", async (req, res) => {
     res.json({ "success": false })
   }
 })
-
-
 router.post('/getfriendlist', async (req, res) => {
   try {
     const ids = req.body.friendids
@@ -706,7 +618,6 @@ router.post('/getfriendlist', async (req, res) => {
     res.send("error")
   }
 })
-
 router.post('/getCommunitylist', async (req, res) => {
   try {
     const ids = req.body.communityids
@@ -720,29 +631,24 @@ router.post('/getCommunitylist', async (req, res) => {
     res.send("error")
   }
 })
-
 router.post("/fetchcontacts", async (req, res) => {
-
   try {
     const u_id = req.body.u_id
     console.log(req.body);
-    const friends = await User.findOne({_id:u_id}).populate('friends')
-    res.json({ "success": true,"friends":friends.friends});
+    const friends = await User.findOne({ _id: u_id }).populate('friends')
+    res.json({ "success": true, "friends": friends.friends });
   } catch (error) {
     res.json({ "success": false })
   }
 })
-
 router.post("/fetchfriends", async (req, res) => {
-
   try {
     const u_id = req.body.u_id;
     const friendids = req.body.friendids
-
     const chats = await DirectChats.find({
       users: { $elemMatch: { $eq: u_id } }
     }).populate('users').populate('messages.from').populate('messages.to').sort({ dateAdded: -1 });
-    
+
     const frienddata = []
     // const lastMessage = ''
     // console.log(chats);
@@ -752,38 +658,31 @@ router.post("/fetchfriends", async (req, res) => {
     //     // console.log("🤣🤣🤣",friendquery.chats);
     //     frienddata.push(friendquery)
     //   } else {
-
     //     frienddata.push(friendquery)
     //   }
-
     // }
-
     // console.log(chats[0].users[0]);
     res.json({ "success": true, "chats": chats, "frienddata": frienddata.flat() });
   } catch (error) {
     res.json({ "success": false })
   }
 })
-
-
 router.post("/fetchpersonal1", async (req, res) => {
-  const {f_id,u_id} = req.body
+  const { f_id, u_id } = req.body
   const existingChat = await DirectChats.findOne({
     $or: [
       { users: [f_id, u_id] },
       { users: [u_id, f_id] }
     ]
   }).populate('users.from').populate('users.to');
-  if(existingChat){
-    res.json({"success":true,messages:existingChat.messages})
-  }else{
-    res.json({"success":true,messages:[]})
+  if (existingChat) {
+    res.json({ "success": true, messages: existingChat.messages })
+  } else {
+    res.json({ "success": true, messages: [] })
   }
-  
 
 })
 router.post("/fetchpersonal", async (req, res) => {
-
   try {
     // const { f_id, u_id,chatid } = req.body
     const { chatid } = req.body
@@ -791,16 +690,14 @@ router.post("/fetchpersonal", async (req, res) => {
     //   'users.userid': { $all: [f_id, u_id] }
     // });
     c
-    const chats = await DirectChats.findOne({_id:chatid}).populate('messages.from').populate('messages.to')
+    const chats = await DirectChats.findOne({ _id: chatid }).populate('messages.from').populate('messages.to')
     console.log(chats);
     res.json({ "success": true, "chats": chats });
   } catch (error) {
     res.json({ "success": false })
   }
 })
-
 router.post("/getallgroupnames", async (req, res) => {
-
   try {
     const groups = await Community.find()
     res.json({ "success": true, "groups": groups });
@@ -808,8 +705,6 @@ router.post("/getallgroupnames", async (req, res) => {
     res.json({ "success": false })
   }
 })
-
-
 router.post("/searchcommunity", async (req, res) => {
   try {
     const searchText = req.body.searchText
@@ -819,32 +714,24 @@ router.post("/searchcommunity", async (req, res) => {
     res.json({ "success": false })
   }
 })
-
-
-
-
-
 router.post("/recommendedcommunity", async (req, res) => {
   try {
     const userProfile = req.body.user_profile;
-    const response = await fetch('http://127.0.0.1:8000/recommend_groups',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json'
+    const response = await fetch('http://127.0.0.1:8000/recommend_groups', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
       },
-      body:JSON.stringify({ user_profile:userProfile })
-    }).then(res=>res.json());
-    
+      body: JSON.stringify({ user_profile: userProfile })
+    }).then(res => res.json());
+
     const recommendedcommunity = await Community.find({ purpose: { $in: response.recommended_groups } });
-    res.json({ success: true ,data:recommendedcommunity});
+    res.json({ success: true, data: recommendedcommunity });
   } catch (error) {
     console.error("Error fetching recommended groups:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
-
-
 router.post("/searchcommunitymessage", async (req, res) => {
   try {
     const text = req.body.text;
@@ -858,18 +745,17 @@ router.post("/searchcommunitymessage", async (req, res) => {
       return res.json({ success: false, message: "Community not found." });
     }
     let messages = [];
-    if(text === " " || text.length < 1 ){
-      if(communityChat.messages){
+    if (text === " " || text.length < 1) {
+      if (communityChat.messages) {
         messages = communityChat.messages
       }
-    }else{
+    } else {
       if (communityChat.messages) {
         messages = communityChat.messages.filter(message =>
           message.message?.match(new RegExp(text, "i"))
         );
       }
     }
-   
 
     // console.log(communityChat.messages);
     res.json({ success: true, messages: messages });
@@ -878,10 +764,9 @@ router.post("/searchcommunitymessage", async (req, res) => {
     res.json({ success: false, err: error });
   }
 });
-
 router.post("/searchpersonalmessage", async (req, res) => {
   try {
-    const {text,f_id,u_id} = req.body
+    const { text, f_id, u_id } = req.body
     // const existingChat = await DirectChats.findOne({
     //   users: {
     //     $all: [
@@ -895,31 +780,30 @@ router.post("/searchpersonalmessage", async (req, res) => {
         { users: [f_id, u_id] },
         { users: [u_id, f_id] }
       ]
-    }); 
+    });
     let messages = [];
-  if (existingChat && existingChat.messages) {
-  messages = existingChat.messages.filter(message =>
-    message.messageBody.match(new RegExp(text, "i"))
-  );
-}
+    if (existingChat && existingChat.messages) {
+      messages = existingChat.messages.filter(message =>
+        message.messageBody.match(new RegExp(text, "i"))
+      );
+    }
     // console.log(text);
     // messages.map((m)=>{
     //   console.log(m.messageBody);
     // })
-   res.json({"messages":messages,"success":true})
+    res.json({ "messages": messages, "success": true })
   } catch (error) {
     console.log(error);
     res.json({ success: false, err: error });
   }
 });
-
 router.post("/search_communityname", async (req, res) => {
   try {
     const { text, communities } = req.body;
     const userCommunities = [];
-    
+
     for (const c_id of communities) {
-      const community = await Community.findOne({ _id: c_id }); 
+      const community = await Community.findOne({ _id: c_id });
       if (community) {
         userCommunities.push(community);
       }
@@ -928,32 +812,29 @@ router.post("/search_communityname", async (req, res) => {
       const regex = new RegExp(text, 'i');
       return regex.test(community.communityName);
     });
-
     res.json({ "success": true, "groups": filteredCommunities });
   } catch (error) {
     console.error(error);
     res.json({ "success": false });
   }
 });
-
 router.post("/search_p_chatname", async (req, res) => {
   try {
     const { text, u_id } = req.body;
     const result = await DirectChats.find({ users: { $elemMatch: { $eq: u_id } } }).populate('users');
     console.log(`--------------------------------`);
-    const filteredChat = result.filter(chat=>{
-      const regex = new RegExp(text,"i")
+    const filteredChat = result.filter(chat => {
+      const regex = new RegExp(text, "i")
       return regex.test(chat.users[0].username) || regex.test(chat.users[1].username)
     })
     console.log();
-    res.json({ "success": true, "chats": filteredChat});
+    res.json({ "success": true, "chats": filteredChat });
   } catch (error) {
     console.error(error);
-    res.json({ "success": false ,"chats": []});
+    res.json({ "success": false, "chats": [] });
   }
 });
 router.post("/get_c_messages", async (req, res) => {
-
   try {
     const { c_id } = req.body
     // console.log(c_id);
@@ -967,10 +848,7 @@ router.post("/get_c_messages", async (req, res) => {
     res.json({ "success": false, "chats": [] })
   }
 })
-
-
 router.post("/checkjoinstatus", async (req, res) => {
-
   try {
     const c_id = req.body.c_id
     const u_id = req.body.u_id
@@ -979,17 +857,14 @@ router.post("/checkjoinstatus", async (req, res) => {
       return res.json({ "success": false, "message": "Community not found" });
     }
     if (community.members && community.members.includes(u_id)) {
-
       res.json({ "success": true, "member": true });
     } else {
       res.json({ "success": true, "member": false });
-
     }
   } catch (error) {
     res.json({ "success": false })
   }
 })
-
 router.post('/delete_p_chat', async (req, res) => {
   const { f_id, u_id } = req.body
   const chats = await DirectChats.findOneAndDelete({ 'users': { $all: [f_id, u_id] } });
@@ -999,8 +874,6 @@ router.post('/delete_p_chat', async (req, res) => {
     res.json({ "success": false })
   }
 })
-
-
 router.post('/delete_a_personal_message', async (req, res) => {
   const { m_id, c_id } = req.body
   const chat = await DirectChats.findById(c_id);
@@ -1017,7 +890,6 @@ router.post('/delete_a_personal_message', async (req, res) => {
     res.json({ "success": false })
   }
 })
-
 router.post('/exitcommunity', async (req, res) => {
   const { u_id, c_id } = req.body
   const removefromuser = await User.findOneAndUpdate(
@@ -1035,17 +907,13 @@ router.post('/exitcommunity', async (req, res) => {
   } else {
     res.json({ "success": false })
   }
-
 })
 router.post("/getmemberdata", async (req, res) => {
-
   try {
     const c_id = req.body.c_id
-
     const community = await Community.findById(c_id)
     const members = community.members
     const names = []
-
     for (let index = 0; index < members.length; index++) {
       const result = await User.findById(members[index])
       if (result) {
@@ -1074,17 +942,16 @@ router.post('/sidescreengroupnames', async (req, res) => {
   }
 })
 
-
 const accountSid = "ACc09b732d0906f9ffa434c4e71e5502ca";
-const authToken = "994c394db12d04247e3659d84749516d";
-const verifySid = "VA3200ba5ec6da33350c42b679a0cdf306";
+const authToken = "21d485c2ba6da9b59f3bc39c669ae763";
+const verifySid = "VA39e2b0b0d96b22f82d8d14721020262e";
 const client = require("twilio")(accountSid, authToken);
 
 router.post('/send-otp', (req, res) => {
   const { mobilenumber } = req.body;
 
   const cleanedNumber = String(mobilenumber).replace(/\D/g, '');
-  const phoneNumber = "+91" + cleanedNumber; 
+  const phoneNumber = "+91" + cleanedNumber;
   client.verify.v2.services(verifySid)
     .verifications.create({ to: phoneNumber, channel: 'sms' })
     .then((verification) => {
@@ -1101,9 +968,9 @@ router.post('/send-otp', (req, res) => {
 router.post('/verify-otp', (req, res) => {
   const { mobilenumber, otpCode } = req.body;
   const cleanedNumber = String(mobilenumber).replace(/\D/g, '');
-  const phoneNumber = "+91" + cleanedNumber; 
+  const phoneNumber = "+91" + cleanedNumber;
 
-  client.verify.services(verifySid) 
+  client.verify.v2.services(verifySid)
     .verificationChecks.create({ to: phoneNumber, code: otpCode })
     .then((verification_check) => {
       console.log('OTP Verification:', verification_check.status);
@@ -1115,14 +982,8 @@ router.post('/verify-otp', (req, res) => {
     });
 });
 
-
-
-
-
 app.use('/', router)
-
 io.on('connection', (socket) => {
-
   socket.on('send_p_message', async (msg) => {
     const { from, to, chatid, message } = msg;
     const existingChat = await DirectChats.findOne({
@@ -1131,7 +992,7 @@ io.on('connection', (socket) => {
         { users: [to, from] }
       ]
     });
-    
+
     if (existingChat) {
       existingChat?.messages.push({
         from: from,
@@ -1157,21 +1018,14 @@ io.on('connection', (socket) => {
     io.emit("recieve_p_message", { "to": to, "from": from, "messageBody": message, "messageType": "text" });
     // io.emit("recieve_p_message", { "to": to, "from": from, "toname": toname, "fromname": fromname, "messageBody": message, "messageType": "text" });
   });
-
   socket.on('send-image-community', async ({ image, u_name }) => {
-
   });
-
-
-
   const axios = require('axios')
-
-  socket.on('sendMessage', async ({ c_id, u_name, message, u_id, profilePicture ,anonymity}) => {
+  socket.on('sendMessage', async ({ c_id, u_name, message, u_id, profilePicture, anonymity }) => {
     try {
       if (!c_id || !u_id || !message) {
         return socket.emit({ success: false, "error": "Missing required properties." });
       }
-
       try {
         const response = await axios.post(
           'https://api-inference.huggingface.co/models/unitary/toxic-bert',
@@ -1184,7 +1038,6 @@ io.on('connection', (socket) => {
             }
           }
         );
-
         const result = response.data;
         const toxicScore = result[0][0].score;
         const insultScore = result[0][1].score;
@@ -1193,60 +1046,52 @@ io.on('connection', (socket) => {
         const threatScore = result[0][4].score;
         const severeToxicScore = result[0][5].score;
         const toxicityThreshold = 0.5;
-
         if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
           identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
-            const existingChat = await CommunityChats.findOne({ communityId: c_id });
+          const existingChat = await CommunityChats.findOne({ communityId: c_id });
           message = "this was a toxic comment"
           const today = new Date()
           const threemonthsback = new Date()
-          threemonthsback.setMonth(threemonthsback.getMonth() -3)
+          threemonthsback.setMonth(threemonthsback.getMonth() - 3)
           // console.log(threemonthsback);
           let toxiccount = 0
           let messagecount = 0
-          if(existingChat?.messages.length>0){
-            console.log("len",existingChat.messages.length);
-            existingChat.messages.map((msg)=>{
+          if (existingChat?.messages.length > 0) {
+            console.log("len", existingChat.messages.length);
+            existingChat.messages.map((msg) => {
               if (msg.u_id.equals(new mongoose.Types.ObjectId(u_id)) && msg.timeStamp >= threemonthsback && msg.timeStamp < today) {
-                if( msg.message === "this was a toxic comment"){
+                if (msg.message === "this was a toxic comment") {
                   toxiccount += 1
                 }
-                messagecount +=1
+                messagecount += 1
               }
             })
-            const toreduce = toxiccount/messagecount
-            const user = await User.findOneAndUpdate({_id:u_id},
-            {$inc:{serenityscore : -toreduce}},
-            {new:true})
-            console.log(`toxic : `,toxiccount);
-            console.log(`total : `,messagecount);
-            console.log(`toreduce : `,toreduce);
+            const toreduce = toxiccount / messagecount
+            const user = await User.findOneAndUpdate({ _id: u_id },
+              { $inc: { serenityscore: -toreduce } },
+              { new: true })
+            console.log(`toxic : `, toxiccount);
+            console.log(`total : `, messagecount);
+            console.log(`toreduce : `, toreduce);
           }
         }
       } catch (error) {
         console.error('Error:', error);
       }
-
-
-
       const existingChat = await CommunityChats.findOne({ communityId: c_id });
-
       if (existingChat) {
-        existingChat.messages.push({ u_id, message, u_name, profilePicture,anonymity });
+        existingChat.messages.push({ u_id, message, u_name, profilePicture, anonymity });
         await existingChat.save();
       } else {
-        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture,anonymity }] });
+        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }] });
       }
-      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture,anonymity });
+      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity });
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });
     }
   });
 });
-
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-

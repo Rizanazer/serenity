@@ -100,7 +100,15 @@ const CreateAccount_details = ({ actions  }) =>
 const MobileNumberInput = ({ actions,phno,setPhno }) => {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [notification, setNotification] = useState(null);
-
+  const [next, setNext] = useState(false);
+  useEffect(() => {
+    if(notification){
+      const timer = setTimeout(() => {
+        setNotification(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]); 
   const handleNumberChange = (e) => {
     setPhoneNumber(e.target.value);
     setPhno(e.target.value)
@@ -110,10 +118,10 @@ const MobileNumberInput = ({ actions,phno,setPhno }) => {
     try {
       const response = await axios.post('/send-otp', { mobilenumber: phoneNumber });
       setNotification(response.data.message);
-      // Optionally, you can handle success actions here
+      setNext(true);
     } catch (error) {
       console.error('Error sending OTP:', error);
-      // Optionally, you can handle error actions here
+      setNotification("error")
     }
   };
   
@@ -124,7 +132,8 @@ const MobileNumberInput = ({ actions,phno,setPhno }) => {
       {notification&&( 
       <div className="box">{notification}</div>
         )}
-      {notification&&( setTimeout(() => {
+
+      {next&&( setTimeout(() => {
     actions.handleActionChange("VALIDATE"); }, 3000))}
       <button onClick={sendOTP}>GetOTP</button>
       <button onClick={() => actions.handleActionChange("LOGIN")}>BACK</button>
