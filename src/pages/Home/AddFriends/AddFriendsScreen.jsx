@@ -58,7 +58,7 @@ function AddFriendsScreen() {
   return (
     <>{AddFriends.length > 0 ? (
       <div className="section1 box section_margin">
-        {AddFriends.map((el, i) => <Add_Friends data={el} key={i} handleClick={() => {
+        {AddFriends.map((el, i) => <Add_Friends data={el}  key={i} handleClick={() => {
           setSelectedRequest(el._id);
 
         }} addFriendsAlert={() => { }} />)}
@@ -81,10 +81,10 @@ function AddFriendsScreen() {
                 <span>SerinityScore:</span>
                 <span>{selectedUserData.serenityscore}</span>
               </div>
-              <div className="personality_prediction">
+              {/* <div className="personality_prediction">
                 <span className="">Personality : </span>
                 <span className="">Shy</span>
-              </div>
+              </div> */}
               <div className="section3_location flexrow center">
                 <MdLocationPin className="" />
                 <span className="bold">Kerala,India</span>

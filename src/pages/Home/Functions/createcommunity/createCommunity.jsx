@@ -82,7 +82,6 @@ var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
         try {
             const response = await axios.post('/createcommunity', formData);
             setCreateAlert(false);
-            console.log("❤️");
             //////////localstorage updation
             userdata.communities.push(response.data.result._id)
             localStorage.setItem('userdata',JSON.stringify(userdata))
@@ -131,16 +130,16 @@ var CreateCommunity = ({ setCreateAlert, fetchCommunityDetails }) => {
                         <div className="name_image flex center">
                             <img src={imageSrc} className="circle" alt="" />
                             <div className="groupname flex flexcolumn">
-                                <input type="file" accept="image/*" name="communityIcon" onChange={handleImageChange} />
+                                <input type="file" accept="image/*" name="communityIcon" onChange={handleImageChange} required/>
                                 <span className="bold">Group Name</span>
-                                <input type="text" value={createCommunityData.c_name} name="c_name" onChange={handleInputChange} />
+                                <input type="text" value={createCommunityData.c_name} name="c_name" onChange={handleInputChange} required/>
                                 <span className="light">Group Description</span>
-                                <input type="text" value={createCommunityData.c_desc} name="c_desc" onChange={handleInputChange} />
+                                <input type="text" value={createCommunityData.c_desc} name="c_desc" onChange={handleInputChange} required/>
                                 <span className="light">Group Purpose</span>
                                 <select id='dropmenu' onChange={handleInputChange} name="c_purpose" value={createCommunityData.c_purpose}>
                                     <option value="music">music</option>
+                                    <option value="sports">sports</option>
                                     <option value="gaming">games</option>
-                                    <option value="games">games</option>
                                     <option value="movies">movies</option>
                                     <option value="mental_health">mental_health</option>
                                     <option value="books">books</option>
