@@ -158,6 +158,46 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
     res.json({ "success": false });
   }
 });
+
+app.post('/personal_upload_image', uploadPersonalMessageImage.single('image'), async (req, res) => {
+  try {
+    const { f_id, u_id, } = req.body;
+    const filename = req.file.filename;
+    let existingChat  = await DirectChats.findOne({
+      $or: [
+        { users: [f_id, u_id] },
+        { users: [u_id, f_id] }
+      ]
+    });
+
+    if (existingChat) {
+      existingChat.messages.push({
+        from:u_id,
+        to:f_id,
+        filename:filename,
+        messageType: "image",
+        caption: "caption by user available soon"
+      });
+      await existingChat.save();
+    } else {
+      await CommunityChats.create({
+        users: [f_id, u_id],
+        messages: [{
+          from:u_id,
+          to:f_id,
+          filename:filename,
+          messageType: "image",
+          caption: "caption by user available soon"
+        }]
+      });
+    }
+    // Send success response
+    res.json({ success: true, filename: req.file.filename });
+  } catch (error) {
+    console.error("Error in image sending to community:", error);
+    res.json({ "success": false });
+  }
+});
 router.route("/register").post(profilePictureUpload.single('profilePicture'), async (req, res) => {
   try {
     const formData = req.body

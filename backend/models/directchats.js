@@ -7,7 +7,9 @@ const directChatSchema = new mongoose.Schema({
     messageBody: {  type: String,},
     messageType: {type: String,},
     read: { type: Boolean,default: false, },
-    time: { type: Date,default: Date.now,}
+    time: { type: Date,default: Date.now,},
+    filename:{type:String,default:""},
+    caption:{type:String,default:""},
   }],
   dateAdded: { type: Date,default: Date.now,},
 });

@@ -4,7 +4,7 @@ import { FaCircleDot } from "react-icons/fa6";
 import { IoMdContact } from "react-icons/io";
 import './personalMessage.css';
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
-import { MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
+import { MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdVideoFile,MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
@@ -302,6 +302,47 @@ function PersonalMsgScreen() {
     searchchatname()
   },[searchChatInput])
   ///////////////////////////////////
+  const fileImageRef = useRef(null);
+  const fileVideoRef = useRef(null);
+  function sendimage(){
+    fileImageRef.current.click()
+  }
+  function sendvideo(){
+    fileImageRef.current.click()
+
+  }
+  
+  async function handleVideoChange(){}
+  ////////////////////////////////////
+  const handleImageChange= async(event)=>{
+    const imagefile = event.target.files[0]
+    if (imagefile) {
+      try {
+        const formData = new FormData();
+        formData.append('image', imagefile);
+        formData.append('f_id', selectedFriend);
+        formData.append('u_id', userdata._id);
+        const response = await axios.post('/personal_upload_image', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        // let newmessage = {
+        //   messagetype: 'video',
+        //   u_name: userdata.username,
+        //   from:
+        //   filename: response.data.filename,
+
+        // }
+        // setMessages([...messages, newmessage])
+      } catch (error) {
+        // seterror('Error uploading image:', error)
+        // setListening(true)
+        console.error('Error uploading image:', error);
+      }
+    }
+  }
   return (
     <>
       <div className="section1 section_margin box spacebetween">
@@ -462,6 +503,7 @@ function PersonalMsgScreen() {
 
                         </div>
                       )}
+                      {el.messageType === "text" &&
                       <p
                         className={el.from.username === username ? "msg" : "msg"}
                         onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
@@ -469,20 +511,30 @@ function PersonalMsgScreen() {
                         onContextMenu={(e) => handleContextMenu(e, el)}
                       >
                         {el.messageBody}
-                      </p>
+                      </p>}
+                      {
+                        el.messageType === "image" &&
+                        <img src="/images/apple.png"/>
+                        // <p>here comes an image</p>
+                      }
                     </div>
 
 
                     :
                     <div className="flex flexrow gap10" >
+                      {el.messageType === "text" &&
                       <p
-                        className={el.from.username === username ? "msg msg-rightside" : "msg"}
+                        className={el.from.username === username ? "msg" : "msg"}
                         onMouseEnter={() => { Neration && startHoverTimer(el.messageBody) }}
                         onMouseLeave={cancelHoverTimer}
                         onContextMenu={(e) => handleContextMenu(e, el)}
                       >
                         {el.messageBody}
-                      </p>
+                      </p>}
+                      {
+                        el.messageType === "image" &&
+                        <img src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                      }
                       {rightclk && selectedMessage === el && (
                         <div className="message_options center ">
                           <div className="message_items  " onClick={() => deleteMessage(el._id)}>
@@ -522,8 +574,10 @@ function PersonalMsgScreen() {
             <div className="feature_with_send flexrow">
               <div className="chatfeature">
                 <MdOutlineKeyboardVoice className="icon icon_small nobordershadow" />
-                <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" />
-                <MdOutlineImage className="icon icon_small nobordershadow" />
+                <input type="file" accept="image/*" ref={fileImageRef} style={{ display: 'none' }} onChange={handleImageChange} />
+                <input type="file" accept="video/*" ref={fileVideoRef} style={{ display: 'none' }} onChange={handleVideoChange} />
+                <MdVideoFile className="icon icon_small nobordershadow"  onClick={sendvideo}/>
+                <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage}/>
               </div>
               <MdSend className="icon send nobordershadow" onClick={send} />
             </div>
