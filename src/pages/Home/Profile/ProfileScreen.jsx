@@ -117,7 +117,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
 
   function ToggleAnonimus() {
     setAnonimity((prevAnonimity) => !prevAnonimity);
-    userdata.anonymity = Anonimity
+    userdata.anonymity = !Anonimity
     localStorage.setItem('userdata',JSON.stringify(userdata))
     
     handleButtonData()

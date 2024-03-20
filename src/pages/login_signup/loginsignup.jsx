@@ -116,15 +116,17 @@ const MobileNumberInput = ({ actions,phno,setPhno }) => {
 
   const sendOTP = async () => {
     try {
+      setSpinner(true)
       const response = await axios.post('/send-otp', { mobilenumber: phoneNumber });
       setNotification(response.data.message);
       setNext(true);
+      setSpinner(false)
     } catch (error) {
       console.error('Error sending OTP:', error);
       setNotification("error")
     }
   };
-  
+  const [spinner,setSpinner] = useState(false)
 
   return (
     <div className="box_login box center">
@@ -135,7 +137,7 @@ const MobileNumberInput = ({ actions,phno,setPhno }) => {
 
       {next&&( setTimeout(() => {
     actions.handleActionChange("VALIDATE"); }, 3000))}
-      <button onClick={sendOTP}>GetOTP</button>
+      <button onClick={sendOTP}>GetOTP</button>{spinner &&<img src="/images/spinner.gif"  style={{height:'30px',width:'30px'}} />}
       {/* <button onClick={() => actions.handleActionChange("VALIDATE")}>next</button> */}
       <button onClick={() => actions.handleActionChange("LOGIN")}>BACK</button>
     </div>
@@ -296,13 +298,13 @@ const handleClick = async () => {
       
       if(response.data.success ===true){
         console.log('Server response:', response.data);
-        handleActionChange('GetOTP')
+        // handleActionChange('GetOTP')
         console.log(response.data.success); 
         localStorage.setItem('userdata', JSON.stringify(response.data.userdata));
         localStorage.setItem('username', response.data.userdata.username);
         localStorage.setItem('userid', response.data.userdata._id)
         //console.log("heheeee : " + localStorage.getItem('username'));
-       //navigate('/dashboard')
+       navigate('/dashboard')
       }else{
         console.log('Server response:', response.data);
         setViewError(true)
