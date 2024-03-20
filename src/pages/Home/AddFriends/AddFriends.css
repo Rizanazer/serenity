@@ -2,9 +2,9 @@
     height: auto;
     width: 30%;
 }
-.serenity_score{
+/* .serenity_score{
 
-}
+} */
 .personality{
     display: flex;
     flex-direction: row;
@@ -31,5 +31,5 @@
     width: fit-content;
     height: 20px;
 }
-.personality_prediction{}
+
 
