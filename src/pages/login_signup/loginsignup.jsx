@@ -157,7 +157,7 @@ const [spinner,setSpinner] = useState(false)
       {next && (setTimeout(() => {
         actions.handleActionChange("VALIDATE");
       }, 3000))}
-      {/* <button onClick={sendOTP}>GetOTP</button> */}
+      {/* <button onClick={sendOTP}>GetOTP</button>{spinner &&<img src="/images/spinner.gif"  style={{height:'30px',width:'30px'}} />} */}
       <button onClick={() => actions.handleActionChange("VALIDATE")}>next</button>
       <button onClick={() => actions.handleActionChange("LOGIN")}>BACK</button>
     </div>
@@ -190,9 +190,6 @@ const OTPInput = ({ actions, phno, setPhno }) => {
       <div className="center inputrow flexrow">
         <input className='input' type='text' maxLength="6" onChange={handleOTPChange} />
         {/* <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
-        <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
-        <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
-        <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
         <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/> */}
       </div>
       {notification && (
@@ -276,17 +273,17 @@ const Loginsignup = (props) => {
   });
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    console.log(file)
+    // console.log(file)
 
     setRegData({ ...regData, profilePicture: file });
-    console.log("regData---------------------------------")
-    console.log(regData)
+    // console.log("regData---------------------------------")
+    // console.log(regData)
   };
 
   const handeleregchange = (event) => {
     const { name, value } = event.target
     setRegData({ ...regData, [name]: value })
-    console.log(regData);
+    // console.log(regData);
   };
   const handeleregphchange = (event) => {
     const { name, value } = event.target
@@ -305,7 +302,7 @@ const Loginsignup = (props) => {
           console.log(formData);
           const response = await axios.post('/register', formData);
           if (response.data.success === true) {
-            handleActionChange("VALIDATE");
+            handleActionChange("VALIDATE_Register");
             localStorage.setItem('userdata', JSON.stringify(response.data.result));
             localStorage.setItem('username', response.data.result.username);
             localStorage.setItem('userid', response.data.result._id);
