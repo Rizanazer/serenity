@@ -12,6 +12,13 @@
     color: #fff;
     
 }
+.msg-right{
+  margin-right:5px ;
+}
+.msg-left{
+  margin-left:5px ;
+
+}
 .neration{
     width: 100%;
     height: 35px;
