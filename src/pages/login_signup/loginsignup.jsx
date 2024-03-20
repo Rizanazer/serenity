@@ -116,10 +116,13 @@ const CreateAccount_details = ({ actions,phno }) => {
   );
 }
 
-const MobileNumberInput = ({ actions, phno, setPhno }) => {
+const MobileNumberInput = ({ actions, phno, setPhno,regMobile }) => {
+  // const userdata = JSON.parse(localStorage.getItem('userdata'))
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [notification, setNotification] = useState(null);
   const [next, setNext] = useState(false);
+  const [validate, setValidate] = useState(false);
+
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => {
@@ -128,6 +131,20 @@ const MobileNumberInput = ({ actions, phno, setPhno }) => {
       return () => clearTimeout(timer);
     }
   }, [notification]);
+  // console.log(phoneNumber);
+  // console.log(regMobile);
+  useEffect(()=>{
+    if (Number(phoneNumber) === regMobile)
+    {
+      sendOTP();
+    }else{
+      if(phoneNumber!=null){
+        setNotification("Phone Number Not Registered with current User..")
+      setValidate(false)
+      }
+      
+    }
+  },[validate])
   const handleNumberChange = (e) => {
     setPhoneNumber(e.target.value);
     setPhno(e.target.value)
@@ -138,11 +155,17 @@ const MobileNumberInput = ({ actions, phno, setPhno }) => {
       setSpinner(true)
       const response = await axios.post('/send-otp', { mobilenumber: phoneNumber });
       setNotification(response.data.message);
-      setNext(true);
-      setSpinner(false)
+      if(response)
+      {
+        setNext(true);
+        setSpinner(false)
+      }
+      
+      
     } catch (error) {
       console.error('Error sending OTP:', error);
-      setNotification("error")
+      setNotification("error reload the page")
+      setSpinner(false)
     }
   };
 const [spinner,setSpinner] = useState(false)
@@ -157,7 +180,8 @@ const [spinner,setSpinner] = useState(false)
       {next && (setTimeout(() => {
         actions.handleActionChange("VALIDATE");
       }, 3000))}
-      {/* <button onClick={sendOTP}>GetOTP</button>{spinner &&<img src="/images/spinner.gif"  style={{height:'30px',width:'30px'}} />} */}
+      {/* <button onClick={()=>{setValidate(true)
+        }}>GetOTP</button>{spinner &&<img src="/images/spinner.gif"  style={{height:'30px',width:'30px'}} />} */}
       <button onClick={() => actions.handleActionChange("VALIDATE")}>next</button>
       <button onClick={() => actions.handleActionChange("LOGIN")}>BACK</button>
     </div>
@@ -243,7 +267,7 @@ const OTPInputRegister = ({ actions, phno, setPhno }) => {
 
 const Loginsignup = (props) => {
   const [action, setAction] = useState("LOGIN");
-
+  const [Mobile, setMobile] = useState(null);  
   const handleActionChange = (newAction) => {
     setAction(newAction);
   };
@@ -297,9 +321,9 @@ const Loginsignup = (props) => {
           const formData = new FormData();
           for (const key in regData) {
             formData.append(key, regData[key]);
-            console.log(`${key}:`, formData.get(key));
+            // console.log(`${key}:`, formData.get(key));
           }
-          console.log(formData);
+          // console.log(formData);
           const response = await axios.post('/register', formData);
           if (response.data.success === true) {
             handleActionChange("VALIDATE_Register");
@@ -312,24 +336,26 @@ const Loginsignup = (props) => {
         }
       }
       
-        
+      
 const handleClick = async () => {
-  console.log('Button clicked!');
-  console.log(userData);
+ 
+  // console.log('Button clicked!');
+  // console.log(userData);
   await axios.post('/login', userData)
     .then(response => {
       
       if(response.data.success ===true){
-        console.log('Server response:', response.data);
+        // console.log('Server response:', response.data);
         handleActionChange('GetOTP')
-        console.log(response.data.success); 
+        const phone=response.data.userdata.phone; 
+        setMobile(phone)
         localStorage.setItem('userdata', JSON.stringify(response.data.userdata));
         localStorage.setItem('username', response.data.userdata.username);
         localStorage.setItem('userid', response.data.userdata._id)
         //console.log("heheeee : " + localStorage.getItem('username'));
        //navigate('/dashboard')
       }else{
-        console.log('Server response:', response.data);
+        // console.log('Server response:', response.data);
         setViewError(true)
         setTimeout(() => {
           setViewError(false);
@@ -340,7 +366,7 @@ const handleClick = async () => {
       .catch(error => {
         console.error('Error:', error);
       });
-    console.log(userData)
+    // console.log(userData)
 
   };
   const handlereg = () => {
@@ -351,7 +377,7 @@ const handleClick = async () => {
   return (
     <div className="container bg center" >
       {action === "LOGIN" && <Login actions={{ handleActionChange, handleInputChange, handleClick, handlereg, setViewError }} userData={{ userData, viewError }} />}
-      {action === "GetOTP" && <MobileNumberInput actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
+      {action === "GetOTP" && <MobileNumberInput actions={{ handleActionChange }} phno={phno} setPhno={setPhno} regMobile={Mobile} />}
       {action === "VALIDATE" && <OTPInput actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
       {action === "More_Details" && <CreateAccount_details actions={{ handleActionChange, register, handeleregchange }} phno={phno}/>}
       {action === "Create_Account" && <CreateAccount actions={{ handleActionChange, handeleregchange, handleImageChange, handeleregphchange }} />}
