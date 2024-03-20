@@ -159,9 +159,11 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
   }
 });
 
-app.post('/personal_upload_image', uploadPersonalMessageImage.single('image'), async (req, res) => {
+app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), async (req, res) => {
   try {
-    const { f_id, u_id, } = req.body;
+    const { f_id, u_id } = req.body;
+    const mediatype = req.file.mimetype.split('/')[0];
+    console.log(mediatype);
     const filename = req.file.filename;
     let existingChat  = await DirectChats.findOne({
       $or: [
@@ -175,7 +177,7 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('image'), a
         from:u_id,
         to:f_id,
         filename:filename,
-        messageType: "image",
+        messageType: mediatype,
         caption: "caption by user available soon"
       });
       await existingChat.save();
@@ -186,12 +188,18 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('image'), a
           from:u_id,
           to:f_id,
           filename:filename,
-          messageType: "image",
+          messageType: mediatype,
           caption: "caption by user available soon"
         }]
       });
     }
-    // Send success response
+    io.emit('newPersonalMediaMessage', {
+      from: u_id,
+      to: f_id,
+      filename: filename,
+      messageType: mediatype,
+      caption: "caption by user available soon"
+    });
     res.json({ success: true, filename: req.file.filename });
   } catch (error) {
     console.error("Error in image sending to community:", error);
@@ -824,7 +832,7 @@ router.post("/searchpersonalmessage", async (req, res) => {
     let messages = [];
     if (existingChat && existingChat.messages) {
       messages = existingChat.messages.filter(message =>
-        message.messageBody.match(new RegExp(text, "i"))
+        message.messageBody?.match(new RegExp(text, "i"))
       );
     }
     // console.log(text);
@@ -1106,11 +1114,11 @@ io.on('connection', (socket) => {
                 messagecount += 1
               }
             })
-            const toreduce = toxiccount / messagecount
+            const toreduce = toxiccount + 1 / messagecount
             const user = await User.findOneAndUpdate({ _id: u_id },
               { $inc: { serenityscore: -toreduce } },
               { new: true })
-            console.log(`toxic : `, toxiccount);
+            console.log(`toxic : `, toxiccount+1);
             console.log(`total : `, messagecount);
             console.log(`toreduce : `, toreduce);
           }
@@ -1125,7 +1133,7 @@ io.on('connection', (socket) => {
       } else {
         await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }] });
       }
-      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity });
+      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity,c_id });
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });

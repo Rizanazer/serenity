@@ -94,11 +94,14 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
       console.log('Connected to the server socket');
     });
 
-    newSocket.on('newMessage', (message) => {
+    newSocket.on('newMessage', async (message) => {
 
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profile": message.profilePicture }
-
-      setMessages((prev) => [...prev, appenddata])
+      const tocommunity = message.c_id
+      // if(selectedCommunity && selectedCommunity === tocommunity){
+        // console.log(selectedCommunity);
+        setMessages((prev) => [...prev, appenddata])
+      // }
 
     });
 
