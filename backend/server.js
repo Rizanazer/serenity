@@ -1114,11 +1114,11 @@ io.on('connection', (socket) => {
                 messagecount += 1
               }
             })
-            const toreduce = toxiccount / messagecount
+            const toreduce = toxiccount + 1 / messagecount
             const user = await User.findOneAndUpdate({ _id: u_id },
               { $inc: { serenityscore: -toreduce } },
               { new: true })
-            console.log(`toxic : `, toxiccount);
+            console.log(`toxic : `, toxiccount+1);
             console.log(`total : `, messagecount);
             console.log(`toreduce : `, toreduce);
           }
@@ -1133,7 +1133,7 @@ io.on('connection', (socket) => {
       } else {
         await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }] });
       }
-      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity });
+      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity,c_id });
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });
