@@ -75,6 +75,21 @@ function PersonalMsgScreen() {
       const newmessage = message
       setMessages((prev) => [...prev, newmessage])
     })
+
+    /////////////////
+    socket.on('newPersonalMediaMessage', (messageData) => {
+      const { from, to, filename, messageType, caption } = messageData;
+      setMessages(prevMessages => [
+        ...prevMessages,
+        {
+          from:from,
+          to:to,
+          filename:filename,
+          messageType:messageType,
+          caption:caption
+        }
+      ]);
+    });
   }, [])
   useEffect(()=>{
     fetchcontacts()
@@ -162,53 +177,43 @@ function PersonalMsgScreen() {
   //texttospeech
 
   var [messages, setMessages] = useState([]);   
+
+  async function fetchpersonal(friend){
+    try {
+      const response = await axios.post('/fetchpersonal1', { f_id: friend, u_id: u_id })
+      setMessages(response.data.messages)
+    } catch (error) {
+      setMessages([])
+      console.log('personal message fetch error')
+    }
+  }
   async function onclickfriend(friend) {
     console.log(friend._id)
     setSelectedChat(friend._id)
     setSelectedFriendIcon(friend.profilePicture)
     setSelectedFriend(friend)
     setSelectedFriendName(friend.username)
-    
-    try {
-      const response = await axios.post('/fetchpersonal1', { f_id: friend, u_id: u_id })
-      console.log(friend);
-      console.log(response.data.messages);
-      setMessages(response.data.messages)
-    } catch (error) {
-      setMessages([])
-      console.log('personal message fetch error')
-    }
+    /////////////////
+    fetchpersonal(friend)
+    ///////////////////
     setViewChat(true)
   }
+  
   async function onclickfriendchat(friendid, friendname,friendicon,chatid) {
     //this request below might be unnecessary after update .marked as possible unnecessary request -arif
     const response = await axios.post('/getafriend', { u_id: friendid })
     if (response) {
-      // console.log(response.data.profilePicture);
       console.log(`got response`);
     }
     setSelectedFriend(friendid)
 
-    console.log('---------------selectedfriend-------------------');
-    console.log(friendid)
     setChatid(chatid)
     setSelectedFriendIcon(friendicon)
     setSelectedFriendName(friendname)
+    //////////////
+    fetchpersonal(friendid)
+    /////////////
     setViewChat(true)
-
-    try {
-      // const response = await axios.post('/fetchpersonal', { f_id: friendid, u_id: u_id, f_name: friendname })
-      const response = await axios.post('/fetchpersonal1', { f_id: friendid, u_id: u_id })
-      // console.log(friend);
-      // setChatid(response.data.chats._id)
-      // console.log(response.data.chats.messages);
-      setMessages(response.data.messages)
-      console.log("messages---------------------------------------");
-      console.log(messages);
-    } catch (error) {
-      setMessages([])
-      console.log('personal message fetch error')
-    }
 
   }
 
@@ -312,30 +317,47 @@ function PersonalMsgScreen() {
 
   }
   
-  async function handleVideoChange(){}
-  ////////////////////////////////////
-  const handleImageChange= async(event)=>{
-    const imagefile = event.target.files[0]
-    if (imagefile) {
+  const handleVideoChange = async (event)=>{
+    const media = event.target.files[0]
+    if (media) {
       try {
         const formData = new FormData();
-        formData.append('image', imagefile);
+        formData.append('media', media);
         formData.append('f_id', selectedFriend);
         formData.append('u_id', userdata._id);
+        formData.append('mediatype',"video")
         const response = await axios.post('/personal_upload_image', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
 
-        // let newmessage = {
-        //   messagetype: 'video',
-        //   u_name: userdata.username,
-        //   from:
-        //   filename: response.data.filename,
+        await fetchpersonal(selectedFriend)
+      } catch (error) {
+        // seterror('Error uploading image:', error)
+        // setListening(true)
+        console.error('Error uploading video:', error);
+      }
+    }
+  }
+  ////////////////////////////////////
+  const handleImageChange= async(event)=>{
+    const media = event.target.files[0]
+    if (media) {
+      try {
+        const formData = new FormData();
+        formData.append('media', media);
+        formData.append('f_id', selectedFriend);
+        formData.append('u_id', userdata._id);
+        formData.append('mediatype', "image");
+        const response = await axios.post('/personal_upload_image', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
 
-        // }
         // setMessages([...messages, newmessage])
+        await fetchpersonal(selectedFriend)
       } catch (error) {
         // seterror('Error uploading image:', error)
         // setListening(true)
@@ -514,7 +536,12 @@ function PersonalMsgScreen() {
                       </p>}
                       {
                         el.messageType === "image" &&
-                        <img src="/images/apple.png"/>
+                        <img src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                        // <p>here comes an image</p>
+                      }
+                      {
+                        el.messageType === "video" &&
+                        <video src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
                         // <p>here comes an image</p>
                       }
                     </div>
@@ -534,6 +561,10 @@ function PersonalMsgScreen() {
                       {
                         el.messageType === "image" &&
                         <img src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                      }{
+                        el.messageType === "video" &&
+                        <video src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                        // <p>here comes an image</p>
                       }
                       {rightclk && selectedMessage === el && (
                         <div className="message_options center ">
