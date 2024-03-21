@@ -4,7 +4,7 @@ import { FaCircleDot, FaMicrophone } from "react-icons/fa6";
 import { IoMdContact } from "react-icons/io";
 import './personalMessage.css';
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
-import { MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdVideoFile,MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon } from "react-icons/md";
+import { MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdVideoFile,MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon, MdForward } from "react-icons/md";
 import Contact from "../Functions/Contacts";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import SideScreenPersonalFn from "../Functions/SideScreen_personal";
@@ -521,6 +521,13 @@ function PersonalMsgScreen() {
 
                       {rightclk && selectedMessage === el && (
                         <div className="message_options center option-rightside">
+                           <div className="message_items" onClick={() => {
+
+                            }}>
+                              <div className="neration flexrow violetHover"><MdForward className="icon_search" />
+                                <span className="bold padding5">Forward</span>
+                              </div>
+                            </div>
                           <div className="message_items" onClick={() => deleteMessage(el._id)}>
                             <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                               <span className="bold padding5">delete</span>
@@ -540,12 +547,14 @@ function PersonalMsgScreen() {
                       </p>}
                       {
                         el.messageType === "image" &&
-                        <Image src={`uploads/personalMessageImages/${el.filename}`} />
+                        <Image src={`uploads/personalMessageImages/${el.filename}`} 
+                        onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                         // <p>here comes an image</p>
                       }
                       {
                         el.messageType === "video" &&
-                        <Video src={`uploads/personalMessageImages/${el.filename}`} />
+                        <Video src={`uploads/personalMessageImages/${el.filename}`} 
+                        onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                         // <p>here comes an image</p>
                       }
                       {/* {Translate && selectedMessage === el ? messageTtext : el.message} */}
@@ -566,14 +575,24 @@ function PersonalMsgScreen() {
                      
                       {
                         el.messageType === "image" &&
-                        <img src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                        <Image src={`uploads/personalMessageImages/${el.filename}`} 
+                        onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                       }{
                         el.messageType === "video" &&
-                        <video src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                        <Video src={`uploads/personalMessageImages/${el.filename}`} 
+                        onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                         // <p>here comes an image</p>
                       }
                       {rightclk && selectedMessage === el && (
                         <div className="message_options center ">
+                           <div className="message_items" onClick={() => {
+     
+
+                            }}>
+                              <div className="neration flexrow violetHover"><MdForward className="icon_search" />
+                                <span className="bold padding5">Forward</span>
+                              </div>
+                            </div>
                           <div className="message_items  " onClick={() => deleteMessage(el._id)}>
                             <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                               <span className="bold padding5">delete</span> </div>

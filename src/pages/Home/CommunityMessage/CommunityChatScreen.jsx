@@ -528,7 +528,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
               {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
                   {
-                    rightclk && el.u_name === username ?
+                     el.u_name === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
 
                         {rightclk && selectedMessage === el && (
