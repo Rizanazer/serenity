@@ -339,14 +339,20 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   }, [])
 
   const handleForward = async (message) => {
+    console.log("handleForward_el-----------------------------------------");
+    console.log(handleForward_el);
+    console.log("messssssssssssssssssssssssssssssssage-----------------------------------------");
+    console.log(message);
     try {
       setForwarding(false);
       await axios.post('/MessageForward', {
         message: ForwardMessage,
+        messageType: message?.messagetype || "", 
         forwardTo: Selectedrecipients,
         u_id: localStorage.getItem('userid'),
         u_name: username,
-        profilePicture: profilePicture
+        profilePicture: profilePicture,
+        filename:message.filename || ""
       });
 
     } catch (error) {
