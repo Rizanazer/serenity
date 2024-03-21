@@ -423,7 +423,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
           <Menu setScreen={screen} setCreateAlert={create} />
         </div>
         {individualCommunity.map((el, i) =>
-          <div className="box chat pointer min_boxwidth relative_pos ">
+          <div className="box chat pointer min_boxwidth minheight relative_pos ">
             <div className="chat_info relative_pos" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
               <img className="icon profile_chat_img" src={`uploads/communityIcons/${el.communityIcon}`} alt="" />
               <div className=" profile_text relative_pos">

@@ -363,7 +363,7 @@ function PersonalMsgScreen() {
             chats.map((el, i) => (
 
               <div className={Deletefn ? "flexrow swipe-container" : "flexrow"}>
-                <div className="box chat pointer word_shrink">
+                <div className="box chat pointer word_shrink minheight">
                   <div
                     className="chat_info"
                     key={i}
@@ -413,7 +413,7 @@ function PersonalMsgScreen() {
           <div className="box nopadding nobordershadow nogap friendslist">
             {Array.isArray(contacts) && contacts.map((el, i) =>
 
-              <div className="box chat pointer nobordershadow ">
+              <div className="box chat pointer nobordershadow minheight ">
                 <div className="chat_info" key={i} onClick={() => onclickfriend(el)}>
                   <img className="icon profile_chat_img" src={`uploads/profilePictures/${el.profilePicture}`} alt="" />
                   <div className=" profile_text">
