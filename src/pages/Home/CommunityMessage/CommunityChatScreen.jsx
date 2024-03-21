@@ -662,7 +662,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                           )}
                           <div className="flex flexcolumn center">
                             {/* needs adjustment here */}
-                            <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : userdata.profilePicture}`}
+                            {el.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
                              className="icon_search circle" alt="" srcSet="" onClick={() => {
                               if (el.u_name != username) {
                                 setSelectedUser({ username: el.u_name, userid: el.u_id });
@@ -670,7 +670,16 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                                 setSideScreen(true);
                               }
                             }}
-                            />
+                            /> : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : userdata.profilePicture}`}
+                             className="icon_search circle" alt="" srcSet="" onClick={() => {
+                              if (el.u_name != username) {
+                                setSelectedUser({ username: el.u_name, userid: el.u_id });
+                                setMember(true);
+                                setSideScreen(true);
+                              }
+                            }}
+                            />}
+                            
                             {el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_name}</p>}
                           </div>
                         </div>
@@ -755,7 +764,8 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
         }
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        {Member ? <SideScreenCommunityMemberFn selectedUser={selectedUser} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
+        {Member ? 
+        <SideScreenCommunityMemberFn selectedUser={selectedUser} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
           <SideScreenCommunityDetailsFn data={{ selectedCommunityIcon, individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} member={() => { setMember(true); }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 

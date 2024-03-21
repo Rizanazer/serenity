@@ -52,8 +52,10 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
             </div>
             <div className="section3_1">
                 <div className="section3_1_1">
-
-                    <img src={`/uploads/profilePictures/${userData?.profilePicture}`} className="section3_1_1" alt="" />
+                {AnonymsGps ?  <img src={`/uploads/profilePictures/userdummy.jpg`} className="section3_1_1" alt="" />
+                 :
+                 <img src={`/uploads/profilePictures/${userData?.profilePicture}`} className="section3_1_1" alt="" />}
+                    
                 </div>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}
