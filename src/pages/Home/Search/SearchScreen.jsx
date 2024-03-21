@@ -1,59 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { MdArrowBack, MdMoreVert } from "react-icons/md";
-import { IoReload } from "react-icons/io5";
-import GroupList from "../Functions/GroupList";
-import UpperChatInfo from "../Functions/UpperChatInfo";
 import "./SearchScreen.css"
-import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
 import axios from "axios";
-import UserProfileReccomendationForm from "../Functions/reccomendation";
 import GroupList_1 from "./GpList-indv";
+import ErrorMessage from "../Functions/errormessage";
 function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity, setSelectedCommunityName, setViewChat_C, ViewChat }) {
   const [Joined, setJoined] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
-  var [SideScreen, setSideScreen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
-  const [More, setMore] = useState(false);
-  const toggleMore = () => {
-    setMore(prevState => !prevState);
-  };
-  const [Status, setStatus] = useState(false);
-  const [Moreadj, setMoreadj] = useState(false);
   var [GroupName, setGroupName] = useState([]);
   var [GroupName, setGroupName] = useState([]);
-  var [reccomendedGroupName, setReccomendedGroupName] = useState([]);
   var [GroupIcon, setGroupIcon] = useState('');
   const [selectedChatName, setSelectedChatName] = useState(null)
-
-  
-
-  // useEffect(() => {
-  //   async function fetchgroups() {
-  //     const response = await axios.post('/getallgroupnames')
-  //     console.log(response.data);
-  //     setGroupName(response.data.groups)
-  //   }
-  //   // fetchgroups()
-  // }, [])
-
-  var [text, setText] = useState("");
-  var [messages, setMessages] = useState([]);
   const userid = localStorage.getItem('userid')
-  const send = async () => {
-    if (text.length > 0) {
-      setMessages([...messages, text])
-    }
-  }
+  const [userProfile, setUserProfile] = useState({});
+  const [recommendedGroups, setRecommendedGroups] = useState([]);
+  const [error, seterror] = useState("");
+  const [listening, setListening] = useState(false);
+
   async function joincommunity() {
     const u_id = localStorage.getItem('userid')
     try {
       const response = await axios.post('/joincommunity', { u_id: u_id, c_id: selectedChat })
       if (response.data.success === true) {
         setJoined(true);
-        console.log(response.data)
         setIndividualCommunity((prev) => [...prev, response.data.result])
       } else {
-        { console.log("Joining Community fail"); }
+         seterror("Joining Community fail")
+         setListening(true)
       }
     } catch (error) {
       console.error(error)
@@ -77,7 +51,6 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
   const [searchText,setSearchText] = useState('')
   const handlesearchtext = (event)=>{
     setSearchText(event.target.value)
-    console.log(searchText);
   }
 
   async function searchcommunity(){
@@ -92,11 +65,6 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
     searchcommunity()
   },[searchText])
 
-
-
-  const [userProfile, setUserProfile] = useState({});
-  const [recommendedGroups, setRecommendedGroups] = useState([]);
-
   useEffect(() => {
     const userDataString = localStorage.getItem('userdata');
     if (userDataString) {
@@ -107,7 +75,6 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
         console.error('Error parsing userdata:', error);
       }
     }
-    
   }, []);
   
   useEffect(()=>{
@@ -129,11 +96,6 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
       setRecommendedGroups(data.data);
     }
   };
-
-
-
-
-
   return (
     <>
       <div className="section1 section_margin box gap20 scroll">
@@ -145,51 +107,34 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
             {searchText.length>0 && GroupName.map((el, i) => <GroupList_1 setViewChat={setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />)}
           </div>
         </div>
-
         <div className="box reccomendation_box">
           <div className=" searchbox flexrow">
             <span className="bold">Community Reccomendations</span>
-    
           </div>
           <div className="box nopadding nobordershadow reccomendationBoxContnt nogap">
             {recommendedGroups&&(recommendedGroups.map((el, i) => <GroupList_1 setViewChat={setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />))}
           </div>
-
-
         </div>
-
       </div>
-
       <div className="section2 box" >
         {ViewChat ? <>
           {/* upperchats component */}
           <div className="box upper_chatroom_padding flexrow spacebetween">
             <div className="center gap10">
-
-              <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
+              <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); }} color="" />
               {<>
-                {/* <img className="icon profile_chat_img" src="uploads/img.png" alt="" onClick={sidescreen}/> */}
                 <img className="icon profile_chat_img" src={GroupIcon?`uploads/communityIcons/${GroupIcon}`: 'uploads/img.png' } alt="" />
                 <span className="bold">{selectedChatName}</span>
               </>}
-              {/* {<UpperChatInfo data={{ "image": "uploads/img.png", "username": "ddd", "status": () => { setSideScreen(true); setMoreadj(true); } }} />} */}
             </div>
-
             <div className="center gap10">
-
-
-              <MdMoreVert className="icon nobordershadow " color="" onClick={toggleMore} />
-
+              <MdMoreVert className="icon nobordershadow " color=""/>
             </div>
           </div>
-
           {/* middlechats component-chat_area */}
           <div className="box chat_area nopadding">
-            {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}></div>}
-
-            {messages && messages.map((el, i) => <p className="msg " key={i}>{el}</p>)}
+          <ErrorMessage error={error} listening={listening} setListening={setListening} seterror={seterror} />
           </div>
-
           {/* bottomchats component-chat_typing */}
           {
             Joined ? <div className="box center pointer joinbtn" onClick={() => {
@@ -208,14 +153,8 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
         </>
           :
           <></>}
-
       </div>
-      {/* {SideScreen && <div className="section3 box nopadding nobordershadow">
-        {<SideScreenCommunityJoinFn data={{ "image": selectedChat?.image, "groupname": selectedChat?.groupname }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
-      </div>} */}
     </>
   );
 }
-
-
 export default SearchScreen;
