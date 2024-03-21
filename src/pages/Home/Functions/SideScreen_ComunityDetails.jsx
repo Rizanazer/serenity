@@ -4,7 +4,7 @@ import { GiExitDoor } from "react-icons/gi";
 import SideScreenCommunityMemberFn from "./SideScreen_communityMember";
 import axios from "axios";
 import { useEffect, useState } from "react";
-var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data, member,actions }) => {
+var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data,actions}) => {
     const username = localStorage.getItem('username')
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])
@@ -81,9 +81,9 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data, 
                 <div className="box nopadding nobordershadow padding5 scroll nocircleradius">
                         <div className="Group_Participations box nobordershadow  flexcolumn spacebetween flex " >
                 {memberNames && memberNames.map((elem, i) => (
-                            <div className="group_box flex " onClick={() => { member() }} key={i}>
-                                <img src="images/profileimg_chat.jpg" className="icon_search" />
-                                <span className="bold pointer">{elem}</span>
+                            <div className="group_box flex " onClick={() => { }} key={i}>
+                                <img src={`uploads/profilePictures/${elem[1]}`} className="icon_search" />
+                                <span className="bold pointer">{elem[0]}</span>
                             </div>
                             ))}
                             {/* <span className="light">active</span> */}
