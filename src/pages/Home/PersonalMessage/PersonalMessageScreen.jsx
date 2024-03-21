@@ -12,6 +12,8 @@ import axios from "axios";
 import io from "socket.io-client";
 import rightBox from "../Functions/message_rightclick/chat_rightclck";
 import RightClickBox from "../Functions/message_rightclick/chat_rightclck";
+import Image from "../Functions/imageview";
+import Video from "../Functions/videoplay";
 
 function PersonalMsgScreen() {
 
@@ -536,12 +538,12 @@ function PersonalMsgScreen() {
                       </p>}
                       {
                         el.messageType === "image" &&
-                        <img src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                        <Image src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
                         // <p>here comes an image</p>
                       }
                       {
                         el.messageType === "video" &&
-                        <video src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                        <Video src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
                         // <p>here comes an image</p>
                       }
                     </div>
