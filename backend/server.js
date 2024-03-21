@@ -812,6 +812,32 @@ router.post("/searchcommunitymessage", async (req, res) => {
     res.json({ success: false, err: error });
   }
 });
+router.post('/delete_c_message',async(req,res)=>{
+  try{
+  const {c_id,msg_id} = req.body
+  const communityChat = await CommunityChats.findOne({communityId:c_id})
+  if (!communityChat) {
+    return res.status(404).json({ message: "Community chat not found." });
+  }
+  const messageIndex = communityChat.messages.findIndex(message => message._id.toString() === msg_id);
+  console.log(messageIndex);
+  if (messageIndex === -1) {
+      return res.status(404).json({ message: "Message not found in the community chat." });
+  }
+
+  communityChat.messages.splice(messageIndex, 1);
+  await communityChat.save();
+  console.log(`deleted a message`);
+  return res.json({"success":true})
+
+  }catch(error){
+    return res.json({"success":false})
+  }
+
+})
+
+
+
 router.post("/searchpersonalmessage", async (req, res) => {
   try {
     const { text, f_id, u_id } = req.body

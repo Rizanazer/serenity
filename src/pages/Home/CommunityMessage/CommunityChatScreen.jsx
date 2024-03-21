@@ -71,6 +71,8 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
     setSelectedCommunity(id);
 
   }
+
+
   async function get_c_messages() {
     setsearchinput('')
     try {
@@ -391,6 +393,18 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   const handleSearchCommunityName = (event) => {
     setSearchCText(event.target.value)
   }
+  /////////////////////////message delete///
+  async function handleDelete(c_id,msg_id){
+    try{
+      const response = await axios.post('/delete_c_message',{c_id:c_id,msg_id:msg_id})
+      console.log(`click delete`);
+      if(response.data.success){
+        get_c_messages()
+      }
+    }catch(error){
+      console.error(error)
+    }
+  }
 
   return (
     <>
@@ -546,7 +560,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                               //  handleDelete(el) 
                             }}>
                               <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
-                                <span className="bold padding5">Delete</span>
+                                <span className="bold padding5" onClick={()=>handleDelete(selectedCommunity,el._id)}>Delete</span>
                               </div>
                             </div>
                           </div>
