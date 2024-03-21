@@ -496,7 +496,7 @@ function PersonalMsgScreen() {
             {messages?.length > 0 && messages.map((el, i) => (
               <React.Fragment key={i}>
                 {
-                  rightclk && el.from === userid ?
+                   el.from === userid ?
                     <div className="flex flexrow gap10 msg-rightside">
 
                       {rightclk && selectedMessage === el && (
@@ -528,6 +528,7 @@ function PersonalMsgScreen() {
                         <Video src={`uploads/personalMessageImages/${el.filename}`} />
                         // <p>here comes an image</p>
                       }
+                      {/* {Translate && selectedMessage === el ? messageTtext : el.message} */}
                     </div>
 
 
