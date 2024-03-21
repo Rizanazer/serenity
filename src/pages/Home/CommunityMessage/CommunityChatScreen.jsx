@@ -15,6 +15,7 @@ import Image from "../Functions/imageview";
 import Video from "../Functions/videoplay";
 import ErrorMessage from "../Functions/errormessage";
 import handleListen from "../Functions/voicetoText";
+import handleTranslate from "../Functions/transaltion_option";
 function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [profile, setProfile] = useState(null);
@@ -275,24 +276,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   const toggleTranslation = () => {
     set_Translate(prevState => !prevState);
   }
-  const handleTranslate = () => {
-    console.log("lan", messageTtext);
-    axios.post('/convert', {
-      input_text: messageTtext,
-      to_lang: language
 
-    })
-      .then(response => {
-        setmessageTtext(response.data.translated_text);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        seterror('Error occurred while translating', error)
-        setListening(true)
-
-      });
-
-  }
   async function fetchProfileUpdate() {
     const u_id = localStorage.getItem('userid')
     try {
@@ -681,7 +665,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                                 <span className="bold padding5">Delete</span>
                               </div>
                             </div>
-                            {media ? null : <div className="message_items" onClick={() => { handleTranslate(); toggleTranslation() }}>
+                            {media ? null : <div className="message_items" onClick={() => { handleTranslate(messageTtext,language,setmessageTtext,seterror,setListening); toggleTranslation() }}>
                               <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
                                 <span className="bold padding5">Translate</span>
                               </div>
