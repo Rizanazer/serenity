@@ -371,7 +371,7 @@ function PersonalMsgScreen() {
 
         <div className="box nobordershadow nopadding chathistory">
           <div className="box searchbox flexrow">
-            <input type="text" placeholder="Search for Esxisting Chats" value={searchChatInput}onChange={(e)=>{setSearchChatInput(e.target.value)}}className="nobordershadow widthmax" />
+            <input type="text" placeholder="Search for Existing Chats" value={searchChatInput}onChange={(e)=>{setSearchChatInput(e.target.value)}}className="nobordershadow widthmax" />
             <MdDelete className="icon nobordershadow" color={Deletefn ? "#5E4AE3" : "#000"} onClick={() => { toggleDeletefn(); console.log("utasgduygeiyr"); }} />
           </div>
           {Array.isArray(chats) && chats.length > 0 ? (
@@ -399,7 +399,7 @@ function PersonalMsgScreen() {
                     :<img className="icon profile_chat_img" src={`uploads/profilePictures/${el.users[0].profilePicture}`} alt="" />}
                     <div className=" profile_text">
                       <div className="textlength_head ">
-                        <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username} chats-not friendslist</span>
+                        <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username}</span>
 
                       </div>
                       {/* <div className="textlength_para ">
