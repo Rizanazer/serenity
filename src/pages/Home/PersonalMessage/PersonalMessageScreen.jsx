@@ -538,12 +538,12 @@ function PersonalMsgScreen() {
                       </p>}
                       {
                         el.messageType === "image" &&
-                        <Image src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                        <Image src={`uploads/personalMessageImages/${el.filename}`} />
                         // <p>here comes an image</p>
                       }
                       {
                         el.messageType === "video" &&
-                        <Video src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
+                        <Video src={`uploads/personalMessageImages/${el.filename}`} />
                         // <p>here comes an image</p>
                       }
                     </div>
