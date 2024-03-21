@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
-import { FaCircleDot } from "react-icons/fa6";
+import { FaCircleDot, FaMicrophone } from "react-icons/fa6";
 import { IoMdContact } from "react-icons/io";
 import './personalMessage.css';
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
@@ -14,6 +14,8 @@ import rightBox from "../Functions/message_rightclick/chat_rightclck";
 import RightClickBox from "../Functions/message_rightclick/chat_rightclck";
 import Image from "../Functions/imageview";
 import Video from "../Functions/videoplay";
+import ErrorMessage from "../Functions/errormessage";
+import handleListen from "../Functions/voicetoText";
 
 function PersonalMsgScreen() {
 
@@ -30,6 +32,8 @@ function PersonalMsgScreen() {
       }
     }, 100);
   }, [messages, scrollPosition]);
+  const [error, seterror] = useState("");
+  const [listening, setListening] = useState(false);
   const [searchinput, setsearchinput] = useState('')
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [LastMessage, setLastMessage] = useState([]);
@@ -127,20 +131,7 @@ function PersonalMsgScreen() {
       console.log("error fetching friends")
     }
   }
-  //   function getLastMessages(chats) {
-  //     const lastMessages = chats.map(chat => {
-  //         const messages = chat.messages;
-  //         const lastMessage = messages[messages.length - 1]; // Get the last message in the messages array
-  //         return lastMessage;
-  //     });
-  //     return lastMessages;
 
-  // }
-  // useEffect(() => {
-  //   fetchfriends();
-  // }, [refreshFlag])
-
-  //delete chat fn
   const toggleDeletefn = () => {
     setDeletefn(prevState => !prevState);
   };
@@ -510,7 +501,7 @@ function PersonalMsgScreen() {
                 }</div>
               </div>
             </div>}
-
+            <ErrorMessage error={error} listening={listening} setListening={setListening} seterror={seterror} />
             {messages?.length > 0 && messages.map((el, i) => (
               <React.Fragment key={i}>
                 {
@@ -606,7 +597,7 @@ function PersonalMsgScreen() {
             </div>
             <div className="feature_with_send flexrow">
               <div className="chatfeature">
-                <MdOutlineKeyboardVoice className="icon icon_small nobordershadow" />
+                <FaMicrophone className="icon icon_small nobordershadow" onClick={()=>handleListen(setListening,seterror,setText)} style={{ cursor: 'pointer' }}/>
                 <input type="file" accept="image/*" ref={fileImageRef} style={{ display: 'none' }} onChange={handleImageChange} />
                 <input type="file" accept="video/*" ref={fileVideoRef} style={{ display: 'none' }} onChange={handleVideoChange} />
                 <MdVideoFile className="icon icon_small nobordershadow"  onClick={sendvideo}/>

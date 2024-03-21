@@ -14,6 +14,7 @@ import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
 import Image from "../Functions/imageview";
 import Video from "../Functions/videoplay";
 import ErrorMessage from "../Functions/errormessage";
+import handleListen from "../Functions/voicetoText";
 function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [profile, setProfile] = useState(null);
@@ -131,24 +132,6 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
         setText("");
         setScrollPosition(scrollPosition + 1);
       }
-      //  setAllCommunityMessages(prevCommunityMessages => {
-      //       const index = prevCommunityMessages.findIndex(chat => selectedCommunity === messageData.c_id);
-      //       if (index !== -1) {
-      //         const updatedCommunityMessages = [...prevCommunityMessages];
-      //         updatedCommunityMessages[index].messages.push(messageData);
-      //         return updatedCommunityMessages;
-      //       } else {
-      //         return [...prevCommunityMessages, { communityId: selectedCommunity, messages: [messageData] }];
-      //       }
-      //     });
-      // setIndividualCommunity(prevState => {
-      //   return prevState.map(community => {
-      //     if (community._id === selectedCommunity) {
-      //       return { ...community, lastmessage: "last message" };
-      //     }
-      //     return community;
-      //   });
-      // });
     }
   };
 
@@ -311,40 +294,6 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
       setListening(true)
     }
   }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  const handleListen = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition;
-    if (!SpeechRecognition) {
-      console.error('Speech recognition not supported in this browser');
-      setListening(true);
-      seterror("'Speech recognition not supported in this browser'")
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-
-    recognition.onstart = () => {
-
-    };
-
-    recognition.onresult = event => {
-      const question = event.results[0][0].transcript;
-      setText(question);
-
-    };
-
-    recognition.onerror = event => {
-      console.error('Speech recognition error detected: ', event.error);
-      setListening(true);
-      seterror(event.error);
-    };
-
-    recognition.start();
-  };
-
-  ///////////////////////////////////////////////////////////////////////////
   ////////////////////////////messageforward////////////////////////////////////////
   const [friendList, setFriendList] = useState([])
   const [CommunityList, setCommunityList] = useState([]);
@@ -477,10 +426,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
             {/* upperchats component */}
             <div className="box upper_chatroom_padding flexrow spacebetween">
               <div className="center gap10">
-
                 <MdArrowBack className="icon nobordershadow" onClick={() => { setViewChat(false); setSideScreen(false); }} color="" />
-
-                {/* {<UpperChatInfo data={{ "image": selectedChat.image, "username": selectedChat.groupname, "status": () => { setSideScreen(true);setMoreadj(true);setMember(false); } }} />} */}
                 {<UpperChatInfo data={{ selectedCommunityIcon, individualCommunity, selectedCommunityName }} actions={{ setSelectedCommunity }} sidescreen={() => { setSideScreen(true); setMoreadj(true); setMember(false); }} />}
 
               </div>
@@ -715,16 +661,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                             </div>
                           </div>
                         )}
-                        {/* {forwarding && (
-                          <div className="box">
-        
-                            {recipients.map((recipient) => (
-                              <div key={recipient.id} className="recipient" onClick={() => handleRecipientSelect(recipient)}>
-                                {recipient.name}
-                              </div>
-                            ))}
-                          </div>
-                        )} */}
+                        
                       </div>
                   }
                 </React.Fragment>
@@ -751,7 +688,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
               </div>
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
-                  <FaMicrophone className="icon icon_small nobordershadow" onClick={handleListen} style={{ cursor: 'pointer' }} />
+                  <FaMicrophone className="icon icon_small nobordershadow" onClick={()=>handleListen(setListening,seterror,setText)} style={{ cursor: 'pointer' }} />
                   {/* <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" /> */}
                   <input type="file" accept="video/*" ref={fileVideoInputRef} style={{ display: 'none' }} onChange={handleFileVideoChange} />
                   <MdVideoFile className="icon icon_small nobordershadow" onClick={sendvideo} />
