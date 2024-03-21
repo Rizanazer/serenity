@@ -133,17 +133,6 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
 
 
 
-//  async function Reccomendcommunityfetch(){
-//     try{
-//       const response = await axios.post('/reccomendedcommunity',{priorityList:recommendedGroups})
-//       setReccomendedGroupName(response.data.sortedGroups)
-//     }catch(error){
-//       console.error(error)
-//     }
-//   }
-//   useEffect(()=>{
-//     Reccomendcommunityfetch()
-//   },[])
   return (
     <>
       <div className="section1 section_margin box gap20 scroll">
