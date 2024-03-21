@@ -105,8 +105,8 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profile": message.profilePicture }
       const tocommunity = message.c_id
       // if(selectedCommunity && selectedCommunity === tocommunity){
-        // console.log(selectedCommunity);
-        setMessages((prev) => [...prev, appenddata])
+      // console.log(selectedCommunity);
+      setMessages((prev) => [...prev, appenddata])
       // }
 
     });
@@ -117,6 +117,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
     };
   }, [allCommunityMessages]);
   var [SideScreen, setSideScreen] = useState(false);
+  var [media, setMedia] = useState(false);
   var [selectedChat, setSelectedChat] = useState(null);
   const [selectedCommunityIcon, setSelectedCommunityIcon] = useState(null)
   const toggleMore = () => {
@@ -153,6 +154,14 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
     togglerightclick(); // Set rightclk state to true
     setSelectedMessage(message);
     setmessageTtext(message.message)
+    setMedia(false)
+  };
+  const handleContextMenuMedia = (e, event) => {
+    e.preventDefault(); // Prevent default context menu
+    togglerightclick();
+    setSelectedMessage(event);
+    setMedia(true);
+    // setmessageTtext(event.filename)
 
   };
 
@@ -394,14 +403,14 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
     setSearchCText(event.target.value)
   }
   /////////////////////////message delete///
-  async function handleDelete(c_id,msg_id){
-    try{
-      const response = await axios.post('/delete_c_message',{c_id:c_id,msg_id:msg_id})
+  async function handleDelete(c_id, msg_id) {
+    try {
+      const response = await axios.post('/delete_c_message', { c_id: c_id, msg_id: msg_id })
       console.log(`click delete`);
-      if(response.data.success){
+      if (response.data.success) {
         get_c_messages()
       }
-    }catch(error){
+    } catch (error) {
       console.error(error)
     }
   }
@@ -556,25 +565,26 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                                 <span className="bold padding5">Forward</span>
                               </div>
                             </div>
-                            <div className="message_items" onClick={() => {
-                              //  handleDelete(el) 
-                            }}>
+                            <div className="message_items" onClick={() => handleDelete(selectedCommunity, el._id)}>
                               <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
-                                <span className="bold padding5" onClick={()=>handleDelete(selectedCommunity,el._id)}>Delete</span>
+                                <span className="bold padding5" >Delete</span>
                               </div>
                             </div>
                           </div>
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
                           {el.messagetype === "image" && (
-                            
+
                             <Image
                               src={`uploads/communityMessageImages/${el.filename}`}
+                              onContextMenu={(e) => handleContextMenuMedia(e, el)}
                             />
                           )}
 
                           {el.messagetype === "video" && (
+
                             <Video src={`uploads/communityMessageVideos/${el.filename}`}
+                              onContextMenu={(e) => handleContextMenuMedia(e, el)}
                             />
                           )}
 
@@ -592,10 +602,13 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                           )}
 
                           <div className="flex flexcolumn center">
-                             {/* needs adjustment here */}
-                            <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'chathistory.jpg'}`}
-                              className="icon_search circle" alt="" srcSet="" onClick={() => { }} />
-                            <p className="bold">{el.u_name}</p>
+                            {/* needs adjustment here */}
+                            {el.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
+                              className="icon_search circle" alt="" srcSet="" />
+                              : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'chathistory.jpg'}`}
+                                className="icon_search circle" alt="" srcSet="" onClick={() => { }} />}
+
+                            {el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_name}</p>}
                           </div>
                         </div>
                       </div>
@@ -606,11 +619,13 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                           {el.messagetype === "image" && (
                             <Image
                               src={`uploads/communityMessageImages/${el.filename}`}
+                              onContextMenu={(e) => handleContextMenuMedia(e, el)}
                             />
                           )}
 
                           {el.messagetype === "video" && (
-                            <Video src={`uploads/communityMessageVideos/${el.filename}`} />
+                            <Video src={`uploads/communityMessageVideos/${el.filename}`}
+                              onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                           )}
 
                           {el.messagetype !== "image" && el.messagetype !== "video" && (
@@ -627,23 +642,23 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                           <div className="flex flexcolumn center">
                             {/* needs adjustment here */}
                             {el.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
-                             className="icon_search circle" alt="" srcSet="" onClick={() => {
-                              if (el.u_name != username) {
-                                setSelectedUser({ username: el.u_name, userid: el.u_id });
-                                setMember(true);
-                                setSideScreen(true);
-                              }
-                            }}
-                            /> : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : userdata.profilePicture}`}
-                             className="icon_search circle" alt="" srcSet="" onClick={() => {
-                              if (el.u_name != username) {
-                                setSelectedUser({ username: el.u_name, userid: el.u_id });
-                                setMember(true);
-                                setSideScreen(true);
-                              }
-                            }}
+                              className="icon_search circle" alt="" srcSet="" onClick={() => {
+                                if (el.u_name != username) {
+                                  setSelectedUser({ username: el.u_name, userid: el.u_id });
+                                  setMember(true);
+                                  setSideScreen(true);
+                                }
+                              }}
+                            /> : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'chathistory.jpg'}`}
+                              className="icon_search circle" alt="" srcSet="" onClick={() => {
+                                if (el.u_name != username) {
+                                  setSelectedUser({ username: el.u_name, userid: el.u_id });
+                                  setMember(true);
+                                  setSideScreen(true);
+                                }
+                              }}
                             />}
-                            
+
                             {el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_name}</p>}
                           </div>
                         </div>
@@ -661,21 +676,20 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                                 <span className="bold padding5">Forward</span>
                               </div>
                             </div>
-                            <div className="message_items" onClick={() => {
-                              // handleDelete(el) 
-                            }}>
+                            <div className="message_items" onClick={() => handleDelete(selectedCommunity, el._id)}>
                               <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                                 <span className="bold padding5">Delete</span>
                               </div>
                             </div>
-                            <div className="message_items" onClick={() => { handleTranslate(); toggleTranslation() }}>
+                            {media ? null : <div className="message_items" onClick={() => { handleTranslate(); toggleTranslation() }}>
                               <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
                                 <span className="bold padding5">Translate</span>
                               </div>
-                            </div>
+                            </div>}
+
                           </div>
                         )}
-                        
+
                       </div>
                   }
                 </React.Fragment>
@@ -702,7 +716,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
               </div>
               <div className="feature_with_send flexrow">
                 <div className="chatfeature">
-                  <FaMicrophone className="icon icon_small nobordershadow" onClick={()=>handleListen(setListening,seterror,setText)} style={{ cursor: 'pointer' }} />
+                  <FaMicrophone className="icon icon_small nobordershadow" onClick={() => handleListen(setListening, seterror, setText)} style={{ cursor: 'pointer' }} />
                   {/* <MdOutlineInsertEmoticon className="icon icon_small nobordershadow" /> */}
                   <input type="file" accept="video/*" ref={fileVideoInputRef} style={{ display: 'none' }} onChange={handleFileVideoChange} />
                   <MdVideoFile className="icon icon_small nobordershadow" onClick={sendvideo} />
@@ -719,8 +733,8 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
         }
       </div>
       {SideScreen && <div className="section3 box nopadding nobordershadow">
-        {Member ? 
-        <SideScreenCommunityMemberFn selectedUser={selectedUser} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
+        {Member ?
+          <SideScreenCommunityMemberFn selectedUser={selectedUser} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
           <SideScreenCommunityDetailsFn data={{ selectedCommunityIcon, individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
 
