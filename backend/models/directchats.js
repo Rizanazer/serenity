@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const directChatSchema = new mongoose.Schema({
+  usernameTo:{type: mongoose.Schema.ObjectId,ref: 'User'},
   users: [{type: mongoose.Schema.ObjectId,ref: 'User'}],
     messages: [{from: {type: mongoose.Schema.ObjectId,ref: 'User'},
     to: {type: mongoose.Schema.ObjectId,ref: 'User'},

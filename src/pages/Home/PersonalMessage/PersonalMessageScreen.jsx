@@ -100,11 +100,13 @@ function PersonalMsgScreen() {
   useEffect(()=>{
     fetchcontacts()
     fetchfriends()
+    console.log("",contacts);
+    console.log("😔😔😔😔",chats);
   },[])
   async function fetchcontacts(){
     try{
       const response =await axios.post('/fetchcontacts',{u_id:userid})
-      console.log(response);
+      console.log("😎😎😎😎",response.data.friends);
       setContacts(response.data.friends)
     } catch(error){
       console.error(error)
@@ -119,7 +121,7 @@ function PersonalMsgScreen() {
       // setContacts(response.data.frienddata)
       setChats(response.data.chats)
       console.log(`-----------------------------chatts`);
-      console.log(response.data.chats);
+      console.log("😔😔😔😔",response.data.chats);
       setFriends(userdata.friends.length);
       // console.log(" fetching friends",response.data.chats)
 
@@ -209,17 +211,6 @@ function PersonalMsgScreen() {
     setViewChat(true)
 
   }
-
-  // const send1 = async () => {
-  //   const trimmedText = text.trim();
-  //   console.log("selectedChat");
-  //   console.log(selectedChat);
-  //   const senddata = { "fromname": username, "from": u_id, "toname": selectedChat.username, "to": selectedChat.userid, "message": trimmedText }
-  //   mySocket.emit("send_p_message", senddata);
-  //   setText("");
-  //   setScrollPosition(scrollPosition + 1);
-  // }
-
   const send = async () => {
     const trimmedText = text.trim();
     console.log("selectedChat");

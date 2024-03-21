@@ -1040,7 +1040,7 @@ io.on('connection', (socket) => {
         { users: [to, from] }
       ]
     });
-
+   
     if (existingChat) {
       existingChat?.messages.push({
         from: from,
@@ -1048,9 +1048,11 @@ io.on('connection', (socket) => {
         messageBody: message,
         messageType: "text"
       });
+      existingChat.usernameTo = to;
       await existingChat.save();
     } else {
       await DirectChats.create({
+        usernameTo:to,
         users: [
           from,
           to
