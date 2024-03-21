@@ -16,6 +16,7 @@ import Video from "../Functions/videoplay";
 import ErrorMessage from "../Functions/errormessage";
 import handleListen from "../Functions/voicetoText";
 import handleTranslate from "../Functions/transaltion_option";
+import fetchProfileUpdate from "../Functions/fetchownprofile";
 function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [profile, setProfile] = useState(null);
@@ -49,8 +50,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   useEffect(() => {
     setAnonymity(userdata.anonymity)
     setLanguage(userdata.language)
-
-    fetchProfileUpdate()
+    fetchProfileUpdate(setLanguage,seterror,setListening)
   }, [])
 
   const profilePicture = userdata.profilePicture
@@ -162,7 +162,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
     togglerightclick();
     setSelectedMessage(event);
     setMedia(true);
-    // setmessageTtext(event.filename)
+    
 
   };
 
@@ -277,18 +277,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
     set_Translate(prevState => !prevState);
   }
 
-  async function fetchProfileUpdate() {
-    const u_id = localStorage.getItem('userid')
-    try {
-      const response = await axios.post("/fetchProfile", { u_id: u_id, })
 
-
-      setLanguage(response.data.language)
-    } catch (error) {
-      seterror('error fetching Status')
-      setListening(true)
-    }
-  }
   ////////////////////////////messageforward////////////////////////////////////////
   const [friendList, setFriendList] = useState([])
   const [CommunityList, setCommunityList] = useState([]);

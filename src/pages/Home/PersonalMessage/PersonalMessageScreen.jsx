@@ -16,6 +16,8 @@ import Image from "../Functions/imageview";
 import Video from "../Functions/videoplay";
 import ErrorMessage from "../Functions/errormessage";
 import handleListen from "../Functions/voicetoText";
+import handleTranslate from "../Functions/transaltion_option";
+import fetchProfileUpdate from "../Functions/fetchownprofile";
 
 function PersonalMsgScreen() {
 
@@ -32,6 +34,7 @@ function PersonalMsgScreen() {
       }
     }, 100);
   }, [messages, scrollPosition]);
+  const [language, setLanguage] = useState(null);
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
   const [searchinput, setsearchinput] = useState('')
@@ -46,6 +49,7 @@ function PersonalMsgScreen() {
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
+  const [Translate, set_Translate] = useState(false);
   const userid = localStorage.getItem('userid')
   const [ContactsOnline, setContactsOnline] = useState(true);
   const [contacts, setContacts] = useState([]);
@@ -66,7 +70,8 @@ function PersonalMsgScreen() {
   const [selectedFriendName, setSelectedFriendName] = useState(null)
   const [chatId, setChatid] = useState(null)
   const [selectedFriendIcon, setSelectedFriendIcon] = useState(null)
-  const refreshFlag = 0;
+  const [messageTtext, setmessageTtext] = useState("");
+  var [media, setMedia] = useState(false);
 
   useEffect(() => {
     console.log("selectedChat")
@@ -98,10 +103,10 @@ function PersonalMsgScreen() {
     });
   }, [])
   useEffect(()=>{
+    setLanguage(userdata.language)
     fetchcontacts()
     fetchfriends()
-    console.log("",contacts);
-    console.log("😔😔😔😔",chats);
+    fetchProfileUpdate(setLanguage,seterror,setListening)
   },[])
   async function fetchcontacts(){
     try{
@@ -226,14 +231,27 @@ function PersonalMsgScreen() {
   }
 
 
- 
+  const toggleTranslation = () => {
+    set_Translate(prevState => !prevState);
+  }
 
   //rightclk
   const handleContextMenu = (e, message) => {
     e.preventDefault(); // Prevent default context menu
-    console.log("Right-clicked on message:", message);
     togglerightclick(); // Set rightclk state to true
-    setSelectedMessage(message); // Set the selected message
+    setSelectedMessage(message);
+    
+    setmessageTtext(message.messageBody)
+    setMedia(false)
+  };
+
+  const handleContextMenuMedia = (e, event) => {
+    e.preventDefault(); // Prevent default context menu
+    togglerightclick();
+    setSelectedMessage(event);
+    setMedia(true);
+    // setmessageTtext(event.filename)
+
   };
   //delete message individual
   const deleteMessage = async (m_id) => {
@@ -255,6 +273,8 @@ function PersonalMsgScreen() {
   }
   const togglerightclick = () => {
     setrightclk(prevState => !prevState);
+    setmessageTtext("");
+    set_Translate(false);
   };
   //enter key for send
   const handleKeyPress = (e) => {
@@ -541,8 +561,9 @@ function PersonalMsgScreen() {
                         onMouseLeave={cancelHoverTimer}
                         onContextMenu={(e) => handleContextMenu(e, el)}
                       >
-                        {el.messageBody}
+                        {Translate && selectedMessage === el ? messageTtext : el.messageBody}
                       </p>}
+                     
                       {
                         el.messageType === "image" &&
                         <img src={`uploads/personalMessageImages/${el.filename}`} style={{height:"150px",weight:"150px"}}/>
@@ -557,11 +578,11 @@ function PersonalMsgScreen() {
                             <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                               <span className="bold padding5">delete</span> </div>
                           </div>
-                          <div className="message_items" onClick={() => { }}>
+                          {media ? null : <div className="message_items" onClick={() => { handleTranslate(messageTtext,language,setmessageTtext,seterror,setListening); toggleTranslation() }}>
                             <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
                               <span className="bold padding5">translate</span>
                             </div>
-                          </div>
+                          </div>}
                         </div>
 
                       )}
