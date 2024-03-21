@@ -11,6 +11,9 @@ import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember
 import axios from "axios";
 import { io } from "socket.io-client"
 import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
+import Image from "../Functions/imageview";
+import Video from "../Functions/videoplay";
+import ErrorMessage from "../Functions/errormessage";
 function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [profile, setProfile] = useState(null);
@@ -604,6 +607,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
                           {el.messagetype === "image" && (
+                            
                             <Image
                               src={`uploads/communityMessageImages/${el.filename}`}
                             />
@@ -777,39 +781,3 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
 export default CommunityMsgScreen;
 
 
-function Video({ src }) {
-  const [open, setOpen] = useState(false);
-  return open ? <div className="videoPlayer">
-    <video src={src} controls={true} />
-    <MdClose size={50} color="#fff" className="close-button" onClick={() => { setOpen(false) }} />
-  </div> :
-    <div className="center" style={{ position: "relative", width: '300px', height: '300px' }} onClick={() => setOpen(true)}>
-      <FaCirclePlay color="#fff" size={50} style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }} />
-      <video style={{ width: '300px', height: '300px' }} src={src} controls={false} onClick={() => setOpen(true)} />
-    </div>
-}
-function Image({ src }) {
-  const [open, setOpen] = useState(false);
-  return open ? <div className="videoPlayer">
-    <img src={src} />
-    <MdClose size={50} color="#fff" className="close-button" onClick={() => { setOpen(false) }} />
-  </div> :
-    <img style={{ width: '300px', height: '300px' }} src={src} onClick={() => setOpen(true)} />
-}
-function ErrorMessage({ error, listening, setListening, seterror }) {
-  setTimeout(() => {
-    if (listening) {
-      setListening(false);
-      seterror("");
-    }
-  }, 3000);
-
-  return (
-    listening && (
-      <div className="alerterror alert-success center spacebetween">
-        <span><strong>Error!</strong> {error}</span>
-        <MdClose className="icon_search" onClick={() => { setListening(false); seterror("") }} />
-      </div>
-    )
-  );
-}
