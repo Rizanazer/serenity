@@ -987,11 +987,12 @@ router.post("/getmemberdata", async (req, res) => {
     const c_id = req.body.c_id
     const community = await Community.findById(c_id)
     const members = community.members
+
     const names = []
     for (let index = 0; index < members.length; index++) {
       const result = await User.findById(members[index])
       if (result) {
-        names.push(result.username)
+        names.push([result.username,result.profilePicture])
       }
     }
     res.json({ "success": true, "names": names });
