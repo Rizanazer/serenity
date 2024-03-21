@@ -7,6 +7,7 @@ import "./SearchScreen.css"
 import SideScreenCommunityJoinFn from "../Functions/SideScreen_JoinComunity";
 import axios from "axios";
 import UserProfileReccomendationForm from "../Functions/reccomendation";
+import GroupList_1 from "./GpList-indv";
 function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity, setSelectedCommunityName, setViewChat_C, ViewChat }) {
   const [Joined, setJoined] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
@@ -215,31 +216,6 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
     </>
   );
 }
-function GroupList_1({ userid, data, HandleClick, setViewChat }) {
-  const isJoined = data.members && data.members.includes(userid);
-  const stylenotjoined = { color: "red", borderRadius: '10px', textAlign: 'center',display:'flex',}
-  const stylejoined = { color: "green", borderRadius: '10px', textAlign: 'center',display:'flex',}
-  return (
 
-    <div className="box chat pointer minheight" onClick={() => { setViewChat(true); HandleClick(data._id, data.communityName,data.communityIcon); }}>
-
-      <div className="chat_info " >
-        <img className="icon profile_chat_img chat_info_1" src={`uploads/communityIcons/${data.communityIcon}`} alt="" />
-        <div className=" profile_text chat_info_2">
-          <div className="textlength_head flex spacebetween">
-            <span className="bold ">{data.communityName}</span>
-           
-          </div>
-          <div className="textlength_para">
-            <span className="light ">{data.description}</span>
-          </div>
-        </div>
-        {isJoined === true ? <span className="light center chat_info_3" style={stylejoined}>Joined</span> : <span className="light center" style={stylenotjoined}>joined</span>}
-      </div>
-     
-    </div>
-
-  )
-}
 
 export default SearchScreen;
