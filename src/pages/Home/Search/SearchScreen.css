@@ -30,3 +30,12 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.chat_info_1{
+    flex: 2;
+}
+.chat_info_2{
+    flex: 2;
+}
+.chat_info_3{
+    flex: 2;
+}
