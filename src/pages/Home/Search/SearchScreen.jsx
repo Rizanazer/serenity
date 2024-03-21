@@ -4,6 +4,7 @@ import "./SearchScreen.css"
 import axios from "axios";
 import GroupList_1 from "./GpList-indv";
 import ErrorMessage from "../Functions/errormessage";
+import GroupList_2 from "./RecGpList-indv";
 function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity, setSelectedCommunityName, setViewChat_C, ViewChat }) {
   const [Joined, setJoined] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
@@ -112,7 +113,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
             <span className="bold">Community Reccomendations</span>
           </div>
           <div className="box nopadding nobordershadow reccomendationBoxContnt nogap">
-            {recommendedGroups&&(recommendedGroups.map((el, i) => <GroupList_1 setViewChat={setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />))}
+            {recommendedGroups&&(recommendedGroups.map((el, i) => <GroupList_2 setViewChat={setViewChat} userid={userid} data={el} key={i} HandleClick={handleclick} />))}
           </div>
         </div>
       </div>
