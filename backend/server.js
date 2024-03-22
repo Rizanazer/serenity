@@ -1013,10 +1013,10 @@ router.post('/sidescreengroupnames', async (req, res) => {
     const names = []
     for (let i = 0; i < communities.length; i++) {
       const name = await Community.findById(communities[i])
-      names.push(name.communityName)
+      names.push(name)
     }
     // res.send(names)
-    res.json({ "names": names, "userdata": result })
+    res.json({ "userdata": names ,"user":result})
   } catch (error) {
     res.send("failure")
   }

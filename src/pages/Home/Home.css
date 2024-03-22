@@ -405,3 +405,7 @@ overflow-y: auto;
     width: 50px;
     cursor: pointer;
 }
+.forwardedmedia{
+    display: flex;
+    align-self: flex-start;
+}

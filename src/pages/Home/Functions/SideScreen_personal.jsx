@@ -4,13 +4,13 @@ import { useEffect,useState } from "react";
 import axios from "axios";
 var SideScreenPersonalFn = ({ handleClick, data,selectedFriend ,fetchfriends}) => {
     const [userData,setUserData] = useState(null)
-    const [sideScreenGroupList,setSideScreenGroupList] = useState(null)
+    const [sideScreenGroupList,setSideScreenGroupList] = useState([])
     useEffect(()=>{
         async function sidescreengrouplist(){
             try {
                 const result = await axios.post('/sidescreengroupnames',{u_id:selectedFriend})
-                setSideScreenGroupList(result.data.names)
-                setUserData(result.data.userdata)
+                setSideScreenGroupList(result.data.userdata)
+                setUserData(result.data.user)
                 console.log(result)
             } catch (error) {
                 console.error(error)
@@ -59,11 +59,11 @@ var SideScreenPersonalFn = ({ handleClick, data,selectedFriend ,fetchfriends}) =
                     <span className="bold">Group Participations</span>
                     <MdGroups className="icon_search" />
                 </div>
-                {sideScreenGroupList && sideScreenGroupList.map((name,i)=>(
+                {sideScreenGroupList && sideScreenGroupList?.map((name,i)=>(
                     <div className="Group_Participations box nobordershadow">
                     <div className="group_box flexrow">
-                        <img src="images/groupprofile.jpg" className="icon_search" />
-                        <span className="bold" key={i}>{name}</span>
+                        <img src={`uploads/communityIcons/${name.communityIcon}`} className="icon_search" />
+                        <span className="bold" key={i}>{name.communityName}</span>
                     </div>
                 </div>)
                 )}
