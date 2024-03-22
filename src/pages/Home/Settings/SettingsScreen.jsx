@@ -7,6 +7,7 @@ function SettingsScreen({ handleClick, setscreen, profileView, accounts, account
   const userdata = JSON.parse(localStorage.getItem('userdata'))
   function logout() {
     localStorage.clear()
+    localStorage.removeItem('validation')
     console.log(`Logging out`);
     navigate('/')
   }

@@ -10,7 +10,6 @@ const NumberCheck = (event) => {
   const numbersOnly = inputValue.replace(/[^0-9]/g, ''); // Remove any non-numeric characters
   event.target.value = numbersOnly; // Update the input value to contain only numbers
 };
-
 const Login = ({ actions, userData }) =>
 (
 
@@ -188,7 +187,7 @@ const [spinner,setSpinner] = useState(false)
   );
 };
 
-const OTPInput = ({ actions, phno, setPhno }) => {
+const OTPInput = ({ actions, phno, setPhno ,onclickvalidate}) => {
   const [otp, setOTP] = useState('');
   const [notification, setNotification] = useState(null);
   const handleOTPChange = (e) => {
@@ -199,6 +198,7 @@ const OTPInput = ({ actions, phno, setPhno }) => {
     try {
       const response = await axios.post('/verify-otp', { mobilenumber: phno, otpCode: otp });
       if (response) {
+        localStorage.setItem('validation',true)
         window.location = "/dashboard";
       }
 
@@ -221,13 +221,14 @@ const OTPInput = ({ actions, phno, setPhno }) => {
       )}
       {/* <button onClick={verifyOTP}>VALIDATE</button> */}
 
-      <button onClick={() => window.location = "/dashboard"}>VALIDATE</button>
-      <button onClick={() => actions.handleActionChange("GetOTP")}>BACK</button>
+      {/* <button onClick={() => window.location = "/dashboard"}>VALIDATE</button> */}
+      <button onClick={onclickvalidate}>VALIDATE</button>
+      <button onClick={() => actions.handleActionChange("GetOTP")}>ddBACK</button>
     </div>
   );
 };
 
-const OTPInputRegister = ({ actions, phno, setPhno }) => {
+const OTPInputRegister = ({ actions, phno, setPhno,navigate }) => {
   const [otp, setOTP] = useState('');
   const [notification, setNotification] = useState(null);
   const handleOTPChange = (e) => {
@@ -247,7 +248,7 @@ const OTPInputRegister = ({ actions, phno, setPhno }) => {
 
     }
   };
-
+  
   return (
     <div className="box_login box center">
       <div className="center inputrow flexrow">
@@ -265,7 +266,7 @@ const OTPInputRegister = ({ actions, phno, setPhno }) => {
   );
 };
 
-const Loginsignup = (props) => {
+const Loginsignup = ({setValidation}) => {
   const [action, setAction] = useState("LOGIN");
   const [Mobile, setMobile] = useState(null);  
   const handleActionChange = (newAction) => {
@@ -373,15 +374,20 @@ const handleClick = async () => {
     navigate('/registration')
   }
   ///////////////////////////////////////////////////////
+  function onclickvalidate(){
+    navigate('/dashboard')
+    localStorage.setItem('validation',"true")
 
+  }
   return (
+
     <div className="container bg center" >
       {action === "LOGIN" && <Login actions={{ handleActionChange, handleInputChange, handleClick, handlereg, setViewError }} userData={{ userData, viewError }} />}
       {action === "GetOTP" && <MobileNumberInput actions={{ handleActionChange }} phno={phno} setPhno={setPhno} regMobile={Mobile} />}
-      {action === "VALIDATE" && <OTPInput actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
+      {action === "VALIDATE" && <OTPInput onclickvalidate={onclickvalidate} actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
       {action === "More_Details" && <CreateAccount_details actions={{ handleActionChange, register, handeleregchange }} phno={phno}/>}
       {action === "Create_Account" && <CreateAccount actions={{ handleActionChange, handeleregchange, handleImageChange, handeleregphchange }} />}
-      {action === "VALIDATE_Register" && <OTPInputRegister actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
+      {action === "VALIDATE_Register" && <OTPInputRegister navigate={navigate}actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
     </div>
   );
 };

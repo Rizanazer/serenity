@@ -141,7 +141,7 @@ const Home = () => {
   // console.log(individualCommunity);
   return (
     <>
-      <div className="container center ">
+      {localStorage.getItem('validation') &&localStorage.getItem('validation') ==="true"?<div className="container center ">
         {/* settings */}
         {Setting && <div className="overlay">
           <div className="flex flexrow h_w_full">
@@ -213,8 +213,8 @@ const Home = () => {
           setScreen={setScreen} />}
         {Screen === "AddFriends" && <AddFriendsScreen />}
         {CreateAlert && <CreateCommunity setCreateAlert={setCreateAlert} fetchCommunityDetails={fetchCommunityDetails} />}
-      </div>
-
+      </div>:<div><img src="images/smiley.gif" alt="" /><span>Finish Login to enter Home</span><button onClick={()=>window.location = '/'}>Go to login</button></div>
+            }
     </>
 
   );

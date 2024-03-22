@@ -18,13 +18,15 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
   const [recommendedGroups, setRecommendedGroups] = useState([]);
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
-
+  const userdata = JSON.parse(localStorage.getItem('userdata'))
   async function joincommunity() {
     const u_id = localStorage.getItem('userid')
     try {
       const response = await axios.post('/joincommunity', { u_id: u_id, c_id: selectedChat })
       if (response.data.success === true) {
         setJoined(true);
+        userdata.communities.push(selectedChat)
+        localStorage.setItem('userdata',JSON.stringify(userdata))
         setIndividualCommunity((prev) => [...prev, response.data.result])
       } else {
          seterror("Joining Community fail")
