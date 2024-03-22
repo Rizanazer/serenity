@@ -69,7 +69,7 @@
     padding: 5px 5px !important;
     border-radius: 10px !important;
     text-overflow: clip;
-  overflow-x: clip;
+  /* overflow-x: clip; */
 
 }
 
