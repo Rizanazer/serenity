@@ -165,7 +165,7 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
     const mediatype = req.file.mimetype.split('/')[0];
     console.log(mediatype);
     const filename = req.file.filename;
-    let existingChat  = await DirectChats.findOne({
+    let existingChat = await DirectChats.findOne({
       $or: [
         { users: [f_id, u_id] },
         { users: [u_id, f_id] }
@@ -174,9 +174,9 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
 
     if (existingChat) {
       existingChat.messages.push({
-        from:u_id,
-        to:f_id,
-        filename:filename,
+        from: u_id,
+        to: f_id,
+        filename: filename,
         messageType: mediatype,
         caption: "caption by user available soon"
       });
@@ -185,9 +185,9 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
       await CommunityChats.create({
         users: [f_id, u_id],
         messages: [{
-          from:u_id,
-          to:f_id,
-          filename:filename,
+          from: u_id,
+          to: f_id,
+          filename: filename,
           messageType: mediatype,
           caption: "caption by user available soon"
         }]
@@ -314,7 +314,7 @@ router.post("/fetchProfile", async (req, res) => {
 router.post("/MessageForward", async (req, res) => {
   console.log(req.body);
   try {
-    const { message, forwardTo, u_id, profilePicture, u_name,messageType ,filename} = req.body;
+    const { message, forwardTo, u_id, profilePicture, u_name, messageType, filename } = req.body;
     const userids = []
     const communityids = []
     const forwardTofiltered = forwardTo.filter((item, index) => forwardTo.indexOf(item) === index);
@@ -330,10 +330,10 @@ router.post("/MessageForward", async (req, res) => {
       for (const id of communityids) {
         const existingChat = await CommunityChats.findOne({ communityId: id });
         if (existingChat) {
-          existingChat.messages.push({ u_id, message, u_name,"messagetype":messageType, profilePicture, forwarded: true,"filename":filename });
+          existingChat.messages.push({ u_id, message, u_name, "messagetype": messageType, profilePicture, forwarded: true, "filename": filename });
           await existingChat.save();
         } else {
-          await CommunityChats.create({ communityId: id, messages: [{ u_id, message, u_name, profilePicture,"messagetype":messageType,"filename":filename  }] });
+          await CommunityChats.create({ communityId: id, messages: [{ u_id, message, u_name, profilePicture, "messagetype": messageType, "filename": filename }] });
         }
       }
     }
@@ -352,15 +352,15 @@ router.post("/MessageForward", async (req, res) => {
             to: id,
             messageBody: message,
             messageType: messagetype,
-            filename:filename 
+            filename: filename
           });
           existingChat.usernameTo = id;
           await existingChat.save();
-        } 
+        }
         // const to = await User.findOne({ _id: id })
         else {
           await DirectChats.create({
-            usernameTo:id,
+            usernameTo: id,
             users: [
               u_id,
               id
@@ -370,12 +370,13 @@ router.post("/MessageForward", async (req, res) => {
               to: id,
               messageBody: message,
               messageType: messagetype,
-              filename:filename 
+              filename: filename
 
             }]
           });
+        }
       }
-    }}
+    }
     res.status(200).json({ success: true, message: 'Message forwarded successfully' });
   } catch (error) {
     console.error('Error forwarding message:', error);
@@ -830,26 +831,26 @@ router.post("/searchcommunitymessage", async (req, res) => {
     res.json({ success: false, err: error });
   }
 });
-router.post('/delete_c_message',async(req,res)=>{
-  try{
-  const {c_id,msg_id} = req.body
-  const communityChat = await CommunityChats.findOne({communityId:c_id})
-  if (!communityChat) {
-    return res.status(404).json({ message: "Community chat not found." });
-  }
-  const messageIndex = communityChat.messages.findIndex(message => message._id.toString() === msg_id);
-  console.log(messageIndex);
-  if (messageIndex === -1) {
+router.post('/delete_c_message', async (req, res) => {
+  try {
+    const { c_id, msg_id } = req.body
+    const communityChat = await CommunityChats.findOne({ communityId: c_id })
+    if (!communityChat) {
+      return res.status(404).json({ message: "Community chat not found." });
+    }
+    const messageIndex = communityChat.messages.findIndex(message => message._id.toString() === msg_id);
+    console.log(messageIndex);
+    if (messageIndex === -1) {
       return res.status(404).json({ message: "Message not found in the community chat." });
-  }
+    }
 
-  communityChat.messages.splice(messageIndex, 1);
-  await communityChat.save();
-  console.log(`deleted a message`);
-  return res.json({"success":true})
+    communityChat.messages.splice(messageIndex, 1);
+    await communityChat.save();
+    console.log(`deleted a message`);
+    return res.json({ "success": true })
 
-  }catch(error){
-    return res.json({"success":false})
+  } catch (error) {
+    return res.json({ "success": false })
   }
 
 })
@@ -1010,7 +1011,7 @@ router.post("/getmemberdata", async (req, res) => {
     for (let index = 0; index < members.length; index++) {
       const result = await User.findById(members[index])
       if (result) {
-        names.push([result.username,result.profilePicture])
+        names.push([result.username, result.profilePicture])
       }
     }
     res.json({ "success": true, "names": names });
@@ -1029,7 +1030,7 @@ router.post('/sidescreengroupnames', async (req, res) => {
       names.push(name)
     }
     // res.send(names)
-    res.json({ "userdata": names ,"user":result})
+    res.json({ "userdata": names, "user": result })
   } catch (error) {
     res.send("failure")
   }
@@ -1085,7 +1086,7 @@ io.on('connection', (socket) => {
         { users: [to, from] }
       ]
     });
-   
+
     if (existingChat) {
       existingChat?.messages.push({
         from: from,
@@ -1097,7 +1098,7 @@ io.on('connection', (socket) => {
       await existingChat.save();
     } else {
       await DirectChats.create({
-        usernameTo:to,
+        usernameTo: to,
         users: [
           from,
           to
@@ -1144,28 +1145,37 @@ io.on('connection', (socket) => {
         if (toxicScore > toxicityThreshold || insultScore > toxicityThreshold || obsceneScore > toxicityThreshold ||
           identityHateScore > toxicityThreshold || threatScore > toxicityThreshold || severeToxicScore > toxicityThreshold) {
           const existingChat = await CommunityChats.findOne({ communityId: c_id });
-          message = "this was a toxic comment"
+          message = "Serenity Alert:This was a Toxic Comment"
           const today = new Date()
           const threemonthsback = new Date()
           threemonthsback.setMonth(threemonthsback.getMonth() - 3)
           // console.log(threemonthsback);
           let toxiccount = 0
           let messagecount = 0
+          let ToxicAggregate=0
           if (existingChat?.messages.length > 0) {
             console.log("len", existingChat.messages.length);
             existingChat.messages.map((msg) => {
               if (msg.u_id.equals(new mongoose.Types.ObjectId(u_id)) && msg.timeStamp >= threemonthsback && msg.timeStamp < today) {
-                if (msg.message === "this was a toxic comment") {
-                  toxiccount += 1
+                if (msg.message === "Serenity Alert:This was a Toxic Comment") {
+                   ToxicAggregate = (
+                    toxicScore * 3 +
+                    severeToxicScore * 2.5 +
+                    insultScore * 2 +
+                    threatScore * 1.5 +
+                    obsceneScore * 1.25 +
+                    identityHateScore * 1
+                  );
                 }
-                messagecount += 1
+                ToxicAggregate=0
               }
             })
-            const toreduce = toxiccount + 1 / messagecount
+            
+            const toreduce =ToxicAggregate
             const user = await User.findOneAndUpdate({ _id: u_id },
               { $inc: { serenityscore: -toreduce } },
               { new: true })
-            console.log(`toxic : `, toxiccount+1);
+            console.log(`toxic : `, toxiccount + 1);
             console.log(`total : `, messagecount);
             console.log(`toreduce : `, toreduce);
           }
@@ -1180,7 +1190,7 @@ io.on('connection', (socket) => {
       } else {
         await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }] });
       }
-      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity,c_id });
+      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity, c_id });
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });
