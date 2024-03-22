@@ -1,8 +1,7 @@
 // 
 import React, { useEffect, useState, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
-import { MdForward, MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdOutlineKeyboardVoice, MdOutlineInsertEmoticon, MdVideoFile } from "react-icons/md";
-import GroupList from "../Functions/GroupList";
+import { MdForward, MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdVideoFile } from "react-icons/md";
 import { HiMiniSpeakerXMark, HiMiniSpeakerWave } from "react-icons/hi2";
 import UpperChatInfo from "../Functions/UpperChatInfo";
 import Menu from "../Functions/Menu/menu";
@@ -10,7 +9,7 @@ import SideScreenCommunityDetailsFn from "../Functions/SideScreen_ComunityDetail
 import SideScreenCommunityMemberFn from "../Functions/SideScreen_communityMember";
 import axios from "axios";
 import { io } from "socket.io-client"
-import { FaCirclePlay, FaMicrophone } from "react-icons/fa6";
+import { FaMicrophone } from "react-icons/fa6";
 import Image from "../Functions/imageview";
 import Video from "../Functions/videoplay";
 import ErrorMessage from "../Functions/errormessage";
@@ -19,7 +18,6 @@ import handleTranslate from "../Functions/transaltion_option";
 import fetchProfileUpdate from "../Functions/fetchownprofile";
 function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
-  const [profile, setProfile] = useState(null);
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
   const userdata = JSON.parse(localStorage.getItem('userdata'));
@@ -36,16 +34,27 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   var [messages, setMessages] = useState([]);
   const [ChatSearch, SetChatSearch] = useState(false);
   var [SideScreen, setSideScreen] = useState(false);
-  var [selectedChat, setSelectedChat] = useState(null);
   const [More, setMore] = useState(false);
   const [Moreadj, setMoreadj] = useState(false);
   var [Member, setMember] = useState(false);
   var [text, setText] = useState("");
+  const [searchCText, setSearchCText] = useState('')
   const [Neration, setNeration] = useState(false);
-  const [Deletefn, setDeletefn] = useState(false);
   const [Translate, set_Translate] = useState(false);
   const [messageTtext, setmessageTtext] = useState("");
   const [language, setLanguage] = useState(null);
+  const profilePicture = userdata.profilePicture
+  const [anonymity, setAnonymity] = useState(null);
+  var [SideScreen, setSideScreen] = useState(false);
+  var [media, setMedia] = useState(false);
+  var [Member, setMember] = useState(false);
+  var [text, setText] = useState("");
+  const [friendList, setFriendList] = useState([])
+  const [CommunityList, setCommunityList] = useState([]);
+  const [Selectedrecipients, setSelectedRecipients] = useState([]);
+  const [ForwardMessage, setForwardMessage] = useState("");
+  const [handleForward_el, sethandleForward_el] = useState("");
+  const [forwarding, setForwarding] = useState(false);
 
   useEffect(() => {
     setAnonymity(userdata.anonymity)
@@ -53,8 +62,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     fetchProfileUpdate(setLanguage, seterror, setListening)
   }, [])
 
-  const profilePicture = userdata.profilePicture
-  const [anonymity, setAnonymity] = useState(null);
   useEffect(() => {
     setTimeout(() => {
       if (chatAreaRef.current) {
@@ -81,7 +88,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
       const msgs = response.data.chats.messages
       if (msgs?.length > 0) {
         setMessages(response.data.chats.messages)
-        //////////////////////////////////////////////////////////////////////////////////////// setAnonymsGps(response.data.)
       } else {
         setMessages([])
       }
@@ -104,30 +110,20 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     newSocket.on('newMessage', async (message) => {
 
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profile": message.profilePicture }
-      const tocommunity = message.c_id
-      // if(selectedCommunity && selectedCommunity === tocommunity){
-      // console.log(selectedCommunity);
       setMessages((prev) => [...prev, appenddata])
-      // }
-
     });
-
     return () => {
       newSocket.disconnect();
       console.error('Disconnected from the server')
     };
   }, [allCommunityMessages]);
-  var [SideScreen, setSideScreen] = useState(false);
-  var [media, setMedia] = useState(false);
-  var [selectedChat, setSelectedChat] = useState(null);
+
  
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
-  var [Member, setMember] = useState(false);
-  var [text, setText] = useState("");
+
   const send = async () => {
-    // setProfile(userdata.profilePicture)
     if (text.trim().length > 0 && selectedCommunity) {
       const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture, anonymity: anonymity };
       if (socket) {
@@ -138,27 +134,22 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
       }
     }
   };
-
-  //enter key for send
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // Prevent the default form submission behavior
+      e.preventDefault(); 
       send();
     }
   };
-  const toggleDeletefn = () => {
-    setDeletefn(prevState => !prevState);
-  };
-
+ 
   const handleContextMenu = (e, message) => {
-    e.preventDefault(); // Prevent default context menu
-    togglerightclick(); // Set rightclk state to true
+    e.preventDefault(); 
+    togglerightclick(); 
     setSelectedMessage(message);
     setmessageTtext(message.message)
     setMedia(false)
   };
   const handleContextMenuMedia = (e, event) => {
-    e.preventDefault(); // Prevent default context menu
+    e.preventDefault(); 
     togglerightclick();
     setSelectedMessage(event);
     setMedia(true);
@@ -170,10 +161,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     setrightclk(prevState => !prevState);
     setmessageTtext("");
     set_Translate(false);
-  };
-
-  const deleteMessage = async (m_id) => {
-    setrightclk(false);
   };
 
   const speakText = (message) => {
@@ -207,8 +194,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     fileVideoInputRef.current.click();
 
   };
-
-  ////////////////////////////////////////////////////////////////////////////
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -272,21 +257,9 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     }
   };
 
-
   const toggleTranslation = () => {
     set_Translate(prevState => !prevState);
   }
-
-
-  ////////////////////////////messageforward////////////////////////////////////////
-  const [friendList, setFriendList] = useState([])
-  const [CommunityList, setCommunityList] = useState([]);
-
-  const [Selectedrecipients, setSelectedRecipients] = useState([]);
-  const [ForwardMessage, setForwardMessage] = useState("");
-  const [handleForward_el, sethandleForward_el] = useState("");
-
-  const [forwarding, setForwarding] = useState(false);
 
   async function fetchfriends() {
     try {
@@ -306,16 +279,11 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     }
   }
   useEffect(() => {
-
     fetchcommunities();
     fetchfriends();
   }, [])
 
   const handleForward = async (message) => {
-    console.log("handleForward_el-----------------------------------------");
-    console.log(handleForward_el);
-    console.log("messssssssssssssssssssssssssssssssage-----------------------------------------");
-    console.log(message);
     try {
       setForwarding(false);
       await axios.post('/MessageForward', {
@@ -344,29 +312,19 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
 
     }
   };
-  ////////////////////////search chat message begin////////////////
 
   useEffect(() => {
     async function searchcommunitychat() {
-      console.log("search input changed")
-
       const response = await axios.post('/searchcommunitymessage', { c_id: selectedCommunity, text: searchinput })
       if (response) {
-
         setMessages(response.data.messages)
       }
-      console.log(`--------------------------------====================================`);
-      console.log(messages);
     }
     searchcommunitychat()
   }, [searchinput])
   const searchinputchange = (event) => {
     setsearchinput(event.target.value)
   }
-
-
-  //////////////////////////////////search chat name begin////////////////////////////////////////////////
-  const [searchCText, setSearchCText] = useState('')
   useEffect(() => {
 
     async function searchcommunityName() {
@@ -381,11 +339,9 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   const handleSearchCommunityName = (event) => {
     setSearchCText(event.target.value)
   }
-  /////////////////////////message delete///
   async function handleDelete(c_id, msg_id) {
     try {
       const response = await axios.post('/delete_c_message', { c_id: c_id, msg_id: msg_id })
-      console.log(`click delete`);
       if (response.data.success) {
         get_c_messages()
       }
@@ -393,7 +349,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
       console.error(error)
     }
   }
-
   return (
     <>
       <div className="section1 section_margin box relative_pos">
@@ -414,15 +369,11 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                 </div>
               </div>
             </div>
-            {/* {data.status && <span className="light">joined</span>} */}
           </div>
         )}
-
       </div>
 
       <div className="section2 box ">
-
-
         {ViewChat ?
           <>
             {/* upperchats component */}
@@ -497,11 +448,8 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                         </div>
                       ))
                       }
-
                     </div>
                   </div>
-
-
                   <div className="txtbtn flexrow gap20">
                     <span className="bold pointer txtbtn_clr" onClick={() => { setForwarding(false) }}>Cancel</span>
                     <span className="bold pointer txtbtn_clr" onClick={() => { handleForward(handleForward_el) }}>Forward</span>
@@ -522,9 +470,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                   }</div>
                 </div>
               </div>}
-
-
-
               {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
                   {
@@ -685,14 +630,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                   }
                 </React.Fragment>
               ))}
-
-
-
-
-
-
             </div>
-
             {/* bottomchats component-chat_typing */}
             <div className="box center chat_typing flexrow spacebetween">
               <div className="type_message">
