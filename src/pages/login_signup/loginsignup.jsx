@@ -12,8 +12,8 @@ const Login = ({ actions, userData }) =>
 (
 
   <div className="box_login box center">
-    <input placeholder='Email' onChange={actions.handleInputChange} value={userData.mail} name="mail" />
-    <input placeholder='Password' onChange={actions.handleInputChange} value={userData.pass} name="pass" />
+    <input placeholder='Email' onChange={actions.handleInputChange} value={userData.mail} name="mail" required/>
+    <input placeholder='Password' onChange={actions.handleInputChange} value={userData.pass} name="pass" required/>
     <div className='viewerror'>
       {userData.viewError && <p className='errortext'>Error in Credentials  </p>}
     </div>
@@ -89,9 +89,9 @@ const CreateAccount_details = ({ actions,phno }) => {
     <div className="box_login box center">
       <input type='date' placeholder='dateofbirth' name="dob" onChange={actions.handeleregchange} />
       <input placeholder='gender' name="gender" onChange={actions.handeleregchange} />
-      <input placeholder='likes' name="likes" onChange={actions.handeleregchange} />
-      <input placeholder='hobbies' name="hobbies" onChange={actions.handeleregchange} />
-      <input placeholder='dislikes' name="dislikes" onChange={actions.handeleregchange} />
+      <input placeholder='likes' name="likes" onChange={actions.handeleregchange} required/>
+      <input placeholder='hobbies' name="hobbies" onChange={actions.handeleregchange} required/>
+      <input placeholder='dislikes' name="dislikes" onChange={actions.handeleregchange} required/>
       <div className='viewerror'>
         {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
       </div>
@@ -101,7 +101,6 @@ const CreateAccount_details = ({ actions,phno }) => {
 }
 
 const MobileNumberInput = ({ actions, phno, setPhno,regMobile }) => {
-  // const userdata = JSON.parse(localStorage.getItem('userdata'))
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [notification, setNotification] = useState(null);
   const [next, setNext] = useState(false);
@@ -115,8 +114,7 @@ const MobileNumberInput = ({ actions, phno, setPhno,regMobile }) => {
       return () => clearTimeout(timer);
     }
   }, [notification]);
-  // console.log(phoneNumber);
-  // console.log(regMobile);
+
   useEffect(()=>{
     if (Number(phoneNumber) === regMobile)
     {
@@ -156,7 +154,7 @@ const [spinner,setSpinner] = useState(false)
 
   return (
     <div className="box_login box center">
-      <input type='tel' placeholder='MobileNumber' maxLength="10" value={phoneNumber} onChange={handleNumberChange} />
+      <input type='tel' placeholder='MobileNumber' maxLength="10" value={phoneNumber} onChange={handleNumberChange} required/>
       {notification && (
         <div className="box nopadding">{notification}</div>
       )}
@@ -197,7 +195,7 @@ const OTPInput = ({ actions, phno, setPhno ,onclickvalidate}) => {
   return (
     <div className="box_login box center">
       <div className="center inputrow flexrow">
-        <input className='input' type='text' maxLength="6" onChange={handleOTPChange} />
+        <input className='input' type='text' maxLength="6" onChange={handleOTPChange} required/>
         {/* <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/>
         <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/> */}
       </div>
