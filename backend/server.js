@@ -525,7 +525,7 @@ router.post('/unfriend', async (req, res) => {
       },
       { new: true }
     );
-    if (result && result2) {
+    if (result1 && result2) {
       res.json({ "success": true });
     } else {
       res.json({ "success": false });
@@ -601,7 +601,6 @@ router.post("/accept", async (req, res) => {
       }]
     });
     if (result1 != null && result2 != null && savedDirectChat != null) {
-      res.json({ "success": true })
       res.json({ "success": true, "friend": tobefriend })
     } else {
       res.json({ "success": false })
