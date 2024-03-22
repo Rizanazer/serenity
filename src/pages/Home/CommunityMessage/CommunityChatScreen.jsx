@@ -194,6 +194,18 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     fileVideoInputRef.current.click();
 
   };
+  const [isAdmin,setIsAdmin] = useState(false)
+  async function checkadminstatus(){
+    try{
+      const response = await axios.post('/checkadmin',{c_id:selectedCommunity,u_id:localStorage.getItem('userid')})
+      setIsAdmin(response.data.isadmin)
+    }catch(error){
+      console.log(error);
+    }
+  }
+  useEffect(()=>{
+    checkadminstatus()
+  },[selectedCommunity])
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -490,11 +502,11 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                                 <span className="bold padding5">Forward</span>
                               </div>
                             </div>
-                            <div className="message_items" onClick={() => handleDelete(selectedCommunity, el._id)}>
+                            {isAdmin&&<div className="message_items" onClick={() => handleDelete(selectedCommunity, el._id)}>
                               <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                                 <span className="bold padding5" >Delete</span>
                               </div>
-                            </div>
+                            </div>}
                           </div>
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>

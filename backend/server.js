@@ -609,6 +609,20 @@ router.post("/accept", async (req, res) => {
     res.json({ "success": false })
   }
 })
+router.post('/checkadmin', async (req, res) => {
+  try {
+    const { c_id, u_id } = req.body;
+    const result = await Community.findOne({ _id: c_id });
+    const isAdmin = result.admins.includes(u_id);
+    res.json({ success: true, isadmin: isAdmin });
+    console.log(`succccccccccccccccccccccccess`);
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, error: 'An error occurred while checking admin status' });
+  }
+});
+
+
 router.post("/getachat", async (req, res) => {
   try {
     const user1 = req.body.user1;
