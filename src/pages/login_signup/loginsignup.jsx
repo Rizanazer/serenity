@@ -260,6 +260,8 @@ const Loginsignup = ({setValidation}) => {
   const navigate = useNavigate()
   const [viewError, setViewError] = useState(false);
   const [phno, setPhno] = useState(null);
+  const [userID, setuserID] = useState(null);
+  const [userScore, setuserScore] = useState(null);
   const [userData, setUserData] = useState({
     mail: '',
     pass: ''
@@ -323,7 +325,25 @@ const Loginsignup = ({setValidation}) => {
         }
       }
       
-      
+      const updateSerenityScore = async (userId, newScore) => {
+        try {
+            const response = await fetch('/update-serenity-score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId, newScore })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to update serenity score');
+            }
+            const data = await response.json();
+            console.log(data.message); // Log success message
+        } catch (error) {
+            console.error('Error updating serenity score:', error.message);
+        }
+    };    
+
 const handleClick = async () => {
  
   // console.log('Button clicked!');
@@ -336,6 +356,8 @@ const handleClick = async () => {
         handleActionChange('GetOTP')
         const phone=response.data.userdata.phone; 
         setMobile(phone)
+        setuserID(response.data.userdata._id)
+        setuserScore(response.data.userdata.serenityscore)
         localStorage.setItem('userdata', JSON.stringify(response.data.userdata));
         localStorage.setItem('username', response.data.userdata.username);
         localStorage.setItem('userid', response.data.userdata._id)
@@ -361,6 +383,8 @@ const handleClick = async () => {
   }
   ///////////////////////////////////////////////////////
   function onclickvalidate(){
+    const userScore1=100;
+    updateSerenityScore(userID, userScore1);
     navigate('/dashboard')
     localStorage.setItem('validation',"true")
 
