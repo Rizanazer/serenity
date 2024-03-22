@@ -518,7 +518,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                           )}
 
                           {el.messagetype !== "image" && el.messagetype !== "video" && (
-                            el.message === "this was a toxic comment" ? (
+                            el.message === "Serenity Alert:This was a Toxic Comment" ? (
                               <p className="msg">{el.message}</p>
                             ) : (
                               <p
@@ -567,7 +567,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                             </div>
                           )}
                           {el.messagetype !== "image" && el.messagetype !== "video" && (
-                            el.message === "this was a toxic comment" ? (
+                            el.message === "Serenity Alert:This was a Toxic Comment" ? (
                               <p className="msg">{el.message}</p>
                             ) : (
                               <p
