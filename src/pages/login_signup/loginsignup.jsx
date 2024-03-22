@@ -198,7 +198,7 @@ const OTPInput = ({ actions, phno, setPhno ,onclickvalidate}) => {
     try {
       const response = await axios.post('/verify-otp', { mobilenumber: phno, otpCode: otp });
       if (response) {
-        localStorage.setItem('validation',true)
+        localStorage.setItem('validation',"true")
         window.location = "/dashboard";
       }
 
@@ -222,13 +222,13 @@ const OTPInput = ({ actions, phno, setPhno ,onclickvalidate}) => {
       {/* <button onClick={verifyOTP}>VALIDATE</button> */}
 
       {/* <button onClick={() => window.location = "/dashboard"}>VALIDATE</button> */}
-      <button onClick={onclickvalidate}>VALIDATE</button>
+      <button onClick={onclickvalidate}>VALIDATE </button>
       <button onClick={() => actions.handleActionChange("GetOTP")}>ddBACK</button>
     </div>
   );
 };
 
-const OTPInputRegister = ({ actions, phno, setPhno,navigate }) => {
+const OTPInputRegister = ({ actions, phno, setPhno,onclickvalidate }) => {
   const [otp, setOTP] = useState('');
   const [notification, setNotification] = useState(null);
   const handleOTPChange = (e) => {
@@ -260,7 +260,7 @@ const OTPInputRegister = ({ actions, phno, setPhno,navigate }) => {
       )}
       {/* <button onClick={verifyOTP}>VALIDATE</button> */}
 
-      <button onClick={() =>window.location = "/dashboard" }>VALIDATE</button>
+      <button onClick={onclickvalidate }>VALIDATE signup</button>
       <button onClick={() => actions.handleActionChange("Create_Account")}>BACK</button>
     </div>
   );
@@ -387,7 +387,7 @@ const handleClick = async () => {
       {action === "VALIDATE" && <OTPInput onclickvalidate={onclickvalidate} actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
       {action === "More_Details" && <CreateAccount_details actions={{ handleActionChange, register, handeleregchange }} phno={phno}/>}
       {action === "Create_Account" && <CreateAccount actions={{ handleActionChange, handeleregchange, handleImageChange, handeleregphchange }} />}
-      {action === "VALIDATE_Register" && <OTPInputRegister navigate={navigate}actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
+      {action === "VALIDATE_Register" && <OTPInputRegister onclickvalidate={onclickvalidate}actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
     </div>
   );
 };
