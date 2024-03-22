@@ -589,7 +589,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                             {/* needs adjustment here */}
                             {el.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
                               className="icon_search circle" alt="" srcSet="" />
-                              : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'chathistory.jpg'}`}
+                              : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'userdummy.jpg'}`}
                                 className="icon_search circle" alt="" srcSet="" onClick={() => { }} />}
 
                             {el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_name}</p>}
