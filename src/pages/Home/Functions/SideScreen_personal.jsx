@@ -5,6 +5,7 @@ import axios from "axios";
 var SideScreenPersonalFn = ({ handleClick, data,selectedFriend ,fetchfriends}) => {
     const [userData,setUserData] = useState(null)
     const [sideScreenGroupList,setSideScreenGroupList] = useState([])
+    const userdata = JSON.parse(localStorage.getItem('userdata'))
     useEffect(()=>{
         async function sidescreengrouplist(){
             try {
@@ -23,6 +24,8 @@ var SideScreenPersonalFn = ({ handleClick, data,selectedFriend ,fetchfriends}) =
     async function unfriend(){
         try {
             const response = axios.post('/unfriend',{u_id:localStorage.getItem('userid'),f_id:userData._id})
+            userdata.friends = userdata.friends.filter(elem=>elem !== userData._id)
+            localStorage.setItem('userdata',JSON.stringify(userdata))
             fetchfriends()
         } catch (error) {
             console.error(error)

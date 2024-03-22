@@ -42,10 +42,11 @@ function AddFriendsScreen() {
     const response = await axios.post("/accept", { u_id: u_id, tobefriend: tobefriend, tobefriend_username: tobefriend_username, username: username })
     if (response.success === true) {
       setAddFriends((prev) => prev.filter(item => item._id !== tobefriend))
+      userdata.friends.push(response.data.tobefriend)
+    localStorage.setItem('userdata',JSON.stringify(userdata))
     }
     //////////localstorage updation
-    userdata.friends.push(response.data.tobefriend)
-    localStorage.setItem('userdata',JSON.stringify(userdata))
+    
 
   }
 

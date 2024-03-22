@@ -89,6 +89,7 @@ function PersonalMsgScreen() {
     })
 
     /////////////////
+    
     socket.on('newPersonalMediaMessage', (messageData) => {
       const { from, to, filename, messageType, caption } = messageData;
       setMessages(prevMessages => [
@@ -109,6 +110,14 @@ function PersonalMsgScreen() {
     fetchfriends()
     fetchProfileUpdate(setLanguage,seterror,setListening)
   },[])
+  useEffect(()=>{
+    if(userdata.friends.includes(selectedFriend)){
+      setIsFriend(true)
+    }else{
+      setIsFriend(false)
+
+    }
+  },[selectedFriend])
   async function fetchcontacts(){
     try{
       const response =await axios.post('/fetchcontacts',{u_id:userid})
