@@ -232,3 +232,47 @@ router.route("/fetchmessages").post(async (req, res) => {
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
+
+
+
+const accountSid = "ACc09b732d0906f9ffa434c4e71e5502ca";
+const authToken = "21d485c2ba6da9b59f3bc39c669ae763";
+const verifySid = "VA39e2b0b0d96b22f82d8d14721020262e";
+const client = require("twilio")(accountSid, authToken);
+
+router.post('/send-otp', (req, res) => {
+  const { mobilenumber } = req.body;
+
+  const cleanedNumber = String(mobilenumber).replace(/\D/g, '');
+  const phoneNumber = "+91" + cleanedNumber; 
+  client.verify.v2.services(verifySid)
+    .verifications.create({ to: phoneNumber, channel: 'sms' })
+    .then((verification) => {
+      console.log('OTP Sent:', verification.status);
+      res.json({ message: 'OTP sent successfully' });
+    })
+    .catch((err) => {
+      console.error('Error sending OTP:', err);
+      res.status(500).json({ error: 'Failed to send OTP' });
+    });
+});
+
+
+router.post('/verify-otp', (req, res) => {
+  const { mobilenumber, otpCode } = req.body;
+  const cleanedNumber = String(mobilenumber).replace(/\D/g, '');
+  const phoneNumber = "+91" + cleanedNumber; 
+
+  client.verify.services(verifySid) 
+    .verificationChecks.create({ to: phoneNumber, code: otpCode })
+    .then((verification_check) => {
+      console.log('OTP Verification:', verification_check.status);
+      res.json({ message: 'OTP verified successfully' });
+    })
+    .catch((err) => {
+      console.error('Error verifying OTP:', err);
+      res.status(500).json({ error: 'Failed to verify OTP,retry Reentering' });
+    });
+});
+
+

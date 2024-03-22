@@ -188,7 +188,7 @@ const Home = () => {
 
 
         </div>}
-        <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} />
+        <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} setviewchat={setViewChat}/>
         {Screen === "PersonalMessage" && <PersonalMsgScreen />}
         {Screen === "CommunityMessage" && <CommunityMsgScreen
           fetchCommunityDetails={fetchCommunityDetails}
