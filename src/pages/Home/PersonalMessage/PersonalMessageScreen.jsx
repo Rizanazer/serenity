@@ -406,9 +406,9 @@ function PersonalMsgScreen() {
                         <span className="bold ">{el.users[0].username === username ? el.users[1].username : el.users[0].username}</span>
 
                       </div>
-                      {/* <div className="textlength_para ">
-                        <span className="light">messsage lorum ipsum la about the new era of time</span>
-                      </div> */}
+                      <div className="textlength_para ">
+                        <span className="light">{el.from === userid}:{el.messages[el.messages.length-1].messageBody}</span>
+                      </div>
                     </div>
                   </div>
                   <div className="incomingchat circle center">1</div>

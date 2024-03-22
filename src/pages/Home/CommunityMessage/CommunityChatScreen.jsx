@@ -17,7 +17,7 @@ import ErrorMessage from "../Functions/errormessage";
 import handleListen from "../Functions/voicetoText";
 import handleTranslate from "../Functions/transaltion_option";
 import fetchProfileUpdate from "../Functions/fetchownprofile";
-function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [profile, setProfile] = useState(null);
   const [error, seterror] = useState("");
@@ -50,7 +50,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   useEffect(() => {
     setAnonymity(userdata.anonymity)
     setLanguage(userdata.language)
-    fetchProfileUpdate(setLanguage,seterror,setListening)
+    fetchProfileUpdate(setLanguage, seterror, setListening)
   }, [])
 
   const profilePicture = userdata.profilePicture
@@ -120,7 +120,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   var [SideScreen, setSideScreen] = useState(false);
   var [media, setMedia] = useState(false);
   var [selectedChat, setSelectedChat] = useState(null);
-  const [selectedCommunityIcon, setSelectedCommunityIcon] = useState(null)
+ 
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
@@ -162,7 +162,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
     togglerightclick();
     setSelectedMessage(event);
     setMedia(true);
-    
+
 
   };
 
@@ -320,12 +320,12 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
       setForwarding(false);
       await axios.post('/MessageForward', {
         message: ForwardMessage,
-        messageType: message?.messagetype || "", 
+        messageType: message?.messagetype || "",
         forwardTo: Selectedrecipients,
         u_id: localStorage.getItem('userid'),
         u_name: username,
         profilePicture: profilePicture,
-        filename:message.filename || ""
+        filename: message.filename || ""
       });
 
     } catch (error) {
@@ -528,7 +528,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
               {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
                   {
-                     el.u_name === username ?
+                    el.u_name === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
 
                         {rightclk && selectedMessage === el && (
@@ -536,6 +536,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                             <div className="message_items" onClick={() => {
                               sethandleForward_el(el);
                               setForwarding(true);
+                              setrightclk(false)
                               setForwardMessage(el.message);
                               fetchcommunities()
 
@@ -553,18 +554,22 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
                           {el.messagetype === "image" && (
-
-                            <Image
-                              src={`uploads/communityMessageImages/${el.filename}`}
-                              onContextMenu={(e) => handleContextMenuMedia(e, el)}
-                            />
+                            <div className="flex flexcolumn">
+                              {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0 }}>forwarded</p> : <></>}
+                              <Image
+                                src={`uploads/communityMessageImages/${el.filename}`}
+                                onContextMenu={(e) => handleContextMenuMedia(e, el)}
+                              />
+                            </div>
                           )}
 
                           {el.messagetype === "video" && (
-
-                            <Video src={`uploads/communityMessageVideos/${el.filename}`}
-                              onContextMenu={(e) => handleContextMenuMedia(e, el)}
-                            />
+                            <div className="flex flexcolumn">
+                              {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0, marginLeft: 67 }}>forwarded</p> : <></>}
+                              <Video src={`uploads/communityMessageVideos/${el.filename}`}
+                                onContextMenu={(e) => handleContextMenuMedia(e, el)}
+                              />
+                            </div>
                           )}
 
                           {el.messagetype !== "image" && el.messagetype !== "video" && (
@@ -584,7 +589,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                             {/* needs adjustment here */}
                             {el.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
                               className="icon_search circle" alt="" srcSet="" />
-                              : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'chathistory.jpg'}`}
+                              : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'userdummy.jpg'}`}
                                 className="icon_search circle" alt="" srcSet="" onClick={() => { }} />}
 
                             {el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_name}</p>}
@@ -596,15 +601,22 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
 
                         <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
                           {el.messagetype === "image" && (
-                            <Image
-                              src={`uploads/communityMessageImages/${el.filename}`}
-                              onContextMenu={(e) => handleContextMenuMedia(e, el)}
-                            />
+                            <div className="flex flexcolumn">
+                              {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0 }}>forwarded</p> : <></>}
+                              <Image
+                                src={`uploads/communityMessageImages/${el.filename}`}
+                                onContextMenu={(e) => handleContextMenuMedia(e, el)}
+                              />
+                            </div>
                           )}
 
                           {el.messagetype === "video" && (
-                            <Video src={`uploads/communityMessageVideos/${el.filename}`}
-                              onContextMenu={(e) => handleContextMenuMedia(e, el)} />
+                            <div className="flex flexcolumn">
+                              {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0, marginLeft: 67 }}>forwarded</p> : <></>}
+                              <Video src={`uploads/communityMessageVideos/${el.filename}`}
+                                onContextMenu={(e) => handleContextMenuMedia(e, el)}
+                              />
+                            </div>
                           )}
 
                           {el.messagetype !== "image" && el.messagetype !== "video" && (
@@ -644,7 +656,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                         {rightclk && selectedMessage === el && (
                           <div className="message_options center" >
                             <div className="message_items" onClick={() => {
-
+                              setrightclk(false)
                               sethandleForward_el(el);
                               setForwarding(true);
                               setForwardMessage(el.message);
@@ -660,7 +672,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
                                 <span className="bold padding5">Delete</span>
                               </div>
                             </div>
-                            {media ? null : <div className="message_items" onClick={() => { handleTranslate(messageTtext,language,setmessageTtext,seterror,setListening); toggleTranslation() }}>
+                            {media ? null : <div className="message_items" onClick={() => { handleTranslate(messageTtext, language, setmessageTtext, seterror, setListening); toggleTranslation() }}>
                               <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
                                 <span className="bold padding5">Translate</span>
                               </div>

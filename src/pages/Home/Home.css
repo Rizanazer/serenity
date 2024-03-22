@@ -69,7 +69,7 @@
     padding: 5px 5px !important;
     border-radius: 10px !important;
     text-overflow: clip;
-  overflow-x: clip;
+  /* overflow-x: clip; */
 
 }
 
@@ -404,4 +404,8 @@ overflow-y: auto;
     top: 20px;
     width: 50px;
     cursor: pointer;
+}
+.forwardedmedia{
+    display: flex;
+    align-self: flex-start;
 }
