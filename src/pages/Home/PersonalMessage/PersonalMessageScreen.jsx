@@ -37,6 +37,7 @@ function PersonalMsgScreen() {
   const [language, setLanguage] = useState(null);
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
+  const [isfriend, setIsFriend] = useState(true);
   const [searchinput, setsearchinput] = useState('')
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [LastMessage, setLastMessage] = useState([]);
@@ -616,28 +617,36 @@ function PersonalMsgScreen() {
           </div>
 
           {/* bottomchats component-chat_typing */}
-          <div className="box center chat_typing flexrow spacebetween">
-            <div className="type_message">
-              <input
-                type="text"
-                className="nobordershadow message_length"
-                onKeyPress={handleKeyPress}
-                placeholder="Type Here!!"
-                onChange={(event) => setText(event.target.value)}
-                value={text}
-              />
-            </div>
-            <div className="feature_with_send flexrow">
-              <div className="chatfeature">
-                <FaMicrophone className="icon icon_small nobordershadow" onClick={()=>handleListen(setListening,seterror,setText)} style={{ cursor: 'pointer' }}/>
-                <input type="file" accept="image/*" ref={fileImageRef} style={{ display: 'none' }} onChange={handleImageChange} />
-                <input type="file" accept="video/*" ref={fileVideoRef} style={{ display: 'none' }} onChange={handleVideoChange} />
-                <MdVideoFile className="icon icon_small nobordershadow"  onClick={sendvideo}/>
-                <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage}/>
+          {
+              isfriend?<div className="box center chat_typing flexrow spacebetween">
+              <div className="type_message">
+                <input
+                  type="text"
+                  className="nobordershadow message_length"
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type Here!!"
+                  onChange={(event) => setText(event.target.value)}
+                  value={text}
+                />
               </div>
-              <MdSend className="icon send nobordershadow" onClick={send} />
+              <div className="feature_with_send flexrow">
+                <div className="chatfeature">
+                  <FaMicrophone className="icon icon_small nobordershadow" onClick={()=>handleListen(setListening,seterror,setText)} style={{ cursor: 'pointer' }}/>
+                  <input type="file" accept="image/*" ref={fileImageRef} style={{ display: 'none' }} onChange={handleImageChange} />
+                  <input type="file" accept="video/*" ref={fileVideoRef} style={{ display: 'none' }} onChange={handleVideoChange} />
+                  <MdVideoFile className="icon icon_small nobordershadow"  onClick={sendvideo}/>
+                  <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage}/>
+                </div>
+                <MdSend className="icon send nobordershadow" onClick={send} />
+              </div>
+            </div>
+            :
+            <div className="box center chat_typing flexrow spacebetween">
+            <div className="type_message center">
+                <span className="light">you are no longer friends..</span>
             </div>
           </div>
+            }
         </>
           :
           <></>}
