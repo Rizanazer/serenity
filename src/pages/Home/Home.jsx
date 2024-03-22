@@ -34,7 +34,7 @@ const Home = () => {
   const [Edit_profStatus, setEdit_profStatus] = useState(false);
   const [Edit_profLocation, setEdit_profLocation] = useState(false);
   //
-
+  const [selectedCommunityIcon, setSelectedCommunityIcon] = useState(null)
   const [selectedCommunityName, setSelectedCommunityName] = useState(null)
   const [selectedCommunity, setSelectedCommunity] = useState("")
   const [Screen, setScreen] = useState("PersonalMessage");
@@ -147,10 +147,14 @@ const Home = () => {
           <div className="flex flexrow h_w_full">
             <div className="flex set1 h_w_full">
               <SettingsScreen
-                handleClick={() => { setSetting(false); setProfile(false); setEdit_DOB(false); setEdit_Gender(false); setEdit_Pass(false); setEdit_profLocation(false); setEdit_profStatus(false);setEdit_mobile(false);
-                  setEdit_email(false); }}
-                closeother={() => { setProfile(false); setAccount(false); setEdit_DOB(false); setEdit_Gender(false); setEdit_Pass(false); setEdit_profLocation(false); setEdit_profStatus(false);setEdit_mobile(false);
-                  setEdit_email(false); }}
+                handleClick={() => {
+                  setSetting(false); setProfile(false); setEdit_DOB(false); setEdit_Gender(false); setEdit_Pass(false); setEdit_profLocation(false); setEdit_profStatus(false); setEdit_mobile(false);
+                  setEdit_email(false);
+                }}
+                closeother={() => {
+                  setProfile(false); setAccount(false); setEdit_DOB(false); setEdit_Gender(false); setEdit_Pass(false); setEdit_profLocation(false); setEdit_profStatus(false); setEdit_mobile(false);
+                  setEdit_email(false);
+                }}
                 setscreen={() => toggleProfile()}
                 profileView={Profile}
                 accountcheck={Account}
@@ -188,9 +192,11 @@ const Home = () => {
 
 
         </div>}
-        <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} setviewchat={setViewChat}/>
+        <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} setviewchat={setViewChat} />
         {Screen === "PersonalMessage" && <PersonalMsgScreen />}
         {Screen === "CommunityMessage" && <CommunityMsgScreen
+          selectedCommunityIcon={selectedCommunityIcon}
+          setSelectedCommunityIcon={setSelectedCommunityIcon}
           fetchCommunityDetails={fetchCommunityDetails}
           ViewChat={ViewChat}
           setViewChat={setViewChat}
@@ -209,6 +215,7 @@ const Home = () => {
           setIndividualCommunity={setIndividualCommunity}
           setViewChat_C={setViewChat}
           setSelectedCommunityName={setSelectedCommunityName}
+          setSelectedCommunityIcon={setSelectedCommunityIcon}
           setSelectedCommunity={setSelectedCommunity}
           setScreen={setScreen} />}
         {Screen === "AddFriends" && <AddFriendsScreen />}

@@ -17,7 +17,7 @@ import ErrorMessage from "../Functions/errormessage";
 import handleListen from "../Functions/voicetoText";
 import handleTranslate from "../Functions/transaltion_option";
 import fetchProfileUpdate from "../Functions/fetchownprofile";
-function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [profile, setProfile] = useState(null);
   const [error, seterror] = useState("");
@@ -120,7 +120,7 @@ function CommunityMsgScreen({ fetchCommunityDetails, setIndividualCommunity, set
   var [SideScreen, setSideScreen] = useState(false);
   var [media, setMedia] = useState(false);
   var [selectedChat, setSelectedChat] = useState(null);
-  const [selectedCommunityIcon, setSelectedCommunityIcon] = useState(null)
+ 
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };

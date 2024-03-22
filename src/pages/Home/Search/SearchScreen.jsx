@@ -5,7 +5,7 @@ import axios from "axios";
 import GroupList_1 from "./GpList-indv";
 import ErrorMessage from "../Functions/errormessage";
 import GroupList_2 from "./RecGpList-indv";
-function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity, setSelectedCommunityName, setViewChat_C, ViewChat }) {
+function SearchScreen({ setSelectedCommunityIcon,setIndividualCommunity, setScreen, setSelectedCommunity, setSelectedCommunityName, setViewChat_C, ViewChat }) {
   const [Joined, setJoined] = useState(false);
   var [ViewChat, setViewChat] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -48,6 +48,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
     setSelectedChat(c_id)
     setSelectedChatName(c_name)
     setGroupIcon(c_image)
+    
   }
   const [searchText,setSearchText] = useState('')
   const handlesearchtext = (event)=>{
@@ -142,6 +143,7 @@ function SearchScreen({ setIndividualCommunity, setScreen, setSelectedCommunity,
               setScreen('CommunityMessage');
               setSelectedCommunity(selectedChat);
               setSelectedCommunityName(selectedChatName);
+              setSelectedCommunityIcon(GroupIcon)
               setViewChat_C(true)
             }}>
               <span className="bold" >Enter Chat</span>
