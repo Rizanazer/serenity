@@ -6,6 +6,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data,actions}) => {
     const username = localStorage.getItem('username')
+    const userdata = JSON.parse(localStorage.getItem('userdata'))
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])
     useEffect(() => {
@@ -28,6 +29,8 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data,a
         try {
             const response = await axios.post('/exitcommunity',{c_id:c_id,u_id:localStorage.getItem('userid')})
             console.log(response);
+            userdata.communities = userdata.communities.filter(id => id !== c_id);
+            localStorage.setItem('userdata',JSON.stringify(userdata))
             const filteredcommunities = data.individualCommunity.map((c) => {
                 if (c._id !== c_id) {
                     return c; 
