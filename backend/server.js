@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cron = require('node-cron');
 //const mongoose = require('mongoose');
 const translate = require('@iamtraction/google-translate');
 const router = express.Router()
@@ -1061,6 +1062,19 @@ router.post('/verify-otp', (req, res) => {
       res.status(500).json({ error: 'Failed to verify OTP,retry Reentering' });
     });
 });
+cron.schedule('0 0 1 */3 *', async () => { 
+  try {
+    const usersToUpdate = await User.find({ serenityscoreExpiry: { $lt: new Date() } });
+    usersToUpdate.forEach(async (user) => {
+      user.serenityscore = 100; // Reset serenity score to 100
+      user.serenityscoreExpiry = undefined; // Remove expiry date
+      await user.save({ fields: ['serenityscore', 'serenityscoreExpiry'] }); // Only update specified fields
+    });
+    console.log('Serenity scores updated for users.');
+  } catch (error) {
+    console.error('Error updating serenity scores:', error);
+  }
+});
 
 app.use('/', router)
 io.on('connection', (socket) => {
@@ -1138,25 +1152,24 @@ io.on('connection', (socket) => {
           // console.log(threemonthsback);
           let toxiccount = 0
           let messagecount = 0
-          let ToxicAggregate=0
           if (existingChat?.messages.length > 0) {
             console.log("len", existingChat.messages.length);
-            existingChat.messages.map((msg) => {
-              if (msg.u_id.equals(new mongoose.Types.ObjectId(u_id)) && msg.timeStamp >= threemonthsback && msg.timeStamp < today) {
-                if (msg.message === "Serenity Alert:This was a Toxic Comment") {
-                   ToxicAggregate = (
-                    toxicScore * 3 +
-                    severeToxicScore * 2.5 +
-                    insultScore * 2 +
-                    threatScore * 1.5 +
-                    obsceneScore * 1.25 +
-                    identityHateScore * 1
-                  );
-                }
-                ToxicAggregate=0
-              }
-            })
-            
+            // existingChat.messages.map((msg) => {
+            //   if (msg.u_id.equals(new mongoose.Types.ObjectId(u_id)) && msg.timeStamp >= threemonthsback && msg.timeStamp < today) {
+            //     if (msg.message === "Serenity Alert:This was a Toxic Comment") {
+            //       toxiccount += 1
+            //     }
+            //     messagecount += 1
+            //   }
+            // })
+            const ToxicAggregate = (
+              toxicScore * 3 +
+              severeToxicScore * 2.5 +
+              insultScore * 2 +
+              threatScore * 1.5 +
+              obsceneScore * 1.25 +
+              identityHateScore * 1
+            );
             const toreduce =ToxicAggregate
             const user = await User.findOneAndUpdate({ _id: u_id },
               { $inc: { serenityscore: -toreduce } },

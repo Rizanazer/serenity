@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema({
     location:{type:String,default:"Im from serinity country!!!"},
     online:{type:Boolean,default:true},
     serenityscore:{type:Number,default:100},
+    serenityscoreExpiry : {
+      type: Date,
+  },
     friends:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
     friendrequests:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
     friendrequestssent:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
