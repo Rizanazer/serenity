@@ -17,32 +17,29 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
     const [sideScreenGroupList, setSideScreenGroupList] = useState(null)
     async function addfriend() {
         if (u_id != selectedUser.userid) {
-            console.log(selectedUser.userid);
-
             const response = await axios.post('/addfriend', { userid: u_id, friendtobe: selectedUser.userid })
         } else {
             console.log(`both same users`);
         }
-
     }
     async function sidescreengrouplist() {
         try {
             const result = await axios.post('/sidescreengroupnames', { u_id: selectedUser.userid })
-            setSideScreenGroupList(result.data.names)
-            setUserData(result.data.userdata)
-            setAnonymsGps(result.data.userdata.anonymity)
-            setsernityscore(result.data.userdata.serenityscore)
-            setLocation(result.data.userdata.location)
-            result.data.userdata.friends.includes(u_id)?
-                setAddFriends(false):setAddFriends(true)
-            
+            setSideScreenGroupList(result.data.userdata)
+            setUserData(result.data.user)
+            setAnonymsGps(result.data.user.anonymity)
+            setsernityscore(result.data.user.serenityscore)
+            setLocation(result.data.user.location)
+            result.data.user.friends.includes(u_id) ?
+                setAddFriends(false) : setAddFriends(true)
+
         } catch (error) {
             console.error(error)
         }
 
     }
     useEffect(() => {
-       
+
         sidescreengrouplist()
     }, [selectedUser])
     return (
@@ -52,10 +49,10 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
             </div>
             <div className="section3_1">
                 <div className="section3_1_1">
-                {AnonymsGps ?  <img src={`/uploads/profilePictures/userdummy.jpg`} className="section3_1_1" alt="" />
-                 :
-                 <img src={`/uploads/profilePictures/${userData?.profilePicture}`} className="section3_1_1" alt="" />}
-                    
+                    {AnonymsGps ? <img src={`/uploads/profilePictures/userdummy.jpg`} className="section3_1_1" alt="" />
+                        :
+                        <img src={`/uploads/profilePictures/${userData?.profilePicture}`} className="section3_1_1" alt="" />}
+
                 </div>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}
@@ -71,9 +68,10 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
                         </div>
                     </div>
                     <div className="section3_features">
-                        {AddFriends&&<MdOutlinePersonAddAlt className="icons_1" onClick={() => {
-                              
-                              addfriend(selectedUser.userid)}} />}
+                        {AddFriends && <MdOutlinePersonAddAlt className="icons_1" onClick={() => {
+
+                            addfriend(selectedUser.userid)
+                        }} />}
                         <MdMessage className="icons_1" />
                         <IoMdHeartDislike className="icons_2" />
                     </div>
@@ -106,8 +104,8 @@ var SideScreenCommunityMemberFn = ({ handleClick, data, member, selectedUser }) 
                         <div className="Group_Participations box nobordershadow scroll">
                             {sideScreenGroupList && sideScreenGroupList.map((name, i) => (
                                 <div className="group_box flexrow" key={i}>
-                                    <img src="images/groupprofile.jpg" className="icon_search" />
-                                    <span className="bold">{name}</span>
+                                    <img src={`uploads/communityIcons/${name.communityIcon}`} className="icon_search" />
+                                    <span className="bold" key={i}>{name.communityName}</span>
                                 </div>)
                             )}
                         </div>

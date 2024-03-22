@@ -118,7 +118,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     };
   }, [allCommunityMessages]);
 
-
+ 
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
@@ -136,20 +136,20 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   };
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault();
+      e.preventDefault(); 
       send();
     }
   };
-
+ 
   const handleContextMenu = (e, message) => {
-    e.preventDefault();
-    togglerightclick();
+    e.preventDefault(); 
+    togglerightclick(); 
     setSelectedMessage(message);
     setmessageTtext(message.message)
     setMedia(false)
   };
   const handleContextMenuMedia = (e, event) => {
-    e.preventDefault();
+    e.preventDefault(); 
     togglerightclick();
     setSelectedMessage(event);
     setMedia(true);

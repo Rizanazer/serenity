@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './loginsignup.css';
-import { Link } from "react-router-dom";
 import { FaGoogle, FaApple, FaTwitter, FaFacebook } from "react-icons/fa";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
 const NumberCheck = (event) => {
   const inputValue = event.target.value;
-  const numbersOnly = inputValue.replace(/[^0-9]/g, ''); // Remove any non-numeric characters
-  event.target.value = numbersOnly; // Update the input value to contain only numbers
+  const numbersOnly = inputValue.replace(/[^0-9]/g, '');
+  event.target.value = numbersOnly; 
 };
 const Login = ({ actions, userData }) =>
 (
@@ -40,12 +38,12 @@ const CreateAccount = ({ actions }) =>
 (
 
   <div className="box_login box center">
-    <input type="file" accept="image/*" name="profilePicture" onChange={actions.handleImageChange} />
-    <input placeholder='Username' name="username" onChange={actions.handeleregchange} />
-    <input placeholder='Email' name="email" onChange={actions.handeleregchange} />
-    <input placeholder='Password' name="password" onChange={actions.handeleregchange} />
-    <input placeholder='Re-Password' name="re_pass" onChange={actions.handeleregchange} />
-    <input placeholder='MobileNumber' name="phone" onChange={actions.handeleregphchange} />
+    <input type="file" accept="image/*" name="profilePicture" onChange={actions.handleImageChange} required/>
+    <input placeholder='Username' name="username" onChange={actions.handeleregchange} required/>
+    <input placeholder='Email' name="email" onChange={actions.handeleregchange} required/>
+    <input placeholder='Password' name="password" onChange={actions.handeleregchange} required/>
+    <input placeholder='Re-Password' name="re_pass" onChange={actions.handeleregchange} required/>
+    <input placeholder='MobileNumber' name="phone" onChange={actions.handeleregphchange} maxLength={10} required/>
     <div className='viewerror'>
       {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
     </div>
@@ -98,19 +96,6 @@ const CreateAccount_details = ({ actions,phno }) => {
         {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
       </div>
       <button onClick={() => { actions.register(); sendOTP() }}>Create Account</button>
-      {/* <div className="horiz">
-      <hr className='line' />or<hr className='line' />
-    </div>
-    <div className="horiz">
-      <FaGoogle className='icon' />
-      <FaTwitter className='icon' />
-      <FaFacebook className='icon' />
-      <FaApple className='icon' />
-    </div> */}
-      {/* <div className="create_account">
-      <span>have an account?</span>
-      <span className='text_btn' onClick={()=>{actions.handleActionChange("LOGIN")}}>Login Now!!!</span>
-    </div> */}
     </div>
   );
 }
@@ -311,6 +296,9 @@ const Loginsignup = ({setValidation}) => {
     // console.log(regData);
   };
   const handeleregphchange = (event) => {
+    const inputValue = event.target.value;
+    const numbersOnly = inputValue.replace(/[^0-9]/g, '');
+    event.target.value = numbersOnly; 
     const { name, value } = event.target
     setPhno(value)
     setRegData({ ...regData, [name]: value })
