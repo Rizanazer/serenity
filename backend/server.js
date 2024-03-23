@@ -1084,7 +1084,7 @@ router.post('/update-serenity-score', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    const expiryDate = user.lastExpirydate;
+    const expiryDate = new Date(user.lastExpirydate);
     const currentDate = new Date();
     console.log('====================================');
     console.log(currentDate, expiryDate);
