@@ -1086,13 +1086,10 @@ router.post('/update-serenity-score', async (req, res) => {
     }
     const expiryDate = new Date(user.lastExpirydate);
     const currentDate = new Date();
-    console.log('====================================');
-    console.log(currentDate, expiryDate);
     if (expiryDate && expiryDate < currentDate) {
       user.serenityscore = newScore;
       expiryDate.setMonth(expiryDate.getMonth() + 3);
       user.lastExpirydate = new Date(expiryDate);
-      console.log(expiryDate);
       await user.save(); 
       console.log('Serenity score updated successfully');
       return res.json({ message: 'Serenity score updated successfully' });
