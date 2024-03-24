@@ -5,6 +5,7 @@ const MobileNumberInput = ({ actions, phno, setPhno,regMobile }) => {
     const [notification, setNotification] = useState(null);
     const [next, setNext] = useState(false);
     const [validate, setValidate] = useState(false);
+    const [spinner,setSpinner] = useState(false)
   
     useEffect(() => {
       if (notification) {
@@ -50,7 +51,6 @@ const MobileNumberInput = ({ actions, phno, setPhno,regMobile }) => {
         setSpinner(false)
       }
     };
-  const [spinner,setSpinner] = useState(false)
   
     return (
       <div className="box_login box center">

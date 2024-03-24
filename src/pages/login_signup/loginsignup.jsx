@@ -14,6 +14,7 @@ import OTPInputRegister from './Register/otpVerificationRegister';
 //   event.target.value = numbersOnly; 
 // };
 const Loginsignup = ({setValidation}) => {
+  const [spinner,setSpinner] = useState(false)
   const [action, setAction] = useState("LOGIN");
   const [Mobile, setMobile] = useState(null);  
   const [error, seterror] = useState("");
@@ -22,7 +23,6 @@ const Loginsignup = ({setValidation}) => {
   const [viewError, setViewError] = useState(false);
   const [phno, setPhno] = useState(null);
   const [userID, setuserID] = useState(null);
-  const [userScore, setuserScore] = useState(null);
   const [userData, setUserData] = useState({
     mail: '',
     pass: ''
@@ -106,18 +106,39 @@ const handleClick = async () => {
   await axios.post('/login', userData)
     .then(response => {
       if(response.data.success ===true){
-        handleActionChange('GetOTP')
         const phone=response.data.userdata.phone; 
         setMobile(phone)
         setuserID(response.data.userdata._id)
-        setuserScore(response.data.userdata.serenityscore)
+        const SerenityScore=response.data.userdata.serenityscore
         localStorage.setItem('userdata', JSON.stringify(response.data.userdata));
         localStorage.setItem('username', response.data.userdata.username);
         localStorage.setItem('userid', response.data.userdata._id)
-      }else{
-        setViewError(true)
+        setSpinner(true)
         setTimeout(() => {
-          setViewError(false);
+          if(SerenityScore&&SerenityScore<=50){
+            seterror("Cannot Enter Due to Misconduct of the User")
+            setListening(true)
+            setSpinner(false)
+          }
+          else{
+            handleActionChange('GetOTP')
+            setListening(false)
+            setSpinner(false)
+          }
+        }, 3000);
+        
+      }else{
+        // setViewError(true)
+        setSpinner(true)
+        setTimeout(() => {
+          setListening(true)
+          seterror("The email address or password you entered isn't connected to an account.")
+          setSpinner(false)
+          setTimeout(() => {
+           
+            setListening(false)
+          }, 1000);
+          
         }, 3000);
 
         }
@@ -139,7 +160,8 @@ const handleClick = async () => {
   return (
 
     <div className="container bg center" >
-      {action === "LOGIN" && <Login actions={{ handleActionChange, handleInputChange, handleClick, handlereg, setViewError }} userData={{ userData, viewError }} />}
+      {action === "LOGIN" && <Login actions={{ handleActionChange, handleInputChange, handleClick, handlereg, setViewError }} userData={{ userData, viewError }} 
+      error={error} listening={listening} setListening={setListening} seterror={seterror} spinner={spinner}/>}
       {action === "GetOTP" && <MobileNumberInput actions={{ handleActionChange }} phno={phno} setPhno={setPhno} regMobile={Mobile} />}
       {action === "VALIDATE" && <OTPInput onclickvalidate={onclickvalidate} actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
       {action === "More_Details" && <CreateAccount_details actions={{ handleActionChange, register, handeleregchange }} phno={phno}/>}
