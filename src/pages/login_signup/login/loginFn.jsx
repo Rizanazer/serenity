@@ -1,5 +1,5 @@
 import { FaGoogle, FaApple, FaTwitter, FaFacebook } from "react-icons/fa";
-const Login = ({ actions, userData }) =>
+const Login = ({ actions, userData,error, seterror, listening, setListening,userScore }) =>
 (
 
   <div className="box_login box center">

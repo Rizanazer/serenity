@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './loginsignup.css';
-
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Login from './login/loginFn';
@@ -9,11 +8,11 @@ import CreateAccount_details from './Register/moreDetails';
 import MobileNumberInput from './login/MobileVerificationFn';
 import OTPInput from './login/otpVerification';
 import OTPInputRegister from './Register/otpVerificationRegister';
-const NumberCheck = (event) => {
-  const inputValue = event.target.value;
-  const numbersOnly = inputValue.replace(/[^0-9]/g, '');
-  event.target.value = numbersOnly; 
-};
+// const NumberCheck = (event) => {
+//   const inputValue = event.target.value;
+//   const numbersOnly = inputValue.replace(/[^0-9]/g, '');
+//   event.target.value = numbersOnly; 
+// };
 const Loginsignup = ({setValidation}) => {
   const [action, setAction] = useState("LOGIN");
   const [Mobile, setMobile] = useState(null);  
