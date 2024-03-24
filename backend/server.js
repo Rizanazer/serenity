@@ -1038,7 +1038,7 @@ router.post('/sidescreengroupnames', async (req, res) => {
 })
 
 const accountSid = "ACc09b732d0906f9ffa434c4e71e5502ca";
-const authToken = "21d485c2ba6da9b59f3bc39c669ae763";
+const authToken = "4b6473ca784501c72833c7f2f5d7aaf7";
 const verifySid = "VA39e2b0b0d96b22f82d8d14721020262e";
 const client = require("twilio")(accountSid, authToken);
 
@@ -1064,17 +1064,22 @@ router.post('/verify-otp', (req, res) => {
   const { mobilenumber, otpCode } = req.body;
   const cleanedNumber = String(mobilenumber).replace(/\D/g, '');
   const phoneNumber = "+91" + cleanedNumber;
-
   client.verify.v2.services(verifySid)
-    .verificationChecks.create({ to: phoneNumber, code: otpCode })
+    .verificationChecks
+    .create({ to: phoneNumber, code: otpCode })
     .then((verification_check) => {
       console.log('OTP Verification:', verification_check.status);
-      res.json({ message: 'OTP verified successfully' });
+      if (verification_check.status === 'approved') {
+        res.json({ message: 'OTP verified Successfully' });
+      } else {
+        res.status(400).json({ error: 'Incorrect OTP, please try Re-entering the OTP' });
+      }
     })
     .catch((err) => {
       console.error('Error verifying OTP:', err);
-      res.status(500).json({ error: 'Failed to verify OTP,retry Reentering' });
+      res.status(500).json({ error: 'Validation Failed.. please try Re-entering the Mobile Number' });
     });
+
 });
 
 router.post('/update-serenity-score', async (req, res) => {
@@ -1090,7 +1095,7 @@ router.post('/update-serenity-score', async (req, res) => {
       user.serenityscore = newScore;
       expiryDate.setMonth(expiryDate.getMonth() + 3);
       user.lastExpirydate = new Date(expiryDate);
-      await user.save(); 
+      await user.save();
       console.log('Serenity score updated successfully');
       return res.json({ message: 'Serenity score updated successfully' });
     } else {

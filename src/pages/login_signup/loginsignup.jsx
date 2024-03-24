@@ -162,11 +162,14 @@ const handleClick = async () => {
     <div className="container bg center" >
       {action === "LOGIN" && <Login actions={{ handleActionChange, handleInputChange, handleClick, handlereg, setViewError }} userData={{ userData, viewError }} 
       error={error} listening={listening} setListening={setListening} seterror={seterror} spinner={spinner}/>}
-      {action === "GetOTP" && <MobileNumberInput actions={{ handleActionChange }} phno={phno} setPhno={setPhno} regMobile={Mobile} />}
-      {action === "VALIDATE" && <OTPInput onclickvalidate={onclickvalidate} actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
+      {action === "GetOTP" && <MobileNumberInput actions={{ handleActionChange }} phno={phno} setPhno={setPhno} regMobile={Mobile} 
+      error={error} listening={listening} setListening={setListening} seterror={seterror} />}
+      {action === "VALIDATE" && <OTPInput onclickvalidate={onclickvalidate} actions={{ handleActionChange }} phno={phno} setPhno={setPhno} 
+      error={error} listening={listening} setListening={setListening} seterror={seterror} />}
       {action === "More_Details" && <CreateAccount_details actions={{ handleActionChange, register, handeleregchange }} phno={phno}/>}
       {action === "Create_Account" && <CreateAccount actions={{ handleActionChange, handeleregchange, handleImageChange, handeleregphchange }} />}
-      {action === "VALIDATE_Register" && <OTPInputRegister onclickvalidate={onclickvalidate}actions={{ handleActionChange }} phno={phno} setPhno={setPhno} />}
+      {action === "VALIDATE_Register" && <OTPInputRegister onclickvalidate={onclickvalidate}actions={{ handleActionChange }} phno={phno} setPhno={setPhno}
+      error={error} listening={listening} setListening={setListening} seterror={seterror} />}
     </div>
   );
 };
