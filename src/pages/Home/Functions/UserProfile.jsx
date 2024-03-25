@@ -1,8 +1,6 @@
-import { useEffect } from "react";
 import { FaCircleDot } from "react-icons/fa6";
 function UserProfile() {
   const userdata = JSON.parse(localStorage.getItem('userdata'))
-  const profilepic = `/uploads/profilePictures/${userdata.profilePicture}`
     return (
       <div className="active">
         
