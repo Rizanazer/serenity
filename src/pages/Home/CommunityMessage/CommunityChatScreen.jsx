@@ -16,6 +16,7 @@ import ErrorMessage from "../Functions/errormessage";
 import handleListen from "../Functions/voicetoText";
 import handleTranslate from "../Functions/transaltion_option";
 import fetchProfileUpdate from "../Functions/fetchownprofile";
+import logout from "../Settings/logoutFn";
 function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [error, seterror] = useState("");
@@ -55,8 +56,21 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   const [ForwardMessage, setForwardMessage] = useState("");
   const [handleForward_el, sethandleForward_el] = useState("");
   const [forwarding, setForwarding] = useState(false);
+  const [userScore, setuserScore] = useState(null);
 
   useEffect(() => {
+    if (userScore&&userScore<=50)
+    {
+      setListening(true)
+      seterror("your Serenity Score Went Below 50 hence the user will be forcefully Logged Out in 3 Seconds")
+      setTimeout(() => {
+        logout()
+      }, 3000);
+    }
+  }, [userScore])
+  
+  useEffect(() => {
+    setuserScore(userdata.serenityscore)
     setAnonymity(userdata.anonymity)
     setLanguage(userdata.language)
     fetchProfileUpdate(setLanguage, seterror, setListening)
@@ -128,7 +142,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
       const messageData = { c_id: selectedCommunity, message: text, u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), profilePicture: profilePicture, anonymity: anonymity };
       if (socket) {
         socket.emit('sendMessage', messageData);
-        const appenddata = { u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), message: text.trim() };
+        // const appenddata = { u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), message: text.trim() };
         setText("");
         setScrollPosition(scrollPosition + 1);
       }
