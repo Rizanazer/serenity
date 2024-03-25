@@ -17,6 +17,8 @@ import handleListen from "../Functions/voicetoText";
 import handleTranslate from "../Functions/transaltion_option";
 import fetchProfileUpdate from "../Functions/fetchownprofile";
 import logout from "../Settings/logoutFn";
+import { useNavigate } from "react-router-dom";
+
 function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [error, seterror] = useState("");
@@ -56,21 +58,10 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   const [ForwardMessage, setForwardMessage] = useState("");
   const [handleForward_el, sethandleForward_el] = useState("");
   const [forwarding, setForwarding] = useState(false);
-  const [userScore, setuserScore] = useState(null);
+  const navigate = useNavigate()
+
 
   useEffect(() => {
-    if (userScore&&userScore<=50)
-    {
-      setListening(true)
-      seterror("your Serenity Score Went Below 50 hence the user will be forcefully Logged Out in 3 Seconds")
-      setTimeout(() => {
-        logout()
-      }, 3000);
-    }
-  }, [userScore])
-  
-  useEffect(() => {
-    setuserScore(userdata.serenityscore)
     setAnonymity(userdata.anonymity)
     setLanguage(userdata.language)
     fetchProfileUpdate(setLanguage, seterror, setListening)
@@ -114,6 +105,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   }, [selectedCommunity])
 
   useEffect(() => {
+
     const newSocket = io('http://:3000');
     setSocket(newSocket);
 
@@ -122,7 +114,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     });
 
     newSocket.on('newMessage', async (message) => {
-
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profile": message.profilePicture }
       setMessages((prev) => [...prev, appenddata])
     });
@@ -143,6 +134,17 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
       if (socket) {
         socket.emit('sendMessage', messageData);
         // const appenddata = { u_id: localStorage.getItem('userid'), u_name: localStorage.getItem('username'), message: text.trim() };
+        socket.on('serenityScoreAlert', ({ message }) => {
+          // Handle the alert message received from the server
+          if (message) {
+            setListening(true)
+            seterror("your Serenity Score Went Below 50 hence the user will be forcefully Logged Out in 3 Seconds")
+            setTimeout(() => {
+              logout(navigate,userdata)
+            }, 3000);
+          }
+          // You can display this message to the user or take any other appropriate action
+        });
         setText("");
         setScrollPosition(scrollPosition + 1);
       }
@@ -208,18 +210,18 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     fileVideoInputRef.current.click();
 
   };
-  const [isAdmin,setIsAdmin] = useState(false)
-  async function checkadminstatus(){
-    try{
-      const response = await axios.post('/checkadmin',{c_id:selectedCommunity,u_id:localStorage.getItem('userid')})
+  const [isAdmin, setIsAdmin] = useState(false)
+  async function checkadminstatus() {
+    try {
+      const response = await axios.post('/checkadmin', { c_id: selectedCommunity, u_id: localStorage.getItem('userid') })
       setIsAdmin(response.data.isadmin)
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     checkadminstatus()
-  },[selectedCommunity])
+  }, [selectedCommunity])
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -516,7 +518,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                                 <span className="bold padding5">Forward</span>
                               </div>
                             </div>
-                            {isAdmin&&<div className="message_items" onClick={() => handleDelete(selectedCommunity, el._id)}>
+                            {isAdmin && <div className="message_items" onClick={() => handleDelete(selectedCommunity, el._id)}>
                               <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                                 <span className="bold padding5" >Delete</span>
                               </div>

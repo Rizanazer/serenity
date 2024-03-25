@@ -275,9 +275,9 @@ router.route("/login").post(async (req, res) => {
     const result = await User.findOne(query);
     //res.json(result)
     if (result) {
-      result.online=true;
+      result.online = true;
       await result.save();
-      
+
       res.json({ "success": true, "userdata": result })
     } else if (result === null) {
       res.json({ "success": false })
@@ -286,19 +286,18 @@ router.route("/login").post(async (req, res) => {
     res.json({ "success": false })
   }
 });
-router.route('/log-out').post(async(req,res)=>{
-  try{
-    const {userid}=req.body;
-    const result = await User.findOne({_id:userid});
-  
-    if(result)
-    {
-      result.online=false;
+router.route('/log-out').post(async (req, res) => {
+  try {
+    const { userid } = req.body;
+    const result = await User.findOne({ _id: userid });
+
+    if (result) {
+      result.online = false;
       await result.save();
       console.log('successfully logged Out');
       res.status(200).json({ message: 'successfully logged Out' });
     }
-  }catch(e){
+  } catch (e) {
     console.error('Error logging Out', error);
     res.status(500).json({ error: 'An error occurred while logging Out' });
   }
@@ -1229,6 +1228,13 @@ io.on('connection', (socket) => {
             console.log(`toxic : `, toxiccount + 1);
             console.log(`total : `, messagecount);
             console.log(`toreduce : `, toreduce);
+            console.log(`updated score : `, user.serenityscore);
+            if (user.serenityscore && user.serenityscore <= 50) {
+              socket.emit('serenityScoreAlert', {
+                message: "Your Serenity Score Went Below 50 hence the user will be forcefully Logged Out in 3 Seconds"
+              });
+            }
+
           }
         }
       } catch (error) {
