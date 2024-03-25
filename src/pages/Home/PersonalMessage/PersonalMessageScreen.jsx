@@ -47,6 +47,7 @@ function PersonalMsgScreen() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [ChatSearch, SetChatSearch] = useState(false);
   const [More, setMore] = useState(false);
+  const [forwarding,setForwarding] = useState(false)
   const toggleMore = () => {
     setMore(prevState => !prevState);
   };
@@ -73,7 +74,23 @@ function PersonalMsgScreen() {
   const [selectedFriendIcon, setSelectedFriendIcon] = useState(null)
   const [messageTtext, setmessageTtext] = useState("");
   var [media, setMedia] = useState(false);
+  const [Selectedrecipients, setSelectedRecipients] = useState([]);
+  const [CommunityList, setCommunityList] = useState([]);
+  const [ForwardMessage, setForwardMessage] = useState("");
+  const [handleForward_el, sethandleForward_el] = useState("");
 
+  async function fetchcommunities() {
+    try {
+      const response = await axios.post('/getCommunitylist', { communityids: userdata.communities })
+      setCommunityList(response.data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  useEffect(() => {
+    fetchcommunities();
+    fetchfriends();
+  }, [])
   useEffect(() => {
     console.log("selectedChat")
     console.log(selectedChat)
@@ -177,7 +194,15 @@ function PersonalMsgScreen() {
       speakText(message);
     }, 500);
   };
+  const handleCheckboxChange = (event, memberId) => {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      setSelectedRecipients(prevState => [...prevState, memberId]);
+    } else {
+      setSelectedRecipients(prevState => prevState.filter(id => id !== memberId));
 
+    }
+  };
   const cancelHoverTimer = () => {
     clearTimeout(hoverTimer.current);
   };
@@ -379,10 +404,26 @@ function PersonalMsgScreen() {
       }
     }
   }
-  async function forwardmessage(message){
-    console.log(`forwardddddddddddddddddddddddddd`);
-    console.log(message);
-  }
+  const handleForward = async (message) => {
+    try {
+      setForwarding(false);
+      await axios.post('/MessageForward', {
+        message: ForwardMessage,
+        messageType: message?.messagetype || "",
+        forwardTo: Selectedrecipients,
+        u_id: localStorage.getItem('userid'),
+        u_name: username,
+        // profilePicture: profilePicture,
+        filename: message.filename || ""
+      });
+
+    } catch (error) {
+      console.error('Error forwarding message:', error);
+      seterror('Error forwarding message:', error)
+      setListening(true)
+
+    }
+  };
   return (
     <>
       <div className="section1 section_margin box spacebetween">
@@ -539,7 +580,14 @@ function PersonalMsgScreen() {
 
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
-                                <span className="bold padding5" onClick={()=>forwardmessage(selectedMessage)}>Forward</span>
+                                <span className="bold padding5" onClick={() => {
+                              sethandleForward_el(el);
+                              setForwarding(true);
+                              setrightclk(false)
+                              setForwardMessage(el.message);
+                              fetchcommunities()
+
+                            }}  >Forward</span>
                               </div>
                             </div>
                           <div className="message_items" onClick={() => deleteMessage(el._id)}>
@@ -604,7 +652,7 @@ function PersonalMsgScreen() {
 
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
-                                <span className="bold padding5" onClick={()=>forwardmessage(selectedMessage)}>Forward</span>
+                                <span className="bold padding5" onClick={() => { handleForward(handleForward_el) }}>Forward</span>
                               </div>
                             </div>
                           <div className="message_items  " onClick={() => deleteMessage(el._id)}>
@@ -628,7 +676,55 @@ function PersonalMsgScreen() {
 
 
           </div>
+          { forwarding && <div className="center overlay">
+                <div className="box create center flexcolumn">
+                  <span className="bold"> Forward Message </span>
+                  <div className="name_members center flexcolumn">
+                    <span className="bold"> To Friends...</span>
 
+                    <div className="groupname flexrow center">
+                      <CgSearch className="icon_search" />
+                      <input type="text" />
+                    </div>
+                    <div className="box padding10 create_gp_Members ">
+
+                      {contacts && contacts.map((elem, key) => (
+                        <div className="member_box flexrow" onClick={() => { }}>
+                          <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
+                          <img src={`/uploads/profilePictures/${elem.profilePicture}`} className="icon_member" />
+                          <span className="bold pointer">{elem.username}</span>
+                        </div>
+                      ))
+                      }
+
+                    </div>
+                  </div>
+                  <div className="name_members center flexcolumn">
+                    <span className="bold"> To Community....</span>
+
+                    <div className="groupname flexrow center">
+                      <CgSearch className="icon_search" />
+                      <input type="text" />
+                    </div>
+                    <div className="box create_gp_Members">
+
+                      {CommunityList && CommunityList.map((elem, key) => (
+                        <div className="member_box flexrow" onClick={() => { }}>
+                          <input type="checkbox" onChange={(e) => handleCheckboxChange(e, elem._id)} />
+                          <img src={`uploads/communityIcons/${elem.communityIcon}`} className="icon_member" />
+                          <span className="bold pointer">{elem.communityName}</span>
+                        </div>
+                      ))
+                      }
+                    </div>
+                  </div>
+                  <div className="txtbtn flexrow gap20">
+                    <span className="bold pointer txtbtn_clr" onClick={() => { setForwarding(false) }}>Cancel</span>
+                    <span className="bold pointer txtbtn_clr" onClick={() => { handleForward(handleForward_el) }}>Forward</span>
+                  </div>
+
+                </div>
+              </div>}
           {/* bottomchats component-chat_typing */}
           {
               isfriend?<div className="box center chat_typing flexrow spacebetween">
