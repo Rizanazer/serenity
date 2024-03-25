@@ -49,13 +49,12 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity, handleClick, data,
                 <MdArrowBack className="icon nobordershadow" onClick={() => { handleClick() }} />
             </div>
             <div className="section3_1">
-                <div className="section3_1_1 " >
+                <div className="section3_1_1" >
                    
                     <img src={`uploads/communityIcons/${data.selectedCommunityIcon}`} className="section3_1_1" alt="" />
                     <div className="section3_1_1-overlay center">
-                        <MdEdit className="icon_search" color="#fff"/>
+                        <MdEdit className="icon_search" color="#fff" onClick={()=>{}}/>
                         <MdViewList className="icon_search" color="#fff" onClick={() => {setviewprofileImage(data.selectedCommunityIcon)
-                    console.log("🤣🤣🤣",viewprofileImage);
                     }}/>
 
                     </div>
