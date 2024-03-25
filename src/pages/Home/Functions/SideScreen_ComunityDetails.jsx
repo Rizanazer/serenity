@@ -1,14 +1,15 @@
-import { MdArrowBack, MdReport, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
+import { MdArrowBack, MdReport, MdGroups, MdBlockFlipped, MdLocationPin, MdEdit, MdViewList } from "react-icons/md";
 import { IoMdHeartDislike } from "react-icons/io";
 import { GiExitDoor } from "react-icons/gi";
 import SideScreenCommunityMemberFn from "./SideScreen_communityMember";
 import axios from "axios";
 import { useEffect, useState } from "react";
-var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data,actions}) => {
-    const username = localStorage.getItem('username')
+
+var SideScreenCommunityDetailsFn = ({ setIndividualCommunity, handleClick, data, actions,setviewprofileImage,viewprofileImage }) => {
     const userdata = JSON.parse(localStorage.getItem('userdata'))
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])
+    
     useEffect(() => {
         async function getmemberdata() {
             try {
@@ -22,20 +23,20 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data,a
         }
         getmemberdata()
     }, [data.selectedCommunity])
-    async function exitcommunity(c_id){
+    async function exitcommunity(c_id) {
         actions.setViewChat(false)
         actions.setSideScreen(false)
 
         try {
-            const response = await axios.post('/exitcommunity',{c_id:c_id,u_id:localStorage.getItem('userid')})
+            const response = await axios.post('/exitcommunity', { c_id: c_id, u_id: localStorage.getItem('userid') })
             console.log(response);
             userdata.communities = userdata.communities.filter(id => id !== c_id);
-            localStorage.setItem('userdata',JSON.stringify(userdata))
+            localStorage.setItem('userdata', JSON.stringify(userdata))
             const filteredcommunities = data.individualCommunity.map((c) => {
                 if (c._id !== c_id) {
-                    return c; 
+                    return c;
                 }
-                return null; 
+                return null;
             }).filter((c) => c !== null);
             actions.setIndividualCommunity(filteredcommunities);
         } catch (error) {
@@ -48,8 +49,16 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data,a
                 <MdArrowBack className="icon nobordershadow" onClick={() => { handleClick() }} />
             </div>
             <div className="section3_1">
-                <div className="section3_1_1">
+                <div className="section3_1_1 " >
+                   
                     <img src={`uploads/communityIcons/${data.selectedCommunityIcon}`} className="section3_1_1" alt="" />
+                    <div className="section3_1_1-overlay center">
+                        <MdEdit className="icon_search" color="#fff"/>
+                        <MdViewList className="icon_search" color="#fff" onClick={() => {setviewprofileImage(data.selectedCommunityIcon)
+                    console.log("🤣🤣🤣",viewprofileImage);
+                    }}/>
+
+                    </div>
                 </div>
                 <div className="section3_1_2 center flexcolumn">
                     {/* continue from here */}
@@ -66,7 +75,7 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data,a
 
                     <div className="section3_features">
                         <MdReport className="icons_2" />
-                        <GiExitDoor className="icons_2" onClick={()=>exitcommunity(data.selectedCommunity)}/>
+                        <GiExitDoor className="icons_2" onClick={() => exitcommunity(data.selectedCommunity)} />
                         <IoMdHeartDislike className="icons_2" />
                     </div>
                     {/* <div className="section3_location flexrow center">
@@ -82,16 +91,16 @@ var SideScreenCommunityDetailsFn = ({ setIndividualCommunity,handleClick, data,a
                     <MdGroups className="icon_search" />
                 </div>
                 <div className="box nopadding nobordershadow padding5 scroll nocircleradius">
-                        <div className="Group_Participations box nobordershadow  flexcolumn spacebetween flex " >
-                {memberNames && memberNames.map((elem, i) => (
+                    <div className="Group_Participations box nobordershadow  flexcolumn spacebetween flex " >
+                        {memberNames && memberNames.map((elem, i) => (
                             <div className="group_box flex " onClick={() => { }} key={i}>
                                 <img src={`uploads/profilePictures/${elem[1]}`} className="icon_search" />
                                 <span className="bold pointer">{elem[0]}</span>
                             </div>
-                            ))}
-                            {/* <span className="light">active</span> */}
-                        </div>
+                        ))}
+                        {/* <span className="light">active</span> */}
                     </div>
+                </div>
             </div>
 
             <div className="section3_3">

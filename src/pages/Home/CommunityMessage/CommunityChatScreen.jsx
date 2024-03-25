@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
+  const [viewprofileImage, setviewprofileImage] = useState(null)
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
   const userdata = JSON.parse(localStorage.getItem('userdata'));
@@ -482,6 +483,12 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                 </div>
               </div>}
               <ErrorMessage error={error} listening={listening} setListening={setListening} seterror={seterror} />
+              {
+                viewprofileImage && <div className="videoPlayer">
+                <img src={`uploads/communityIcons/${viewprofileImage}`} />
+                <MdClose size={50} color="#fff" className="close-button" onClick={() => { setviewprofileImage(false) }} />
+              </div>
+              }
               {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
                 <div className=" nopadding more_items " onClick={() => {
                   toggleNeration()
@@ -494,6 +501,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                   }</div>
                 </div>
               </div>}
+
               {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
                   {
@@ -522,6 +530,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                           </div>
                         )}
                         <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
+
                           {el.messagetype === "image" && (
                             <div className="flex flexcolumn">
                               {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0 }}>forwarded</p> : <></>}
@@ -535,7 +544,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                           {el.messagetype === "video" && (
                             <div className="flex flexcolumn">
                               {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0, marginLeft: 67 }}>forwarded</p> : <></>}
-                              <Video src={`uploads/communityMessageVideos/${el.filename}`}
+                              <Video src={`uploads/communityMessageVideos/`}
                                 onContextMenu={(e) => handleContextMenuMedia(e, el)}
                               />
                             </div>
@@ -695,7 +704,11 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
         {Member ?
           <SideScreenCommunityMemberFn selectedUser={selectedUser} handleClick={() => { setSideScreen(false); setMoreadj(false); }} member={() => { setMember(false) }} />
           :
-          <SideScreenCommunityDetailsFn data={{ selectedCommunityIcon, individualCommunity, "selectedCommunityName": selectedCommunityName, "description": selectedCommunityStatus, selectedCommunity }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }} handleClick={() => { setSideScreen(false); setMoreadj(false); }} />}
+          <SideScreenCommunityDetailsFn data={{
+            selectedCommunityIcon, individualCommunity, "selectedCommunityName": selectedCommunityName,
+            "description": selectedCommunityStatus, selectedCommunity
+          }} actions={{ setIndividualCommunity, setSelectedCommunity, setViewChat, setSideScreen }}
+            handleClick={() => { setSideScreen(false); setMoreadj(false); }} setviewprofileImage={setviewprofileImage} viewprofileImage={viewprofileImage} />}
 
       </div>}
     </>
