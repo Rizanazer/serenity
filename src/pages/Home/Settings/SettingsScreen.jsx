@@ -1,26 +1,26 @@
 import "./SettingsScreen.css"
 import { MdArrowBack, MdArrowForwardIos, MdArrowBackIos, MdReport, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
+import logout from "./logoutFn";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
 function SettingsScreen({ handleClick, setscreen, profileView, accounts, accountcheck, closeother, notification, notificationcheck, theme, themecheck }) {
 
   const navigate = useNavigate()
   const userdata = JSON.parse(localStorage.getItem('userdata'))
-  async function logout() {
-    try {
-      const response = await axios.post('/log-out', { userid: userdata._id })
-      if (response) {
-        localStorage.clear()
-        localStorage.removeItem('validation')
-        console.log(`Logging out`);
-        navigate('/')
-      }
+  // async function logout() {
+  //   try {
+  //     const response = await axios.post('/log-out', { userid: userdata._id })
+  //     if (response) {
+  //       localStorage.clear()
+  //       localStorage.removeItem('validation')
+  //       console.log(`Logging out`);
+  //       navigate('/')
+  //     }
 
-    } catch (error) {
-      console.error(error)
-    }
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
 
-  }
+  // }
 
   return (
 
@@ -56,7 +56,7 @@ function SettingsScreen({ handleClick, setscreen, profileView, accounts, account
            >
             Notification
           </div> */}
-          <div className=" box joinbtn" onClick={() => { logout(); closeother() }}>
+          <div className=" box joinbtn" onClick={() => { logout(navigate,userdata); closeother() }}>
             LogOut
           </div>
         </div>
