@@ -59,8 +59,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   const [handleForward_el, sethandleForward_el] = useState("");
   const [forwarding, setForwarding] = useState(false);
   const navigate = useNavigate()
-
-
   useEffect(() => {
     setAnonymity(userdata.anonymity)
     setLanguage(userdata.language)
@@ -140,7 +138,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
             setListening(true)
             seterror("your Serenity Score Went Below 50 hence the user will be forcefully Logged Out in 3 Seconds")
             setTimeout(() => {
-              logout(navigate,userdata)
+              logout(navigate, userdata)
             }, 3000);
           }
           // You can display this message to the user or take any other appropriate action
@@ -356,8 +354,6 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   useEffect(() => {
 
     async function searchcommunityName() {
-      console.log(`individ-------------------------`);
-      console.log(searchCText);
       const response = await axios.post('/search_communityname', { text: searchCText, communities: userdata.communities })
       setIndividualCommunity(response.data.groups)
     }

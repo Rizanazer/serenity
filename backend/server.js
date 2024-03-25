@@ -164,7 +164,6 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
   try {
     const { f_id, u_id } = req.body;
     const mediatype = req.file.mimetype.split('/')[0];
-    console.log(mediatype);
     const filename = req.file.filename;
     let existingChat = await DirectChats.findOne({
       $or: [
@@ -332,7 +331,6 @@ router.post("/fetchProfile", async (req, res) => {
 });
 //////////////////////////////////////////////////////////////////////////////////
 router.post("/MessageForward", async (req, res) => {
-  console.log(req.body);
   try {
     const { message, forwardTo, u_id, profilePicture, u_name, messageType, filename } = req.body;
     const userids = []
@@ -636,7 +634,7 @@ router.post('/checkadmin', async (req, res) => {
     const result = await Community.findOne({ _id: c_id });
     const isAdmin = result.admins.includes(u_id);
     res.json({ success: true, isadmin: isAdmin });
-    console.log(`succccccccccccccccccccccccess`);
+    console.log(`check Admin check...`);
   } catch (error) {
     console.error(error);
     res.json({ success: false, error: 'An error occurred while checking admin status' });
@@ -721,7 +719,6 @@ router.post('/getCommunitylist', async (req, res) => {
 router.post("/fetchcontacts", async (req, res) => {
   try {
     const u_id = req.body.u_id
-    console.log(req.body);
     const friends = await User.findOne({ _id: u_id }).populate('friends')
     res.json({ "success": true, "friends": friends.friends });
   } catch (error) {
@@ -737,18 +734,7 @@ router.post("/fetchfriends", async (req, res) => {
     }).populate('users').populate('messages.from').populate('messages.to').sort({ dateAdded: -1 });
 
     const frienddata = []
-    // const lastMessage = ''
-    // console.log(chats);
-    // for (let i = 0; i < friendids.length; i++) {
-    //   const friendquery = await User.find({ _id: friendids[i] })
-    //   if (friendquery) {
-    //     // console.log("🤣🤣🤣",friendquery.chats);
-    //     frienddata.push(friendquery)
-    //   } else {
-    //     frienddata.push(friendquery)
-    //   }
-    // }
-    // console.log(chats[0].users[0]);
+    
     res.json({ "success": true, "chats": chats, "frienddata": frienddata.flat() });
   } catch (error) {
     res.json({ "success": false })
@@ -771,14 +757,9 @@ router.post("/fetchpersonal1", async (req, res) => {
 })
 router.post("/fetchpersonal", async (req, res) => {
   try {
-    // const { f_id, u_id,chatid } = req.body
     const { chatid } = req.body
-    // const chats = await DirectChats.findOne({
-    //   'users.userid': { $all: [f_id, u_id] }
-    // });
-    c
     const chats = await DirectChats.findOne({ _id: chatid }).populate('messages.from').populate('messages.to')
-    console.log(chats);
+
     res.json({ "success": true, "chats": chats });
   } catch (error) {
     res.json({ "success": false })
@@ -823,7 +804,6 @@ router.post("/searchcommunitymessage", async (req, res) => {
   try {
     const text = req.body.text;
     const c_id = req.body.c_id;
-    // console.log(req.body);
     if (!mongoose.isValidObjectId(c_id)) {
       return res.json({ success: false, message: "Invalid community ID." });
     }
@@ -844,7 +824,6 @@ router.post("/searchcommunitymessage", async (req, res) => {
       }
     }
 
-    // console.log(communityChat.messages);
     res.json({ success: true, messages: messages });
   } catch (error) {
     console.log(error);
@@ -859,7 +838,6 @@ router.post('/delete_c_message', async (req, res) => {
       return res.status(404).json({ message: "Community chat not found." });
     }
     const messageIndex = communityChat.messages.findIndex(message => message._id.toString() === msg_id);
-    console.log(messageIndex);
     if (messageIndex === -1) {
       return res.status(404).json({ message: "Message not found in the community chat." });
     }
@@ -900,10 +878,6 @@ router.post("/searchpersonalmessage", async (req, res) => {
         message.messageBody?.match(new RegExp(text, "i"))
       );
     }
-    // console.log(text);
-    // messages.map((m)=>{
-    //   console.log(m.messageBody);
-    // })
     res.json({ "messages": messages, "success": true })
   } catch (error) {
     console.log(error);
@@ -935,12 +909,10 @@ router.post("/search_p_chatname", async (req, res) => {
   try {
     const { text, u_id } = req.body;
     const result = await DirectChats.find({ users: { $elemMatch: { $eq: u_id } } }).populate('users');
-    console.log(`--------------------------------`);
     const filteredChat = result.filter(chat => {
       const regex = new RegExp(text, "i")
       return regex.test(chat.users[0].username) || regex.test(chat.users[1].username)
     })
-    console.log();
     res.json({ "success": true, "chats": filteredChat });
   } catch (error) {
     console.error(error);
@@ -950,7 +922,6 @@ router.post("/search_p_chatname", async (req, res) => {
 router.post("/get_c_messages", async (req, res) => {
   try {
     const { c_id } = req.body
-    // console.log(c_id);
     const chats = await CommunityChats.findOne({ communityId: c_id })
     if (chats) {
       res.json({ "success": true, "chats": chats });
@@ -1200,7 +1171,6 @@ io.on('connection', (socket) => {
           const today = new Date()
           const threemonthsback = new Date()
           threemonthsback.setMonth(threemonthsback.getMonth() - 3)
-          // console.log(threemonthsback);
           let toxiccount = 0
           let messagecount = 0
           if (existingChat?.messages.length > 0) {
