@@ -379,6 +379,10 @@ function PersonalMsgScreen() {
       }
     }
   }
+  async function forwardmessage(message){
+    console.log(`forwardddddddddddddddddddddddddd`);
+    console.log(message);
+  }
   return (
     <>
       <div className="section1 section_margin box spacebetween">
@@ -535,7 +539,7 @@ function PersonalMsgScreen() {
 
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
-                                <span className="bold padding5">Forward</span>
+                                <span className="bold padding5" onClick={()=>forwardmessage(selectedMessage)}>Forward</span>
                               </div>
                             </div>
                           <div className="message_items" onClick={() => deleteMessage(el._id)}>
@@ -600,7 +604,7 @@ function PersonalMsgScreen() {
 
                             }}>
                               <div className="neration flexrow violetHover"><MdForward className="icon_search" />
-                                <span className="bold padding5">Forward</span>
+                                <span className="bold padding5" onClick={()=>forwardmessage(selectedMessage)}>Forward</span>
                               </div>
                             </div>
                           <div className="message_items  " onClick={() => deleteMessage(el._id)}>
