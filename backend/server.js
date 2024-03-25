@@ -1234,7 +1234,6 @@ io.on('connection', (socket) => {
                 message: "Your Serenity Score Went Below 50 hence the user will be forcefully Logged Out in 3 Seconds"
               });
             }
-
           }
         }
       } catch (error) {
