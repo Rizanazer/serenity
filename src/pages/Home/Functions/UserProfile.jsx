@@ -7,7 +7,7 @@ function UserProfile() {
       <div className="active">
         
         <img alt=""src={`/uploads/profilePictures/${userdata.profilePicture}`}  />
-        {<FaCircleDot className="" color="#5e4ae3" />}
+        {userdata.online&&<FaCircleDot className="" color="#5e4ae3" />}
         {localStorage.getItem('username')}
       </div>
     );

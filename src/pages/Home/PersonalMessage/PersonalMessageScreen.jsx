@@ -456,7 +456,7 @@ function PersonalMsgScreen() {
                     </div>
                   </div>
                 </div>
-                {ContactsOnline && <FaCircleDot className="" color="#5e4ae3" />}
+                {el.online && <FaCircleDot className="" color="#5e4ae3" />}
               </div>
 
             )}

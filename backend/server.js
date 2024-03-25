@@ -275,6 +275,9 @@ router.route("/login").post(async (req, res) => {
     const result = await User.findOne(query);
     //res.json(result)
     if (result) {
+      result.online=true;
+      await result.save();
+      
       res.json({ "success": true, "userdata": result })
     } else if (result === null) {
       res.json({ "success": false })
@@ -283,6 +286,23 @@ router.route("/login").post(async (req, res) => {
     res.json({ "success": false })
   }
 });
+router.route('/log-out').post(async(req,res)=>{
+  try{
+    const {userid}=req.body;
+    const result = await User.findOne({_id:userid});
+  
+    if(result)
+    {
+      result.online=false;
+      await result.save();
+      console.log('successfully logged Out');
+      res.status(200).json({ message: 'successfully logged Out' });
+    }
+  }catch(e){
+    console.error('Error logging Out', error);
+    res.status(500).json({ error: 'An error occurred while logging Out' });
+  }
+})
 router.route('/updateProfile').post(async (req, res) => {
   try {
     const { id, anonymity, status, email, phone, password, gender, dob, language, location } = req.body;

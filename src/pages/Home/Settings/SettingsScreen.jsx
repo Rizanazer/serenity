@@ -1,16 +1,27 @@
 import "./SettingsScreen.css"
 import { MdArrowBack, MdArrowForwardIos, MdArrowBackIos, MdReport, MdGroups, MdBlockFlipped, MdLocationPin } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-function SettingsScreen({ handleClick, setscreen, profileView, accounts, accountcheck, closeother,notification,notificationcheck,theme,themecheck}) {
+import axios from "axios"
+function SettingsScreen({ handleClick, setscreen, profileView, accounts, accountcheck, closeother, notification, notificationcheck, theme, themecheck }) {
 
   const navigate = useNavigate()
   const userdata = JSON.parse(localStorage.getItem('userdata'))
-  function logout() {
-    localStorage.clear()
-    localStorage.removeItem('validation')
-    console.log(`Logging out`);
-    navigate('/')
+  async function logout() {
+    try {
+      const response = await axios.post('/log-out', { userid: userdata._id })
+      if (response) {
+        localStorage.clear()
+        localStorage.removeItem('validation')
+        console.log(`Logging out`);
+        navigate('/')
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
+
   }
+
   return (
 
     <>
@@ -32,12 +43,12 @@ function SettingsScreen({ handleClick, setscreen, profileView, accounts, account
         <div className="box nobordershadow settings_content">
           <div className={accountcheck ? " box joinbtn selectedBtn" : " box joinbtn"}
             onClick={accounts}
-           >
+          >
             Accounts
           </div>
           <div className={themecheck ? " box joinbtn selectedBtn" : " box joinbtn"}
             onClick={theme}
-           >
+          >
             Theme
           </div>
           {/* <div className={notificationcheck ? " box joinbtn selectedBtn" : " box joinbtn"}
