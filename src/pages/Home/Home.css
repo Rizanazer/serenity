@@ -55,6 +55,7 @@
     flex-grow: 1;
     flex-shrink: 1;
 }
+
 /* .section_margin{
     margin-left: 90px !important;
 } */
@@ -69,7 +70,7 @@
     padding: 5px 5px !important;
     border-radius: 10px !important;
     text-overflow: clip;
-  /* overflow-x: clip; */
+    /* overflow-x: clip; */
 
 }
 
@@ -127,6 +128,7 @@
     border-radius: 0px 0px 0px 0px !important;
     overflow-y: auto;
 }
+
 /* .overlay_section2_mid{
     flex:7;
     position: fixed !important;
@@ -167,13 +169,15 @@
 .send {
     padding: 7px 0px !important;
 }
-.msg_main{
+
+.msg_main {
     display: flex;
     flex-direction: row;
     align-items: end;
     /* height: 10px; */
     width: auto;
 }
+
 /* .msg_main-rightside{
     display: flex;
     flex-direction: row;
@@ -195,24 +199,27 @@
     position: relative;
     right: 0;
 }
+
 .msg-rightside {
-   
+
     margin-left: auto;
-   
-   
-   
-   
+
+
+
+
     position: relative;
     right: 0;
 
 }
+
 .icon_search {
     padding: 5px;
     width: 30px;
     height: 30px;
     cursor: pointer;
 }
-.icon_search-rightside{
+
+.icon_search-rightside {
     padding: 5px;
     width: 30px;
     height: 30px;
@@ -240,7 +247,7 @@
     gap: 5px;
     box-shadow: var(--shadow);
     padding: 15px 15px;
-    background:transparent ;
+    background: transparent;
     z-index: 1;
     backdrop-filter: blur(10px);
 }
@@ -280,8 +287,29 @@
     width: 100%;
     /* min-height: 200px; /* Adjust the height as needed */
     /* flex-shrink: 0;  */
+    position: relative;
 }
-.section3_1_1>img{
+
+.section3_1_1-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(0); 
+}
+
+.section3_1_1:hover .section3_1_1-overlay {
+    opacity: 1; 
+}
+
+.section3_1_1:hover .section3_1_1-overlay:hover {
+    backdrop-filter: blur(5px);
+}
+
+.section3_1_1>img {
     height: 300px;
     width: 100%;
 }
@@ -300,21 +328,23 @@
     flex: 2;
     width: 100%;
     padding: 10px 10px;
-overflow-y: auto;
-    
+    overflow-y: auto;
+
 }
 
-.Group_Participations{
+.Group_Participations {
     height: max-content;
-    padding:0px 0px !important;
+    padding: 0px 0px !important;
     border-radius: 0 !important;
 }
-.group_box{
+
+.group_box {
     align-items: center;
     display: flex;
     width: 100%;
     height: 30px;
 }
+
 .section3_3 {
     position: relative;
     flex: 2;
@@ -322,7 +352,7 @@ overflow-y: auto;
 }
 
 .section3_textArea {
-    
+
     gap: 5px;
 
 }
@@ -332,6 +362,7 @@ overflow-y: auto;
     flex-direction: row;
     gap: 10px;
 }
+
 .icons_1 {
     padding: 10px;
     border-radius: 10px;
@@ -340,10 +371,12 @@ overflow-y: auto;
     height: 50px;
     cursor: pointer;
 }
+
 .icons_1:hover {
-    background-color:var(--deep_purple_A200);
+    background-color: var(--deep_purple_A200);
     color: #fff;
 }
+
 .icons_2 {
     padding: 10px;
     border-radius: 10px;
@@ -352,60 +385,68 @@ overflow-y: auto;
     height: 50px;
     cursor: pointer;
 }
+
 .icons_2:hover {
-    background-color:var(--pink_A400);
+    background-color: var(--pink_A400);
     color: #fff;
 }
-.padding10{
+
+.padding10 {
     padding: 10px 10px !important;
 }
-.padding5{
+
+.padding5 {
     padding: 5px 5px !important;
 }
-.nocircleradius{
+
+.nocircleradius {
     border-radius: 0 !important;
 }
+
 .overlay {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background-color:transparent !important;
+    background-color: transparent !important;
     z-index: 2 !important;
     backdrop-filter: blur(10px);
-  }
-  .row_revese{
-    flex-direction: row-reverse;
-  }
+}
 
-  .videoPlayer{
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      position: fixed;
-      top: 0;
-      left: 0;
-      justify-content: center;
-      align-items:center;
-      background: #0005;
-      backdrop-filter: blur(5px);
-      z-index: 50000;
-    }
-.videoPlayer > video{
+.row_revese {
+    flex-direction: row-reverse;
+}
+
+.videoPlayer {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    background: #0005;
+    backdrop-filter: blur(5px);
+    z-index: 50000;
+}
+
+.videoPlayer>video {
     width: 80%;
     height: 90%;
     object-fit: contain;
 }
 
-.close-button{
+.close-button {
     position: absolute;
     right: 20px;
     top: 20px;
     width: 50px;
     cursor: pointer;
 }
-.forwardedmedia{
+
+.forwardedmedia {
     display: flex;
     align-self: flex-start;
 }
