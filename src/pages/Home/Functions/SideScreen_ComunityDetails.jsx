@@ -1,20 +1,19 @@
 import { MdArrowBack, MdReport, MdGroups, MdBlockFlipped, MdLocationPin, MdEdit, MdViewList } from "react-icons/md";
-import { IoMdHeartDislike } from "react-icons/io";
 import { GiExitDoor } from "react-icons/gi";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-var SideScreenCommunityDetailsFn = ({ handleClick, data, actions,setviewprofileImage }) => {
+var SideScreenCommunityDetailsFn = ({ handleClick, data, actions, setviewprofileImage }) => {
     const userdata = JSON.parse(localStorage.getItem('userdata'))
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])
-    
+    const fileInputImageRef = useRef(null);
+
     useEffect(() => {
         async function getmemberdata() {
             try {
                 const response = await axios.post('/getmemberdata', { c_id: data.selectedCommunity })
                 setMembernames(response.data.names)
-                // console.log(memberNames)
                 console.log(response.data.names)
             } catch (error) {
                 console.log('error fetching membername')
@@ -22,6 +21,10 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions,setviewprofileI
         }
         getmemberdata()
     }, [data.selectedCommunity])
+    const updateCommunityimage = () => {
+        fileInputImageRef.current.click();
+
+    };
     async function exitcommunity(c_id) {
         actions.setViewChat(false)
         actions.setSideScreen(false)
@@ -49,12 +52,17 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions,setviewprofileI
             </div>
             <div className="section3_1">
                 <div className="section3_1_1" >
-                   
+
                     <img src={`uploads/communityIcons/${data.selectedCommunityIcon}`} className="section3_1_1" alt="" />
                     <div className="section3_1_1-overlay center">
-                        <MdEdit className="icon_search" color="#fff" onClick={()=>{}}/>
-                        <MdViewList className="icon_search" color="#fff" onClick={() => {setviewprofileImage(data.selectedCommunityIcon)
-                    }}/>
+
+                        <MdEdit className="icon_search" color="#fff" onClick={updateCommunityimage} />
+                        <input type="file" accept="image/*" ref={fileInputImageRef} name="profilePicture"
+                            style={{ display: "none" }}
+                            onChange={(e) => e.target.files[0]} required />
+                        <MdViewList className="icon_search" color="#fff" onClick={() => {
+                            setviewprofileImage(data.selectedCommunityIcon)
+                        }} />
 
                     </div>
                 </div>
@@ -74,7 +82,7 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions,setviewprofileI
                     <div className="section3_features">
                         <MdReport className="icons_2" />
                         <GiExitDoor className="icons_2" onClick={() => exitcommunity(data.selectedCommunity)} />
-                        <IoMdHeartDislike className="icons_2" />
+                       
                     </div>
                     {/* <div className="section3_location flexrow center">
                         <MdLocationPin className="icon nobordershadow" />
