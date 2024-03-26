@@ -22,23 +22,27 @@ const MobileNumberInput = ({ actions, phno, setPhno, regMobile, error, seterror,
   useEffect(() => {
     if (Number(phoneNumber) === regMobile) {
       setSpinner(true)
-      setTimeout(() => { sendOTP();setValidate(false)}
-     , 2000)
+      setTimeout(() => { sendOTP(); setValidate(false) }
+        , 2000)
     } else {
       if (phoneNumber != null) {
         setSpinner(true)
-        setTimeout(() => { 
+        setTimeout(() => {
           setSpinner(false)
           setListening(true)
           seterror("Phone Number Not Registered with current User..")
-          setValidate(false)}
-     , 2000)
-       
+          setValidate(false)
+        }
+          , 2000)
+
       }
 
     }
   }, [validate])
   const handleNumberChange = (e) => {
+    const inputValue = e.target.value;
+    const numbersOnly = inputValue.replace(/[^0-9]/g, '');
+    e.target.value = numbersOnly;
     setPhoneNumber(e.target.value);
     setPhno(e.target.value)
   };
@@ -48,41 +52,41 @@ const MobileNumberInput = ({ actions, phno, setPhno, regMobile, error, seterror,
       const response = await axios.post('/send-otp', { mobilenumber: phoneNumber });
       const message = response.data.message;
       if (response) {
-      
-          if (message === 'OTP sent successfully') {
-            setChecked(true)
-            setSpinner(false)
-            setTimeout(() => {
-              actions.handleActionChange("VALIDATE")
-              setChecked(false)
-              setSpinner(false)
-            }, 2000);
 
-          }
-          else {
-            setNotChecked(true)
-            setListening(true)
-            seterror("incorrect Number...please ReEnter..")
-            setTimeout(() => {
-              actions.handleActionChange("GetOTP")
-              setNotChecked(false)
-              setSpinner(false)
-            }, 2000);
-          }
+        if (message === 'OTP sent successfully') {
+          setChecked(true)
+          setSpinner(false)
+          setTimeout(() => {
+            actions.handleActionChange("VALIDATE")
+            setChecked(false)
+            setSpinner(false)
+          }, 2000);
+
         }
+        else {
+          setNotChecked(true)
+          setListening(true)
+          seterror("incorrect Number...please ReEnter..")
+          setTimeout(() => {
+            actions.handleActionChange("GetOTP")
+            setNotChecked(false)
+            setSpinner(false)
+          }, 2000);
+        }
+      }
 
 
     } catch (error) {
       setSpinner(true)
       console.error('Error sending OTP:', error);
-        setNotChecked(true)
-        setListening(true)
-        seterror("incorrect Number...please ReEnter..")
-        setTimeout(() => {
-          actions.handleActionChange("GetOTP")
-          setNotChecked(false)
-          setSpinner(false)
-        }, 2000);
+      setNotChecked(true)
+      setListening(true)
+      seterror("incorrect Number...please ReEnter..")
+      setTimeout(() => {
+        actions.handleActionChange("GetOTP")
+        setNotChecked(false)
+        setSpinner(false)
+      }, 2000);
     }
   };
 
@@ -94,13 +98,13 @@ const MobileNumberInput = ({ actions, phno, setPhno, regMobile, error, seterror,
         {checked && <MdOutlineDone className='icon_search' color='#a0de59' />}
         {Notchecked && <MdOutlineClose className='icon_search' color='#d22020' />}
       </div>
-    
+
       {/* <button onClick={()=>{setValidate(true)}}>
 
         {spinner ? <img className="center" src="/images/spinnerButton.gif"
           style={{ height: '30px', width: '30px', position: "relative" }} /> : <span>SEND-OTP</span>}</button> */}
 
-    
+
 
       <button onClick={() => actions.handleActionChange("VALIDATE")}>next</button>
       <button onClick={() => actions.handleActionChange("LOGIN")}>BACK</button>
