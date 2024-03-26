@@ -433,7 +433,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
             {/* middlechats component-chat_area */}
 
             <div className="box chat_area padding10 overlay_section2_mid " ref={chatAreaRef}>
-              {forwarding && <div className="center overlay">
+              { forwarding && <div className="center overlay">
                 <div className="box create center flexcolumn">
                   <span className="bold"> Forward Message </span>
                   <div className="name_members center flexcolumn">
