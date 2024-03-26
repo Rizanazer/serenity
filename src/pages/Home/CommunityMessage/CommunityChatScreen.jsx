@@ -219,7 +219,10 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     }
   }
   useEffect(() => {
-    checkadminstatus()
+    if(selectedCommunity){
+      checkadminstatus()
+
+    }
   }, [selectedCommunity])
   const handleFileChange = async (event) => {
     const file = event.target.files[0];

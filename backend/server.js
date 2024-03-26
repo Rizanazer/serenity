@@ -369,7 +369,7 @@ router.post("/MessageForward", async (req, res) => {
             from: u_id,
             to: id,
             messageBody: message,
-            messageType: messagetype,
+            messageType: messageType,
             filename: filename
           });
           existingChat.usernameTo = id;

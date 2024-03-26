@@ -202,6 +202,7 @@ function PersonalMsgScreen() {
       setSelectedRecipients(prevState => prevState.filter(id => id !== memberId));
 
     }
+    console.log(Selectedrecipients);
   };
   const cancelHoverTimer = () => {
     clearTimeout(hoverTimer.current);
@@ -212,7 +213,7 @@ function PersonalMsgScreen() {
   //texttospeech
 
   var [messages, setMessages] = useState([]);   
-
+  
   async function fetchpersonal(friend){
     try {
       const response = await axios.post('/fetchpersonal1', { f_id: friend, u_id: u_id })
@@ -405,16 +406,18 @@ function PersonalMsgScreen() {
     }
   }
   const handleForward = async (message) => {
+    console.log("handleForward_el---------------------------------------");
+    console.log(handleForward_el);
     try {
       setForwarding(false);
       await axios.post('/MessageForward', {
-        message: ForwardMessage,
-        messageType: message?.messagetype || "",
+        message: handleForward_el.messageBody,
         forwardTo: Selectedrecipients,
         u_id: localStorage.getItem('userid'),
         u_name: username,
         // profilePicture: profilePicture,
-        filename: message.filename || ""
+        filename: message.filename || "",
+        messageType:handleForward_el?.messageType
       });
 
     } catch (error) {
@@ -720,7 +723,7 @@ function PersonalMsgScreen() {
                   </div>
                   <div className="txtbtn flexrow gap20">
                     <span className="bold pointer txtbtn_clr" onClick={() => { setForwarding(false) }}>Cancel</span>
-                    <span className="bold pointer txtbtn_clr" onClick={() => { handleForward(handleForward_el) }}>Forward</span>
+                    <span className="bold pointer txtbtn_clr" onClick={() => { handleForward(handleForward_el) }}>Forward -button</span>
                   </div>
 
                 </div>
