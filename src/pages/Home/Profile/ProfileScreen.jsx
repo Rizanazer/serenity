@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import "./Profile.css";
-import { MdEdit, MdEditOff, MdDone } from "react-icons/md";
+import { MdEdit, MdEditOff, MdDone,MdViewList } from "react-icons/md";
 import axios from "axios";
-function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation }) {
+function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,setviewprofileImage }) {
 
   function ToggleLocationEdit() {
     setLocation(prev => !prev);
@@ -118,8 +118,8 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
   function ToggleAnonimus() {
     setAnonimity((prevAnonimity) => !prevAnonimity);
     userdata.anonymity = !Anonimity
-    localStorage.setItem('userdata',JSON.stringify(userdata))
-    
+    localStorage.setItem('userdata', JSON.stringify(userdata))
+
     handleButtonData()
   }
 
@@ -132,6 +132,12 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
           <div className="section2 profilesection1 flex flexcolumn">
             <div className="profile_photosection center">
               <img src={`/uploads/profilePictures/${userdata.profilePicture}`} alt="image" className="circle profilemain_photo profile_chat_img" />
+              <div className="profile_photosection-overlay center">
+                <MdEdit className="icon_search" color="#fff" onClick={() => { }} />
+                <MdViewList className="icon_search" color="#fff" onClick={() => {
+                  setviewprofileImage(userdata.profilePicture)
+                }} />
+              </div>
             </div>
             <div className="profile_postsection">
               <div className="box h_w_full center">
@@ -176,7 +182,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation 
                 {Location ?
                   <>
                     <input type="text" className="bold edit_account_elmt padding10" value={location} onChange={(event) => { set_location(event.target.value) }} />
-                    <MdDone className="violetHover" onClick={() => {handleLocationData() }} />
+                    <MdDone className="violetHover" onClick={() => { handleLocationData() }} />
                     <MdEditOff className="violetHover" onClick={() => { ToggleLocationEdit() }} />
                   </>
                   :

@@ -1,11 +1,10 @@
 import { MdArrowBack, MdReport, MdGroups, MdBlockFlipped, MdLocationPin, MdEdit, MdViewList } from "react-icons/md";
 import { IoMdHeartDislike } from "react-icons/io";
 import { GiExitDoor } from "react-icons/gi";
-import SideScreenCommunityMemberFn from "./SideScreen_communityMember";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-var SideScreenCommunityDetailsFn = ({ setIndividualCommunity, handleClick, data, actions,setviewprofileImage,viewprofileImage }) => {
+var SideScreenCommunityDetailsFn = ({ handleClick, data, actions,setviewprofileImage }) => {
     const userdata = JSON.parse(localStorage.getItem('userdata'))
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])

@@ -13,12 +13,13 @@ import CreateCommunity from "./Functions/createcommunity/createCommunity";
 import AccountSettings from "./Settings/Accounts/Accounts";
 import Theme_Settings from "./Settings/Theme/Theme";
 import Notification_Settings from "./Settings/Notification/Notification";
+import { MdClose } from "react-icons/md";
 
 const Home = () => {
   var [ViewChat, setViewChat] = useState(false);
   var [Profile, setProfile] = useState(false);
   var [Account, setAccount] = useState(false);
-
+  const [viewprofileImage, setviewprofileImage] = useState(null)
   var [NotificationSetting, setNotificationSetting] = useState(false);
   var [Theme, setTheme] = useState(false);
 
@@ -141,7 +142,7 @@ const Home = () => {
   // console.log(individualCommunity);
   return (
     <>
-      {localStorage.getItem('validation') &&localStorage.getItem('validation') ==="true"?<div className="container center ">
+      {localStorage.getItem('validation') && localStorage.getItem('validation') === "true" ? <div className="container center ">
         {/* settings */}
         {Setting && <div className="overlay">
           <div className="flex flexrow h_w_full">
@@ -166,7 +167,14 @@ const Home = () => {
               />
             </div>
             <div className="flex set2 h_w_full">
+              {
+                viewprofileImage && <div className="videoPlayer">
+                  <img src={`uploads/profilePictures/${viewprofileImage}`} />
+                  <MdClose size={50} color="#fff" className="close-button" onClick={() => { setviewprofileImage(false) }} />
+                </div>
+              }
               {Profile && <ProfileScreen
+                setviewprofileImage={setviewprofileImage}
                 Location={Edit_profLocation}
                 setLocation={setEdit_profLocation}
                 ProfileStatus={Edit_profStatus}
@@ -220,8 +228,8 @@ const Home = () => {
           setScreen={setScreen} />}
         {Screen === "AddFriends" && <AddFriendsScreen />}
         {CreateAlert && <CreateCommunity setCreateAlert={setCreateAlert} fetchCommunityDetails={fetchCommunityDetails} />}
-      </div>:<div><img src="images/smiley.gif" alt="" /><span>Finish Login to enter Home</span><button onClick={()=>window.location = '/'}>Go to login</button></div>
-            }
+      </div> : <div><img src="images/smiley.gif" alt="" /><span>Finish Login to enter Home</span><button onClick={() => window.location = '/'}>Go to login</button></div>
+      }
     </>
 
   );
