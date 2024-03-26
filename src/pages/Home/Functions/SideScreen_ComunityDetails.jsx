@@ -7,13 +7,13 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions, setviewprofile
     const userdata = JSON.parse(localStorage.getItem('userdata'))
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])
+    const fileInputImageRef = useRef(null);
 
     useEffect(() => {
         async function getmemberdata() {
             try {
                 const response = await axios.post('/getmemberdata', { c_id: data.selectedCommunity })
                 setMembernames(response.data.names)
-                // console.log(memberNames)
                 console.log(response.data.names)
             } catch (error) {
                 console.log('error fetching membername')
@@ -21,7 +21,6 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions, setviewprofile
         }
         getmemberdata()
     }, [data.selectedCommunity])
-    const fileInputImageRef = useRef(null);
     const updateCommunityimage = () => {
         fileInputImageRef.current.click();
 
