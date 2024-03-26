@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Profile.css";
 import { MdEdit, MdEditOff, MdDone,MdViewList } from "react-icons/md";
 import axios from "axios";
@@ -122,6 +122,11 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
 
     handleButtonData()
   }
+  const fileInputImageRef = useRef(null);
+  const updateimage = () => {
+    fileInputImageRef.current.click();
+
+  };
 
   return (
     <>
@@ -133,7 +138,10 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
             <div className="profile_photosection center">
               <img src={`/uploads/profilePictures/${userdata.profilePicture}`} alt="image" className="circle profilemain_photo profile_chat_img" />
               <div className="profile_photosection-overlay center">
-                <MdEdit className="icon_search" color="#fff" onClick={() => { }} />
+                <MdEdit className="icon_search" color="#fff" onClick={updateimage} />
+                <input type="file" accept="image/*" ref={fileInputImageRef} name="profilePicture" 
+                style={{display:"none"}}
+                onChange={(e)=>e.target.files[0]} required/>
                 <MdViewList className="icon_search" color="#fff" onClick={() => {
                   setviewprofileImage(userdata.profilePicture)
                 }} />

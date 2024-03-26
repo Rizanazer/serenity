@@ -2,13 +2,13 @@ import { MdArrowBack, MdReport, MdGroups, MdBlockFlipped, MdLocationPin, MdEdit,
 import { IoMdHeartDislike } from "react-icons/io";
 import { GiExitDoor } from "react-icons/gi";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-var SideScreenCommunityDetailsFn = ({ handleClick, data, actions,setviewprofileImage }) => {
+var SideScreenCommunityDetailsFn = ({ handleClick, data, actions, setviewprofileImage }) => {
     const userdata = JSON.parse(localStorage.getItem('userdata'))
     console.log(data.selectedCommunity);
     const [memberNames, setMembernames] = useState([])
-    
+
     useEffect(() => {
         async function getmemberdata() {
             try {
@@ -22,6 +22,11 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions,setviewprofileI
         }
         getmemberdata()
     }, [data.selectedCommunity])
+    const fileInputImageRef = useRef(null);
+    const updateCommunityimage = () => {
+        fileInputImageRef.current.click();
+
+    };
     async function exitcommunity(c_id) {
         actions.setViewChat(false)
         actions.setSideScreen(false)
@@ -49,12 +54,17 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions,setviewprofileI
             </div>
             <div className="section3_1">
                 <div className="section3_1_1" >
-                   
+
                     <img src={`uploads/communityIcons/${data.selectedCommunityIcon}`} className="section3_1_1" alt="" />
                     <div className="section3_1_1-overlay center">
-                        <MdEdit className="icon_search" color="#fff" onClick={()=>{}}/>
-                        <MdViewList className="icon_search" color="#fff" onClick={() => {setviewprofileImage(data.selectedCommunityIcon)
-                    }}/>
+
+                        <MdEdit className="icon_search" color="#fff" onClick={updateCommunityimage} />
+                        <input type="file" accept="image/*" ref={fileInputImageRef} name="profilePicture"
+                            style={{ display: "none" }}
+                            onChange={(e) => e.target.files[0]} required />
+                        <MdViewList className="icon_search" color="#fff" onClick={() => {
+                            setviewprofileImage(data.selectedCommunityIcon)
+                        }} />
 
                     </div>
                 </div>
