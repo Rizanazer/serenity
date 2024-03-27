@@ -45,6 +45,18 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions, setviewprofile
             console.error(error)
         }
     }
+    
+    const replacePicture = async (event)=>{
+        const formdata = new FormData()
+        const file = event.target.files[0]
+        formdata.append("c_id",data.selectedCommunity)
+        formdata.append("filename",file)
+        try{
+          const response = await axios.post('/replaceCommunityIcon',formdata)
+        }catch(error){
+          console.error("failure replacing image")
+        }
+      }
     return (
         <>
             <div className="section3_back">
@@ -57,9 +69,9 @@ var SideScreenCommunityDetailsFn = ({ handleClick, data, actions, setviewprofile
                     <div className="section3_1_1-overlay center">
 
                         <MdEdit className="icon_search" color="#fff" onClick={updateCommunityimage} />
-                        <input type="file" accept="image/*" ref={fileInputImageRef} name="profilePicture"
+                        <input type="file" accept="image/*" ref={fileInputImageRef} onChange={replacePicture} name="profilePicture"
                             style={{ display: "none" }}
-                            onChange={(e) => e.target.files[0]} required />
+                             required />
                         <MdViewList className="icon_search" color="#fff" onClick={() => {
                             setviewprofileImage(data.selectedCommunityIcon)
                         }} />

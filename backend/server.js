@@ -224,17 +224,28 @@ router.route("/register").post(profilePictureUpload.single('profilePicture'), as
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-router.post("/replacePicture", profilePictureUpload.single('media'),async(req,res)=>{
+router.post("/replaceProfilePicture", profilePictureUpload.single('filename'),async(req,res)=>{
   try{
-    const {type,u_id} = req.body
-    const filename = req.file.filename
-    if(type === 'profilepic'){
+      const {u_id} = req.body
+      const filename = req.file.filename
       const result = await User.findOne({_id:u_id})
       result.profilePicture = filename
       result.save()
       console.log("req-----------------------------------------------");
+      console.log(req.body);  
+  }catch(error){
+    console.error('error in changing profile or in communityicon')
+  }
+})
+router.post("/replaceCommunityIcon", uploadCommunityIcon.single('filename'),async(req,res)=>{
+  try{
+      const {c_id} = req.body
+      const filename = req.file.filename
+      const result = await Community.findOne({_id:c_id})
+      result.communityIcon = filename
+      result.save()
+      console.log("req-----------------------------------------------");
       console.log(req.body);
-    }
   }catch(error){
     console.error('error in changing profile or in communityicon')
   }

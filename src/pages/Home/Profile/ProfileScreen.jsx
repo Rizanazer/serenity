@@ -125,8 +125,19 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
   const fileInputImageRef = useRef(null);
   const updateimage = () => {
     fileInputImageRef.current.click();
-
   };
+  const replacePicture = async (event)=>{
+    const formdata = new FormData()
+    const file = event.target.files[0]
+    formdata.append("type","profilepic")
+    formdata.append("u_id",localStorage.getItem('userid'))
+    formdata.append("filename",file)
+    try{
+      const response = await axios.post('/replaceProfilePicture',formdata)
+    }catch(error){
+      console.error("failure replacing image")
+    }
+  }
 
   return (
     <>
@@ -139,9 +150,8 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
               <img src={`/uploads/profilePictures/${userdata.profilePicture}`} alt="image" className="circle profilemain_photo profile_chat_img" />
               <div className="profile_photosection-overlay center">
                 <MdEdit className="icon_search" color="#fff" onClick={updateimage} />
-                <input type="file" accept="image/*" ref={fileInputImageRef} name="profilePicture" 
-                style={{display:"none"}}
-                onChange={(e)=>e.target.files[0]} required/>
+                <input type="file" accept="image/*" ref={fileInputImageRef} onChange={replacePicture} name="profilePicture" 
+                style={{display:"none"}} required/>
                 <MdViewList className="icon_search" color="#fff" onClick={() => {
                   setviewprofileImage(userdata.profilePicture)
                 }} />
