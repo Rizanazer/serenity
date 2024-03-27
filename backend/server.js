@@ -224,6 +224,21 @@ router.route("/register").post(profilePictureUpload.single('profilePicture'), as
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+router.post("/replacePicture", profilePictureUpload.single('media'),async(req,res)=>{
+  try{
+    const {type,u_id} = req.body
+    const filename = req.file.filename
+    if(type === 'profilepic'){
+      const result = await User.findOne({_id:u_id})
+      result.profilePicture = filename
+      result.save()
+      console.log("req-----------------------------------------------");
+      console.log(req.body);
+    }
+  }catch(error){
+    console.error('error in changing profile or in communityicon')
+  }
+})
 router.post('/getUsersCommunities', async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.body.id });
