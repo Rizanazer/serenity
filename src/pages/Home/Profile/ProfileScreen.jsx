@@ -31,6 +31,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
   var [Hobies, setHobies] = useState([]);
   var [Status, setStatus] = useState("");
   var [Gender, setGender] = useState(null);
+  const [profilePicture,setProfilePicture] = useState(null)
   var [location, set_location] = useState(null);
   var [Age, setAge] = useState(null);
   var [Anonimity, setAnonimity] = useState(false)
@@ -44,6 +45,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
     setGender(userdata.gender);
     setAge(userdata.dob);
     setAnonimity(userdata.anonymity);
+    setProfilePicture(userdata.profilePicture)
     fetchProfileUpdate()
     // console.log( "##################" ,Status)
   }, []);
@@ -134,6 +136,9 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
     formdata.append("filename",file)
     try{
       const response = await axios.post('/replaceProfilePicture',formdata)
+      userdata.profilePicture = response.data.profilePicture
+      localStorage.setItem('userdata',JSON.stringify(userdata))
+      setProfilePicture(response.data.profilePicture)
     }catch(error){
       console.error("failure replacing image")
     }
@@ -147,13 +152,13 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
 
           <div className="section2 profilesection1 flex flexcolumn">
             <div className="profile_photosection center">
-              <img src={`/uploads/profilePictures/${userdata.profilePicture}`} alt="image" className="circle profilemain_photo profile_chat_img" />
+              <img src={`/uploads/profilePictures/${profilePicture}`} alt="image" className="circle profilemain_photo profile_chat_img" />
               <div className="profile_photosection-overlay center">
                 <MdEdit className="icon_search" color="#fff" onClick={updateimage} />
                 <input type="file" accept="image/*" ref={fileInputImageRef} onChange={replacePicture} name="profilePicture" 
                 style={{display:"none"}} required/>
                 <MdViewList className="icon_search" color="#fff" onClick={() => {
-                  setviewprofileImage(userdata.profilePicture)
+                  setviewprofileImage(profilePicture)
                 }} />
               </div>
             </div>

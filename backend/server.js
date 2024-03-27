@@ -231,8 +231,7 @@ router.post("/replaceProfilePicture", profilePictureUpload.single('filename'),as
       const result = await User.findOne({_id:u_id})
       result.profilePicture = filename
       result.save()
-      console.log("req-----------------------------------------------");
-      console.log(req.body);  
+      res.json({"profilePicture":filename})
   }catch(error){
     console.error('error in changing profile or in communityicon')
   }
@@ -244,8 +243,7 @@ router.post("/replaceCommunityIcon", uploadCommunityIcon.single('filename'),asyn
       const result = await Community.findOne({_id:c_id})
       result.communityIcon = filename
       result.save()
-      console.log("req-----------------------------------------------");
-      console.log(req.body);
+      res.json({"communityIcon":filename})
   }catch(error){
     console.error('error in changing profile or in communityicon')
   }
