@@ -612,13 +612,13 @@ function PersonalMsgScreen() {
                       </p>}
                       {
                         el.messageType === "image" &&
-                        <Image src={`uploads/personalMessageImages/${el.filename}`} 
+                        <Image src={`uploads/${el.filename}`} 
                         onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                         // <p>here comes an image</p>
                       }
                       {
                         el.messageType === "video" &&
-                        <Video src={`uploads/personalMessageImages/${el.filename}`} 
+                        <Video src={`uploads/${el.filename}`} 
                         onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                         // <p>here comes an image</p>
                       }
@@ -640,11 +640,11 @@ function PersonalMsgScreen() {
                      
                       {
                         el.messageType === "image" &&
-                        <Image src={`uploads/personalMessageImages/${el.filename}`} 
+                        <Image src={`uploads/${el.filename}`} 
                         onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                       }{
                         el.messageType === "video" &&
-                        <Video src={`uploads/personalMessageImages/${el.filename}`} 
+                        <Video src={`uploads/${el.filename}`} 
                         onContextMenu={(e) => handleContextMenuMedia(e, el)} />
                         // <p>here comes an image</p>
                       }

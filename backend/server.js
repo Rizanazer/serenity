@@ -65,11 +65,11 @@ const uploadCommunityMessagevideo = multer({ storage: storeCommunityMessagevideo
 /////////////////////////////////////////////////////////multer community message storing end here
 const storePersonalMessageImage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '/uploads/personalMessageImages'));
+    cb(null, path.join(__dirname, '/uploads/personalMessageMedia'));
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'personalMessageImage-' + uniqueSuffix + path.extname(file.originalname));
+    cb(null, 'personalMessageMedia-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
 const uploadPersonalMessageImage = multer({ storage: storePersonalMessageImage });
@@ -97,7 +97,7 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
         u_id,
         u_name,
         profilePicture,
-        filename,
+        filename:`communityMessageImages/${filename}`,
         messagetype: "image",
         caption: "caption by user available soon"
       });
@@ -109,7 +109,7 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
           u_id,
           u_name,
           profilePicture,
-          filename,
+          filename:`communityMessageImages/${filename}`,
           messagetype: "image",
           caption: "caption by user available soon"
         }]
@@ -133,7 +133,7 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
       existingChat.messages.push({
         u_id,
         u_name,
-        filename,
+        filename:`communityMessageVideos/${filename}`,
         profilePicture,
         messagetype: "video",
         caption: "caption by user available soon"
@@ -146,7 +146,7 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
           u_id,
           u_name,
           profilePicture,
-          filename,
+          filename:`communityMessageVideos/${filename}`,
           messagetype: "video",
           caption: "caption by user available soon"
         }]
@@ -176,7 +176,7 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
       existingChat.messages.push({
         from: u_id,
         to: f_id,
-        filename: filename,
+        filename: `personalMessageMedia/${filename}`,
         messageType: mediatype,
         caption: "caption by user available soon"
       });
@@ -187,7 +187,7 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
         messages: [{
           from: u_id,
           to: f_id,
-          filename: filename,
+          filename: `personalMessageMedia/${filename}`,
           messageType: mediatype,
           caption: "caption by user available soon"
         }]
@@ -196,7 +196,7 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
     io.emit('newPersonalMediaMessage', {
       from: u_id,
       to: f_id,
-      filename: filename,
+      filename: `personalMessageMedia/${filename}`,
       messageType: mediatype,
       caption: "caption by user available soon"
     });

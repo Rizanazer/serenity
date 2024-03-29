@@ -538,7 +538,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                             <div className="flex flexcolumn">
                               {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0 }}>forwarded</p> : <></>}
                               <Image
-                                src={`uploads/communityMessageImages/${el.filename}`}
+                                src={`uploads/${el.filename}`}
                                 onContextMenu={(e) => handleContextMenuMedia(e, el)}
                               />
                             </div>
@@ -547,7 +547,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                           {el.messagetype === "video" && (
                             <div className="flex flexcolumn">
                               {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0, marginLeft: 67 }}>forwarded</p> : <></>}
-                              <Video src={`uploads/communityMessageVideos/`}
+                              <Video src={`uploads/${el.filename}`}
                                 onContextMenu={(e) => handleContextMenuMedia(e, el)}
                               />
                             </div>
@@ -588,7 +588,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                             <div className="flex flexcolumn">
                               {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0 }}>forwarded</p> : <></>}
                               <Image
-                                src={`uploads/communityMessageImages/${el.filename}`}
+                                src={`uploads/${el.filename}`}
                                 onContextMenu={(e) => handleContextMenuMedia(e, el)}
                               />
                             </div>
@@ -597,7 +597,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                           {el.messagetype === "video" && (
                             <div className="flex flexcolumn">
                               {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0, marginLeft: 67 }}>forwarded</p> : <></>}
-                              <Video src={`uploads/communityMessageVideos/${el.filename}`}
+                              <Video src={`uploads/${el.filename}`}
                                 onContextMenu={(e) => handleContextMenuMedia(e, el)}
                               />
                             </div>
