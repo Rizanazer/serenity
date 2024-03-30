@@ -105,20 +105,23 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   useEffect(() => {
     get_c_messages()
   }, [selectedCommunity])
-
+///////////////////////////////////////////////////////////
+  
   useEffect(() => {
-
     const newSocket = io('http://:3000');
     setSocket(newSocket);
-
     newSocket.on('connect', () => {
       console.log('Connected to the server socket');
+      newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
     });
 
     newSocket.on('newMessage', async (message) => {
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profile": message.profilePicture }
       setMessages((prev) => [...prev, appenddata])
     });
+    newSocket.on('disconnect',async ()=>{
+      await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
+    })
     return () => {
       newSocket.disconnect();
       console.error('Disconnected from the server')

@@ -1123,7 +1123,36 @@ router.post('/update-serenity-score', async (req, res) => {
 });
 
 app.use('/', router)
+router.post('/setoffline', async(req,res)=>{
+  const {u_id} = req.body
+  try{
+    const result = await User.findOne({_id:u_id})
+    if(result.online === false){
+      console.log(`already offline`);
+      return res.send('already offline')
+    }
+    result.online = false
+    result.save()
+    console.log('set offline')
+    res.send('set offline')
+  }catch(error){
+    console.log(error)
+  }
+})
 io.on('connection', (socket) => {
+  socket.on('setonline',async (data)=>{
+    const {u_id} = data
+    try{
+      const result = await User.findOne({_id:u_id})
+      if(result.online === true){
+        return console.log('already online')
+      }
+      result.online = true
+      result.save()
+    }catch(error){
+      console.log(error)
+    }
+  })
   socket.on('send_p_message', async (msg) => {
     const { from, to, chatid, message } = msg;
     const existingChat = await DirectChats.findOne({
