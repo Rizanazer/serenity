@@ -450,3 +450,12 @@
     display: flex;
     align-self: flex-start;
 }
+.datecontainer{
+    background-color: rgb(134, 179, 221);
+    min-width: max-content;
+    max-width: max-content;
+    margin: auto;
+    border: solid 1px rgb(134, 179, 221);
+    border-radius: 10px;
+    padding: 5px 12px;
+}

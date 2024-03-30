@@ -1,4 +1,5 @@
 // 
+import '../Home.css'
 import React, { useEffect, useState, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
 import { MdForward, MdTranslate, MdDelete, MdClose, MdArrowBack, MdMoreVert, MdOutlineImage, MdSend, MdVideoFile } from "react-icons/md";
@@ -59,6 +60,8 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
   const [ForwardMessage, setForwardMessage] = useState("");
   const [handleForward_el, sethandleForward_el] = useState("");
   const [forwarding, setForwarding] = useState(false);
+  const [lastDisplayedTimestamp, setLastDisplayedTimestamp] = useState(null);
+
   const navigate = useNavigate()
   useEffect(() => {
     setAnonymity(userdata.anonymity)
@@ -377,6 +380,26 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
       console.error(error)
     }
   }
+
+  //////////////////show date function previous unused now
+  const [dateToDisplay,setDateToDisplay] = useState('')
+
+  const isNewDay = (timestamp) => {
+    if (!dateToDisplay) {
+      return true; 
+    }
+    const fulldatefromdb = new Date(timestamp);
+    const dbmonth = fulldatefromdb.getMonth();
+    const dbday = fulldatefromdb.getDate();
+    const dbyear = fulldatefromdb.getFullYear();
+    const dbDateString = `${dbday}/${dbmonth}/${dbyear}`;
+    if (dateToDisplay !== dbDateString) {
+      setDateToDisplay(dbDateString); 
+      return true;
+    }
+    return false;
+  };
+  
   return (
     <>
       <div className="section1 section_margin box relative_pos">
@@ -507,6 +530,13 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
 
               {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
+                    {/* Date here{isNewDay(el.timeStamp)&&(<div>dateeeeee:{dateToDisplay}</div>) } */}
+                    {(new Date(el.timeStamp).getDate()===(new Date(lastDisplayedTimestamp)).getDate()) &&
+                    (new Date(el.timeStamp).getMonth()===(new Date(lastDisplayedTimestamp)).getMonth()) &&
+                    (new Date(el.timeStamp).getFullYear()===(new Date(lastDisplayedTimestamp)).getFullYear())
+                    ? 
+                    <div className=" datecontainer"></div>:
+                    <div className=" datecontainer" >{(new Date(el.timeStamp)).getDate()}/{(new Date(el.timeStamp)).getMonth()+1}/{(new Date(el.timeStamp)).getFullYear()}</div> }
                   {
                     el.u_name === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
