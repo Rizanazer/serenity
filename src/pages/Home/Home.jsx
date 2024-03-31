@@ -4,7 +4,7 @@ import './Home.css'
 import PersonalMsgScreen from "./PersonalMessage/PersonalMessageScreen";
 import AddFriendsScreen from "./AddFriends/AddFriendsScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
-
+import { io } from "socket.io-client"
 import SearchScreen from "./Search/SearchScreen";
 import SettingsScreen from "./Settings/SettingsScreen";
 import Nav from "./Nav/Nav";
@@ -37,7 +37,7 @@ const Home = () => {
   //
   const [selectedCommunityIcon, setSelectedCommunityIcon] = useState(null)
   const [selectedCommunityName, setSelectedCommunityName] = useState(null)
-  const [selectedCommunity, setSelectedCommunity] = useState("")
+  const [selectedCommunity, setSelectedCommunity] = useState(null)
   const [Screen, setScreen] = useState("PersonalMessage");
   const [CreateAlert, setCreateAlert] = useState(false);
   const [individualCommunity, setIndividualCommunity] = useState([])
@@ -57,6 +57,30 @@ const Home = () => {
     setNotificationSetting(false);
     setTheme(false);
   };
+  /////////////////////////////socketttt
+  useEffect(()=>{
+  const newSocket = io('http://:3000');
+    newSocket.on('connect', () => {
+      console.log('Connected to the server socket');
+    });
+
+    newSocket.on('newMessage', async (message) => {
+    if (communityList.length > 0) {
+      if (userdata) {
+        fetchCommunityDetails();
+      }
+    }
+    });
+    newSocket.on('disconnect',async ()=>{
+      await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
+    })
+    return async () => {
+      await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
+      newSocket.disconnect();
+      console.error('Disconnected from the server')
+    };
+  }, []);
+
   // const toggleEmail = () => {
   //   setEdit_email(prevState => !prevState);
   //   setProfile(false);

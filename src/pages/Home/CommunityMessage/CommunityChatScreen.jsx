@@ -30,6 +30,7 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
   const [allCommunityMessages, setAllCommunityMessages] = useState([]);
   const [socket, setSocket] = useState(null);
   var [rightclk, setrightclk] = useState(false);
+  const [selectedCommunityTemp,setSelectedCommunityTemp] = useState(null)
   const hoverTimer = useRef(null);
   const [hoveredMessage, setHoveredMessage] = useState("");
   const [selectedUser, setSelectedUser] = useState({ username: '', userid: '' });
@@ -78,9 +79,11 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
   }, [messages, scrollPosition]);
 
   async function onclick(id, name, desc, icon) {
+    setSelectedCommunityTemp(id)
     await setSelectedCommunity(id);
     console.log(`----------------------------------------------------------lll`);
     if(selectedCommunity){
+     console.log(selectedCommunity);
       await axios.post('/clearunread_in_c',{u_id:localStorage.getItem('userid'),c_id:selectedCommunity})
       const updatedCommunities = individualCommunity.map(community => {
         if (community._id === selectedCommunity) {
@@ -133,7 +136,17 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
 
     newSocket.on('newMessage', async (message) => {
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profile": message.profilePicture }
-        setMessages((prev) => [...prev, appenddata])
+      console.log(`new message ---------------------------------------------------`);
+      console.log(typeof(message.c_id));
+      console.log(`new message -------temp--------------------------------------------`);
+      console.log(typeof(selectedCommunity));
+     if(selectedCommunity && message.c_id){
+      if(message.c_id === selectedCommunity){
+      if(messages){
+        setMessages((prev) => [...(prev || []), appenddata])
+      }else{
+        setMessages(appenddata)
+      }}}
       const updatedCommunities = individualCommunity.map(community => {
         if (community._id === selectedCommunity) {
             const updatedUnreadCount = community.unreadcount.map(countObj => {
@@ -155,7 +168,7 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
       newSocket.disconnect();
       console.error('Disconnected from the server')
     };
-  }, [allCommunityMessages]);
+  }, [selectedCommunity]);
 
 
   const toggleMore = () => {
