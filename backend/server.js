@@ -252,7 +252,7 @@ router.post('/getUsersCommunities', async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.body.id });
     const communityIds = user.communities;
-    const communities = await Community.find({ _id: { $in: communityIds } });
+    const communities = await Community.find({ _id: { $in: communityIds } }).populate('unreadcount');
     res.json(communities);
   } catch (error) {
     console.error(error);
@@ -262,7 +262,7 @@ router.post('/getUsersCommunities', async (req, res) => {
 router.post('/individualcommunity', async (req, res) => {
   try {
     const communityIds = req.body.data;
-    const communities = await Community.find({ _id: { $in: communityIds } });
+    const communities = await Community.find({ _id: { $in: communityIds } }).populate('unreadcount');
     res.json(communities);
   } catch (error) {
     console.error(error);
@@ -806,6 +806,20 @@ router.post("/searchcommunity", async (req, res) => {
     res.json({ "success": false })
   }
 })
+
+router.post('/clearunread_in_c',async (req,res)=>{
+  try{
+  console.log(req.body)
+  const {c_id,u_id} = req.body
+  const result = await CommunityChats.updateOne(
+    { communityId:c_id, "unreadcount.user": u_id },
+    { $set: { "unreadcount.$.count": 0 } }
+  );
+res.send('success')}
+catch(error){
+  console.log(error)
+}
+})
 router.post("/recommendedcommunity", async (req, res) => {
   try {
     const userProfile = req.body.user_profile;
@@ -1121,7 +1135,22 @@ router.post('/update-serenity-score', async (req, res) => {
     res.status(500).json({ error: 'Failed to update serenity score' });
   }
 });
-
+router.post('/specialpurpose1',async(req,res)=>{
+  try{
+    // await CommunityChats.updateMany({}, { $unset: { unreadcount: 1 } });
+    const result = await Community.find()
+    for(const elem of result){
+      for(const elem2 of elem.communityId.members ){
+        elem.unreadcount.push({'user':elem2,'count':0})
+      }
+      await elem.save()
+    }
+    res.send("hi")
+  }catch(error){
+    res.send("error")
+    console.error(error)
+  }
+})
 app.use('/', router)
 router.post('/setoffline', async(req,res)=>{
   const {u_id} = req.body
@@ -1265,9 +1294,16 @@ io.on('connection', (socket) => {
       const existingChat = await CommunityChats.findOne({ communityId: c_id });
       if (existingChat) {
         existingChat.messages.push({ u_id, message, u_name, profilePicture, anonymity });
+        for (const elem of existingChat.unreadcount){
+          if(elem.user != u_id){
+            elem.count += 1
+          }
+        }
         await existingChat.save();
       } else {
-        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }] });
+        const members = await Community.findById(c_id).select('members'); 
+        const unreadcount = members.map(member => ({ userId: member, count: 0 }));
+        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }],unreadcount:unreadcount });
       }
       io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity, c_id });
     } catch (error) {

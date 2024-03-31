@@ -11,6 +11,7 @@ const communitySchema = mongoose.Schema({
   description: String,
   purpose: {type:String,default:""},
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], 
+  unreadcount: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CommunityChats' }],
   admins : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], 
   timeStamp: {
     type: Date,

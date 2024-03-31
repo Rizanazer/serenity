@@ -79,13 +79,18 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
 
 
   async function onclick(id, name, desc, icon) {
-    setViewChat(true);
-    setSelectedCommunityName(name);
-    setselectedCommunityStatus(desc);
-    setSelectedCommunityIcon(icon);
-    setSelectedCommunity(id);
-
+    
+    
+    await setSelectedCommunity(id);
+    if(selectedCommunity){
+      await axios.post('/clearunread_in_c',{u_id:localStorage.getItem('userid'),c_id:selectedCommunity})
+      setViewChat(true);
+      setSelectedCommunityName(name);
+      setselectedCommunityStatus(desc);
+      setSelectedCommunityIcon(icon);
+    }
   }
+
 
 
   async function get_c_messages() {
@@ -402,7 +407,8 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     }
     return false;
   };
-  
+  console.log("ssssssssssssssssssssssssssssssssssssssssssssssssss");
+        console.log(individualCommunity);
   return (
     <>
       <div className="section1 section_margin box relative_pos">
@@ -410,6 +416,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
           <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={handleSearchCommunityName} />
           <Menu setScreen={screen} setCreateAlert={create} />
         </div>
+        
         {individualCommunity.map((el, i) =>
           <div className="box chat pointer min_boxwidth minheight relative_pos ">
             <div className="chat_info relative_pos" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
@@ -420,6 +427,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
                 </div>
                 <div className="textlength_para ">
                   {el.lastmessage && el.lastmessagesender && <span className="light">{el.lastmessagesender}: {el.lastmessage}</span>}
+                  <div>ggiig:{el.unreadcount}</div>
                 </div>
               </div>
             </div>
