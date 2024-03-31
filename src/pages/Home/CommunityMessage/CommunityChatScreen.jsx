@@ -20,7 +20,7 @@ import fetchProfileUpdate from "../Functions/fetchownprofile";
 import logout from "../Settings/logoutFn";
 import { useNavigate } from "react-router-dom";
 
-function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [viewprofileImage, setviewprofileImage] = useState(null)
   const [error, seterror] = useState("");
@@ -77,13 +77,24 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     }, 100);
   }, [messages, scrollPosition]);
 
-
   async function onclick(id, name, desc, icon) {
-    
-    
     await setSelectedCommunity(id);
+    console.log(`----------------------------------------------------------lll`);
     if(selectedCommunity){
       await axios.post('/clearunread_in_c',{u_id:localStorage.getItem('userid'),c_id:selectedCommunity})
+      const updatedCommunities = individualCommunity.map(community => {
+        if (community._id === selectedCommunity) {
+            const updatedUnreadCount = community.unreadcount.map(countObj => {
+                if (countObj.user === localStorage.getItem('userid')) {
+                    return { ...countObj, count: 0 };
+                }
+                return countObj;
+            });
+            return { ...community, unreadcount: updatedUnreadCount };
+        }
+        return community;
+    });
+      setIndividualCommunity(updatedCommunities);
       setViewChat(true);
       setSelectedCommunityName(name);
       setselectedCommunityStatus(desc);
@@ -122,7 +133,20 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
 
     newSocket.on('newMessage', async (message) => {
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profile": message.profilePicture }
-      setMessages((prev) => [...prev, appenddata])
+        setMessages((prev) => [...prev, appenddata])
+      const updatedCommunities = individualCommunity.map(community => {
+        if (community._id === selectedCommunity) {
+            const updatedUnreadCount = community.unreadcount.map(countObj => {
+                if (countObj.user === localStorage.getItem('userid')) {
+                    return { ...countObj, count: 0 };
+                }
+                return countObj;
+            });
+            return { ...community, unreadcount: updatedUnreadCount };
+        }
+        return community;
+    });
+      setIndividualCommunity(updatedCommunities);
     });
     newSocket.on('disconnect',async ()=>{
       await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
@@ -407,8 +431,7 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
     }
     return false;
   };
-  console.log("ssssssssssssssssssssssssssssssssssssssssssssssssss");
-        console.log(individualCommunity);
+  
   return (
     <>
       <div className="section1 section_margin box relative_pos">
@@ -424,10 +447,19 @@ function CommunityMsgScreen({ selectedCommunityIcon, setSelectedCommunityIcon, s
               <div className=" profile_text relative_pos">
                 <div className="textlength_head ">
                   <span className="bold ">{el.communityName}</span>
+                  {el.unreadcount.map((c) => {
+                      if (c.user === localStorage.getItem('userid')) {
+                        return <div key={c._id} className="incomingchat circle center" >{c.count}</div>;
+                      }
+                      return null;
+                    })}
+
                 </div>
                 <div className="textlength_para ">
                   {el.lastmessage && el.lastmessagesender && <span className="light">{el.lastmessagesender}: {el.lastmessage}</span>}
-                  <div>ggiig:{el.unreadcount}</div>
+                  
+                  {/* Display unread count for the logged-in user */}
+                    
                 </div>
               </div>
             </div>

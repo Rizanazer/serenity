@@ -252,7 +252,7 @@ router.post('/getUsersCommunities', async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.body.id });
     const communityIds = user.communities;
-    const communities = await Community.find({ _id: { $in: communityIds } }).populate('unreadcount');
+    const communities = await Community.find({ _id: { $in: communityIds } })
     res.json(communities);
   } catch (error) {
     console.error(error);
@@ -811,8 +811,8 @@ router.post('/clearunread_in_c',async (req,res)=>{
   try{
   console.log(req.body)
   const {c_id,u_id} = req.body
-  const result = await CommunityChats.updateOne(
-    { communityId:c_id, "unreadcount.user": u_id },
+  const result = await Community.updateOne(
+    { _id:c_id, "unreadcount.user": u_id },
     { $set: { "unreadcount.$.count": 0 } }
   );
 res.send('success')}
@@ -1140,7 +1140,7 @@ router.post('/specialpurpose1',async(req,res)=>{
     // await CommunityChats.updateMany({}, { $unset: { unreadcount: 1 } });
     const result = await Community.find()
     for(const elem of result){
-      for(const elem2 of elem.communityId.members ){
+      for(const elem2 of elem.members ){
         elem.unreadcount.push({'user':elem2,'count':0})
       }
       await elem.save()
@@ -1227,6 +1227,13 @@ io.on('connection', (socket) => {
         return socket.emit({ success: false, "error": "Missing required properties." });
       }
       try {
+        const setunread = await Community.findOne({_id:c_id})
+        for (const elem of setunread.unreadcount){
+          if(elem.user != u_id){
+            elem.count += 1            
+          }
+          await setunread.save()
+        }
         const response = await axios.post(
           'https://api-inference.huggingface.co/models/unitary/toxic-bert',
           {
@@ -1294,18 +1301,15 @@ io.on('connection', (socket) => {
       const existingChat = await CommunityChats.findOne({ communityId: c_id });
       if (existingChat) {
         existingChat.messages.push({ u_id, message, u_name, profilePicture, anonymity });
-        for (const elem of existingChat.unreadcount){
-          if(elem.user != u_id){
-            elem.count += 1
-          }
-        }
         await existingChat.save();
+        
+        
       } else {
         const members = await Community.findById(c_id).select('members'); 
         const unreadcount = members.map(member => ({ userId: member, count: 0 }));
-        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }],unreadcount:unreadcount });
+        await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }]});
       }
-      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity, c_id });
+      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity });
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });

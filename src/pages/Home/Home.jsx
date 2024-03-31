@@ -203,6 +203,7 @@ const Home = () => {
         <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} setviewchat={setViewChat} />
         {Screen === "PersonalMessage" && <PersonalMsgScreen />}
         {Screen === "CommunityMessage" && <CommunityMsgScreen
+          
           selectedCommunityIcon={selectedCommunityIcon}
           setSelectedCommunityIcon={setSelectedCommunityIcon}
           fetchCommunityDetails={fetchCommunityDetails}
