@@ -1187,26 +1187,28 @@ io.on('connection', async (socket) => {
       ioconnections.splice(index, 1);
       console.log('User removed from connections:', ioconnections);
     }})
-  // socket.on('setonline',async (data)=>{
+  socket.on('setonline',async (data)=>{
 
-  //   const {u_id} = data
-  //   console.log(`a user connected`);
-  //   ioconnections.push({'s_id':socket.id,'u_id':u_id})
-  //   console.log(`sockets are : `);
-  //   console.log(ioconnections);
-  //   try{
-  //     const result = await User.findOne({_id:u_id})
-  //     if(result.online === true){
-  //       return console.log('already online')
-  //     }
-  //     result.online = true
-  //     result.save()
-  //   }catch(error){
-  //     console.log(error)
-  //   }
-  // })
+    const {u_id} = data
+    console.log(`a user connected`);
+    ioconnections.push({'s_id':socket.id,'u_id':u_id})
+    console.log(`sockets are : `);
+    console.log(ioconnections);
+    try{
+      const result = await User.findOne({_id:u_id})
+      if(result.online === true){
+        return console.log('already online')
+      }
+      result.online = true
+      result.save()
+    }catch(error){
+      console.log(error)
+    }
+  })
   socket.on('send_p_message', async (msg) => {
     const { from, to, chatid, message } = msg;
+    console.log(`message is`);
+    console.log(message);
     const existingChat = await DirectChats.findOne({
       $or: [
         { users: [from, to] },

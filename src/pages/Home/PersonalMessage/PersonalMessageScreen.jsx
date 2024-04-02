@@ -101,10 +101,11 @@ function PersonalMsgScreen({socket}) {
     if(socket){
       socket.on('recieve_p_message', (message) => {
       // console.log(message);
+      console.log("recieved pmessages")
       console.log(messages)
       const newmessage = message
       setMessages((prev) => [...prev, newmessage])
-    })
+    },[])
 
     /////////////////
     
@@ -258,8 +259,14 @@ function PersonalMsgScreen({socket}) {
     console.log("selectedChat");
     console.log(selectedChat);
     const senddata = { "from": u_id,  "to": selectedFriend, "message": trimmedText,"chatid":chatId }
+    const appenddata = { "from": u_id,  "to": selectedFriend, "messageBody": trimmedText }
+    if(socket){
     socket.emit("send_p_message", senddata);
-    setMessages(prev=>[...prev,senddata])
+  }
+    
+  setMessages(prev=>[...prev,appenddata])
+    console.log("----------------------------------appenddata");
+    // console.log(appenddata);
     setText("");
     setSearchChatInput('')
     setScrollPosition(scrollPosition + 1);

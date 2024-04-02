@@ -59,31 +59,44 @@ const Home = () => {
   };
   /////////////////////////////socketttt
   const [socket,setSocket] = useState(null)
+
+  useEffect(() => {
+    const newSocket = io('http://:3000');
+    setSocket(newSocket);
+  
+    return () => {
+      if (newSocket) {
+        newSocket.disconnect();
+        console.log('Disconnected from the server');
+      }
+    };
+  }, []);
   useEffect(()=>{
-  const newSocket = io('http://:3000');
-    setSocket(newSocket)
-    newSocket.on('connect', () => {
+    if(socket){socket.on('connect', () => {
       console.log('Connected to the server socket');
-      newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
+      socket.emit('setonline',{u_id:localStorage.getItem('userid')})
 
     });
 
-    newSocket.on('newMessage', async (message) => {
+    socket.on('newMessage', async (message) => {
     if (communityList.length > 0) {
       if (userdata) {
         fetchCommunityDetails();
       }
     }
     });
-    newSocket.on('disconnect',async ()=>{
+    socket.on('disconnect',async ()=>{
       // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
     })
-    return async () => {
-      // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
-      newSocket.disconnect();
-      console.error('Disconnected from the server')
-    };
-  }, []);
+    
+    return () => {
+      if (socket) {
+        socket.off('connect');
+        socket.off('newMessage');
+        socket.off('disconnect');
+      }
+    };}
+  }, [socket, communityList, userdata]);
 
   // const toggleEmail = () => {
   //   setEdit_email(prevState => !prevState);
