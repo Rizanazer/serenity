@@ -453,26 +453,23 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
         
         {individualCommunity.map((el, i) =>
           <div className="box chat pointer min_boxwidth minheight relative_pos ">
-            <div className="chat_info relative_pos" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
+            <div className="chat_info relative_pos center" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
               <img className="icon profile_chat_img" src={`uploads/communityIcons/${el.communityIcon}`} alt="" />
               <div className=" profile_text relative_pos">
                 <div className="textlength_head ">
                   <span className="bold ">{el.communityName}</span>
-                  {el.unreadcount.map((c) => {
-                      if (c.user === localStorage.getItem('userid')) {
-                        return <div key={c._id} className="incomingchat circle center" >{c.count}</div>;
-                      }
-                      return null;
-                    })}
-
                 </div>
                 <div className="textlength_para ">
                   {el.lastmessage && el.lastmessagesender && <span className="light">{el.lastmessagesender}: {el.lastmessage}</span>}
                   
-                  {/* Display unread count for the logged-in user */}
-                    
                 </div>
               </div>
+              {el.unreadcount[0].count===0?<></>:<>{el.unreadcount.map((c) => {
+                      if (c.user === localStorage.getItem('userid')&& c.count>0) {
+                        return <div key={c._id} className="incomingchat circle center" >{c.count}</div>;
+                      }
+                      return null;
+                    })}</>}
             </div>
           </div>
         )}
