@@ -63,7 +63,6 @@ const Home = () => {
     newSocket.on('connect', () => {
       console.log('Connected to the server socket');
     });
-
     newSocket.on('newMessage', async (message) => {
     if (communityList.length > 0) {
       if (userdata) {

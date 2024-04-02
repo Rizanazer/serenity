@@ -2,7 +2,7 @@ import ErrorMessage from "pages/Home/Functions/errormessage";
 import { FaGoogle, FaApple, FaTwitter, FaFacebook } from "react-icons/fa";
 const Login = ({ actions, userData,error, seterror, listening, setListening, spinner}) =>{
 return(
-  <div className="box_login box center">
+  <div className="box_login box center boxblur">
      <ErrorMessage error={error} listening={listening} setListening={setListening} seterror={seterror} />
      
     <input type="email" placeholder='Email' onChange={actions.handleInputChange} value={userData.mail} name="mail" required/>
