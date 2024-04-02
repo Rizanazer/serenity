@@ -58,8 +58,10 @@ const Home = () => {
     setTheme(false);
   };
   /////////////////////////////socketttt
+  const [socket,setSocket] = useState(null)
   useEffect(()=>{
   const newSocket = io('http://:3000');
+    setSocket(newSocket)
     newSocket.on('connect', () => {
       console.log('Connected to the server socket');
     });
@@ -71,10 +73,10 @@ const Home = () => {
     }
     });
     newSocket.on('disconnect',async ()=>{
-      await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
+      // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
     })
     return async () => {
-      await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
+      // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
       newSocket.disconnect();
       console.error('Disconnected from the server')
     };
@@ -224,9 +226,10 @@ const Home = () => {
 
         </div>}
         <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} setviewchat={setViewChat} />
-        {Screen === "PersonalMessage" && <PersonalMsgScreen />}
+        {Screen === "PersonalMessage" && <PersonalMsgScreen socket={socket}/>}
         {Screen === "CommunityMessage" && <CommunityMsgScreen
           
+          socket={socket}
           selectedCommunityIcon={selectedCommunityIcon}
           setSelectedCommunityIcon={setSelectedCommunityIcon}
           fetchCommunityDetails={fetchCommunityDetails}

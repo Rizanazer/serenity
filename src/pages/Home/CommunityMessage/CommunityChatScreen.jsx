@@ -20,7 +20,7 @@ import fetchProfileUpdate from "../Functions/fetchownprofile";
 import logout from "../Settings/logoutFn";
 import { useNavigate } from "react-router-dom";
 
-function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [viewprofileImage, setviewprofileImage] = useState(null)
   const [error, seterror] = useState("");
@@ -28,7 +28,7 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
   const userdata = JSON.parse(localStorage.getItem('userdata'));
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [allCommunityMessages, setAllCommunityMessages] = useState([]);
-  const [socket, setSocket] = useState(null);
+  // const [socket, setSocket] = useState(null);
   var [rightclk, setrightclk] = useState(false);
   const [selectedCommunityTemp,setSelectedCommunityTemp] = useState(null)
   const hoverTimer = useRef(null);
@@ -127,14 +127,15 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
 ///////////////////////////////////////////////////////////
   
   useEffect(() => {
-    const newSocket = io('http://:3000');
-    setSocket(newSocket);
-    newSocket.on('connect', () => {
-      console.log('Connected to the server socket');
-      newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
-    });
+    // const newSocket = io('http://:3000');
+    // setSocket(newSocket);
+    // newSocket.on('connect', () => {
+    //   console.log('Connected to the server socket');
+    //   newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
+    // });
 
-    newSocket.on('newMessage', async (message) => {
+    if(socket){
+      socket.on('newMessage', async (message) => {
       const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture }
       console.log(`new message ---------------------------------------------------`);
       console.log(typeof(message.c_id));
@@ -157,14 +158,14 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
         return community;
     });
       setIndividualCommunity(updatedCommunities);
-    });
-    newSocket.on('disconnect',async ()=>{
-      await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
-    })
-    return () => {
-      newSocket.disconnect();
-      console.error('Disconnected from the server')
-    };
+    });}
+    // socket.on('disconnect',async ()=>{
+    //   // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
+    // })
+    // return () => {
+    //   socket.disconnect();
+    //   console.error('Disconnected from the server')
+    // };
   }, [selectedCommunity]);
 
 
@@ -453,23 +454,26 @@ function CommunityMsgScreen({selectedCommunityIcon, setSelectedCommunityIcon, se
         
         {individualCommunity.map((el, i) =>
           <div className="box chat pointer min_boxwidth minheight relative_pos ">
-            <div className="chat_info relative_pos center" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
+            <div className="chat_info relative_pos" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
               <img className="icon profile_chat_img" src={`uploads/communityIcons/${el.communityIcon}`} alt="" />
               <div className=" profile_text relative_pos">
                 <div className="textlength_head ">
                   <span className="bold ">{el.communityName}</span>
+                  {el.unreadcount.map((c) => {
+                      if (c.user === localStorage.getItem('userid')) {
+                        return <div key={c._id} className="incomingchat circle center" >{c.count}</div>;
+                      }
+                      return null;
+                    })}
+
                 </div>
                 <div className="textlength_para ">
                   {el.lastmessage && el.lastmessagesender && <span className="light">{el.lastmessagesender}: {el.lastmessage}</span>}
                   
+                  {/* Display unread count for the logged-in user */}
+                    
                 </div>
               </div>
-              {el.unreadcount[0].count===0?<></>:<>{el.unreadcount.map((c) => {
-                      if (c.user === localStorage.getItem('userid')&& c.count>0) {
-                        return <div key={c._id} className="incomingchat circle center" >{c.count}</div>;
-                      }
-                      return null;
-                    })}</>}
             </div>
           </div>
         )}

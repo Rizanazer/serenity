@@ -19,7 +19,7 @@ import handleListen from "../Functions/voicetoText";
 import handleTranslate from "../Functions/transaltion_option";
 import fetchProfileUpdate from "../Functions/fetchownprofile";
 
-function PersonalMsgScreen() {
+function PersonalMsgScreen({socket}) {
 
   const userdata = JSON.parse(localStorage.getItem('userdata'))
 
@@ -62,7 +62,7 @@ function PersonalMsgScreen() {
   const alluserdatastring = localStorage.getItem('userdata')
   const friends = JSON.parse(alluserdatastring).friends
   const username = localStorage.getItem('username')
-  const [mySocket, setMySocket] = useState(null)
+  // const [mySocket, setMySocket] = useState(null)
   var [text, setText] = useState("");
   const hoverTimer = useRef(null);
   const [chats, setChats] = useState([])
@@ -96,9 +96,10 @@ function PersonalMsgScreen() {
     console.log(selectedChat)
   }, [selectedChat])
   useEffect(() => {
-    const socket = io('http://:3000');
-    setMySocket(socket)
-    socket.on('recieve_p_message', (message) => {
+    // const socket = io('http://:3000');
+    // setMySocket(socket)
+    if(socket){
+      socket.on('recieve_p_message', (message) => {
       // console.log(message);
       console.log(messages)
       const newmessage = message
@@ -119,7 +120,7 @@ function PersonalMsgScreen() {
           caption:caption
         }
       ]);
-    });
+    });}
   }, [])
   useEffect(()=>{
     setLanguage(userdata.language)
@@ -257,13 +258,14 @@ function PersonalMsgScreen() {
     console.log("selectedChat");
     console.log(selectedChat);
     const senddata = { "from": u_id,  "to": selectedFriend, "message": trimmedText,"chatid":chatId }
-    mySocket.emit("send_p_message", senddata);
+    socket.emit("send_p_message", senddata);
+    setMessages(prev=>[...prev,senddata])
     setText("");
     setSearchChatInput('')
     setScrollPosition(scrollPosition + 1);
-    if (messages.length <= 1) {
-      fetchfriends();
-    }
+    // if (messages.length <= 1) {
+    //   fetchfriends();
+    // }
   }
 
 
