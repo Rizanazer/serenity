@@ -315,11 +315,12 @@ router.route('/log-out').post(async (req, res) => {
     const result = await User.findOne({ _id: userid });
 
     if (result) {
+      if(result.online === true){
       result.online = false;
-      await result.save();
-      console.log('successfully logged Out');
-      res.status(200).json({ message: 'successfully logged Out' });
+      await result.save();}
     }
+    console.log('successfully logged Out');
+    res.status(200).json({ message: 'successfully logged Out' });
   } catch (e) {
     console.error('Error logging Out', error);
     res.status(500).json({ error: 'An error occurred while logging Out' });
@@ -1152,36 +1153,58 @@ router.post('/specialpurpose1',async(req,res)=>{
   }
 })
 app.use('/', router)
-router.post('/setoffline', async(req,res)=>{
-  const {u_id} = req.body
-  try{
-    const result = await User.findOne({_id:u_id})
-    if(result.online === false){
-      console.log(`already offline`);
-      return res.send('already offline')
-    }
-    result.online = false
-    result.save()
-    console.log('set offline')
-    res.send('set offline')
-  }catch(error){
-    console.log(error)
-  }
-})
-io.on('connection', (socket) => {
-  socket.on('setonline',async (data)=>{
-    const {u_id} = data
-    try{
-      const result = await User.findOne({_id:u_id})
-      if(result.online === true){
-        return console.log('already online')
+// router.post('/setoffline', async(req,res)=>{
+//   const {u_id} = req.body
+//   try{
+//     const result = await User.findOne({_id:u_id})
+//     if(result.online === false){
+//       console.log(`already offline`);
+//       return res.send('already offline')
+//     }
+//     result.online = false
+//     result.save()
+//     console.log('set offline')
+//     res.send('set offline')
+//   }catch(error){
+//     console.log(error)
+//   }
+// })
+const ioconnections = []
+io.on('connection', async (socket) => {
+  await socket.on('disconnect', async () => {
+    console.log(`User disconnected with socket ID: ${socket.id}`);
+    const index = ioconnections.findIndex((connection) => connection.s_id === socket.id);
+    if (index !== -1) {
+      try{
+        const result = await User.findOne({_id:ioconnections[index].u_id})
+        if(result.online === true){
+          result.online = false
+          result.save()
+        }
+      }catch(error){
+        console.log(error)
       }
-      result.online = true
-      result.save()
-    }catch(error){
-      console.log(error)
-    }
-  })
+      ioconnections.splice(index, 1);
+      console.log('User removed from connections:', ioconnections);
+    }})
+  // socket.on('setonline',async (data)=>{
+
+  //   const {u_id} = data
+  //   console.log(`a user connected`);
+  //   ioconnections.push({'s_id':socket.id,'u_id':u_id})
+  //   console.log(`sockets are : `);
+  //   console.log(ioconnections);
+  //   try{
+  //     const result = await User.findOne({_id:u_id})
+  //     if(result.online === true){
+  //       return console.log('already online')
+  //     }
+  //     result.online = true
+  //     result.save()
+  //   }catch(error){
+  //     console.log(error)
+  //   }
+  // })
   socket.on('send_p_message', async (msg) => {
     const { from, to, chatid, message } = msg;
     const existingChat = await DirectChats.findOne({

@@ -64,7 +64,10 @@ const Home = () => {
     setSocket(newSocket)
     newSocket.on('connect', () => {
       console.log('Connected to the server socket');
+      newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
+
     });
+
     newSocket.on('newMessage', async (message) => {
     if (communityList.length > 0) {
       if (userdata) {
