@@ -16,7 +16,7 @@ function TranslateSettings({language,setLanguage,outText, setOutText,text, setTe
                 <span className="light">Choose Language to be Translated:</span>
                 <select id='dropmenu' onChange={handleSelectChange}>
                                   {<option value="en">English</option>}
-                                  {<option value="es">Spanish</option>}
+                                  {<option value="es">Spanisssh</option>}
                                   <option value="ml">Malayalam</option>
                                   <option value="ta">Tamil</option>
                                   <option value="ar">Arabic</option>

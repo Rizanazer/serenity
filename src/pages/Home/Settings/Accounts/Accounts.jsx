@@ -302,7 +302,7 @@ function AccountSettings({ Email, Mobile, Gender, DOB, Password, setGender, setD
                                 <span className="light">Choose Language to be Translated:</span>
                                 <select id='dropmenu' onChange={(event)=>{setLanguage(event.target.value);handleLanguageData()}} value={language}>
                                     {<option value="en">English</option>}
-                                    {<option value="es">Spanish</option>}
+                                    {<option value="es">Spanisxh</option>}
                                     <option value="ml">Malayalam</option>
                                     <option value="ta">Tamil</option>
                                     <option value="ar">Arabic</option>
