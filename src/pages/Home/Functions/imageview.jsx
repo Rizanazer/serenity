@@ -6,6 +6,6 @@ function Image({ src,onContextMenu }) {
       <img src={src} />
       <MdClose size={50} color="#fff" className="close-button" onClick={() => { setOpen(false) }} />
     </div> :
-      <img style={{ width: '300px', height: '300px' }} src={src} onClick={() => setOpen(true)} onContextMenu={onContextMenu} />
+      <img style={{ position: "relative", width: '300px', height: '300px' }} src={src} onClick={() => setOpen(true)} onContextMenu={onContextMenu} />
   }
   export default Image;
