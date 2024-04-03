@@ -20,17 +20,18 @@ import fetchProfileUpdate from "../Functions/fetchownprofile";
 import logout from "../Settings/logoutFn";
 import { useNavigate } from "react-router-dom";
 
-function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({ socket, selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [viewprofileImage, setviewprofileImage] = useState(null)
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
+  const [trnslnGIF, settrnslnGIF] = useState(false);
   const userdata = JSON.parse(localStorage.getItem('userdata'));
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [allCommunityMessages, setAllCommunityMessages] = useState([]);
   // const [socket, setSocket] = useState(null);
   var [rightclk, setrightclk] = useState(false);
-  const [selectedCommunityTemp,setSelectedCommunityTemp] = useState(null)
+  const [selectedCommunityTemp, setSelectedCommunityTemp] = useState(null)
   const hoverTimer = useRef(null);
   const [hoveredMessage, setHoveredMessage] = useState("");
   const [selectedUser, setSelectedUser] = useState({ username: '', userid: '' });
@@ -82,21 +83,21 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
     setSelectedCommunityTemp(id)
     await setSelectedCommunity(id);
     console.log(`----------------------------------------------------------lll`);
-    if(selectedCommunity){
-     console.log(selectedCommunity);
-      await axios.post('/clearunread_in_c',{u_id:localStorage.getItem('userid'),c_id:selectedCommunity})
+    if (selectedCommunity) {
+      console.log(selectedCommunity);
+      await axios.post('/clearunread_in_c', { u_id: localStorage.getItem('userid'), c_id: selectedCommunity })
       const updatedCommunities = individualCommunity.map(community => {
         if (community._id === selectedCommunity) {
-            const updatedUnreadCount = community.unreadcount.map(countObj => {
-                if (countObj.user === localStorage.getItem('userid')) {
-                    return { ...countObj, count: 0 };
-                }
-                return countObj;
-            });
-            return { ...community, unreadcount: updatedUnreadCount };
+          const updatedUnreadCount = community.unreadcount.map(countObj => {
+            if (countObj.user === localStorage.getItem('userid')) {
+              return { ...countObj, count: 0 };
+            }
+            return countObj;
+          });
+          return { ...community, unreadcount: updatedUnreadCount };
         }
         return community;
-    });
+      });
       setIndividualCommunity(updatedCommunities);
       setViewChat(true);
       setSelectedCommunityName(name);
@@ -124,8 +125,8 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
   useEffect(() => {
     get_c_messages()
   }, [selectedCommunity])
-///////////////////////////////////////////////////////////
-  
+  ///////////////////////////////////////////////////////////
+
   useEffect(() => {
     // const newSocket = io('http://:3000');
     // setSocket(newSocket);
@@ -134,31 +135,33 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
     //   newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
     // });
 
-    if(socket){
+    if (socket) {
       socket.on('newMessage', async (message) => {
-      const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture }
-      console.log(`new message ---------------------------------------------------`);
-      console.log(typeof(message.c_id));
-      console.log(`new message -------temp--------------------------------------------`);
-      console.log(typeof(selectedCommunity));
-     if(selectedCommunity && message.c_id){
-      if(message.c_id === selectedCommunity){
-        setMessages((prev) => [...(prev || []), appenddata])
-      }}
-      const updatedCommunities = individualCommunity.map(community => {
-        if (community._id === selectedCommunity) {
+        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture }
+        console.log(`new message ---------------------------------------------------`);
+        console.log(typeof (message.c_id));
+        console.log(`new message -------temp--------------------------------------------`);
+        console.log(typeof (selectedCommunity));
+        if (selectedCommunity && message.c_id) {
+          if (message.c_id === selectedCommunity) {
+            setMessages((prev) => [...(prev || []), appenddata])
+          }
+        }
+        const updatedCommunities = individualCommunity.map(community => {
+          if (community._id === selectedCommunity) {
             const updatedUnreadCount = community.unreadcount.map(countObj => {
-                if (countObj.user === localStorage.getItem('userid')) {
-                    return { ...countObj, count: 0 };
-                }
-                return countObj;
+              if (countObj.user === localStorage.getItem('userid')) {
+                return { ...countObj, count: 0 };
+              }
+              return countObj;
             });
             return { ...community, unreadcount: updatedUnreadCount };
-        }
-        return community;
-    });
-      setIndividualCommunity(updatedCommunities);
-    });}
+          }
+          return community;
+        });
+        setIndividualCommunity(updatedCommunities);
+      });
+    }
     // socket.on('disconnect',async ()=>{
     //   // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
     // })
@@ -266,7 +269,7 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
     }
   }
   useEffect(() => {
-    if(selectedCommunity){
+    if (selectedCommunity) {
       checkadminstatus()
 
     }
@@ -337,6 +340,19 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
   const toggleTranslation = () => {
     set_Translate(prevState => !prevState);
   }
+  // const translationed_Sentnce = () => {
+  //   {
+     
+  //         settrnslnGIF(true)
+  //         setTimeout(() => {
+  //           settrnslnGIF(false);
+  //           console.log(messageTtext);
+  //           return messageTtext;
+  //         }, 300)
+       
+    
+  //   }
+  // }
 
   async function fetchfriends() {
     try {
@@ -426,11 +442,11 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
   }
 
   //////////////////show date function previous unused now
-  const [dateToDisplay,setDateToDisplay] = useState('')
+  const [dateToDisplay, setDateToDisplay] = useState('')
 
   const isNewDay = (timestamp) => {
     if (!dateToDisplay) {
-      return true; 
+      return true;
     }
     const fulldatefromdb = new Date(timestamp);
     const dbmonth = fulldatefromdb.getMonth();
@@ -438,12 +454,12 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
     const dbyear = fulldatefromdb.getFullYear();
     const dbDateString = `${dbday}/${dbmonth}/${dbyear}`;
     if (dateToDisplay !== dbDateString) {
-      setDateToDisplay(dbDateString); 
+      setDateToDisplay(dbDateString);
       return true;
     }
     return false;
   };
-  
+
   return (
     <>
       <div className="section1 section_margin box relative_pos">
@@ -451,7 +467,7 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
           <input type="text" placeholder="Search for Existing Chats" className="nobordershadow widthmax" onChange={handleSearchCommunityName} />
           <Menu setScreen={screen} setCreateAlert={create} />
         </div>
-        
+
         {individualCommunity.map((el, i) =>
           <div className="box chat pointer min_boxwidth minheight relative_pos ">
             <div className="chat_info relative_pos" onClick={() => onclick(el._id, el.communityName, el.description, el.communityIcon)}>
@@ -460,18 +476,18 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
                 <div className="textlength_head ">
                   <span className="bold ">{el.communityName}</span>
                   {el.unreadcount.map((c) => {
-                      if (c.user === localStorage.getItem('userid')) {
-                        return <div key={c._id} className="incomingchat circle center" >{c.count}</div>;
-                      }
-                      return null;
-                    })}
+                    if (c.user === localStorage.getItem('userid')) {
+                      return <div key={c._id} className="incomingchat circle center" >{c.count}</div>;
+                    }
+                    return null;
+                  })}
 
                 </div>
                 <div className="textlength_para ">
                   {el.lastmessage && el.lastmessagesender && <span className="light">{el.lastmessagesender}: {el.lastmessage}</span>}
-                  
+
                   {/* Display unread count for the logged-in user */}
-                    
+
                 </div>
               </div>
             </div>
@@ -514,7 +530,7 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
             {/* middlechats component-chat_area */}
 
             <div className="box chat_area padding10 overlay_section2_mid " ref={chatAreaRef}>
-              { forwarding && <div className="center overlay">
+              {forwarding && <div className="center overlay">
                 <div className="box create center flexcolumn">
                   <span className="bold"> Forward Message </span>
                   <div className="name_members center flexcolumn">
@@ -566,9 +582,9 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
               <ErrorMessage error={error} listening={listening} setListening={setListening} seterror={seterror} />
               {
                 viewprofileImage && <div className="videoPlayer">
-                <img src={`uploads/communityIcons/${viewprofileImage}`} />
-                <MdClose size={50} color="#fff" className="close-button" onClick={() => { setviewprofileImage(false) }} />
-              </div>
+                  <img src={`uploads/communityIcons/${viewprofileImage}`} />
+                  <MdClose size={50} color="#fff" className="close-button" onClick={() => { setviewprofileImage(false) }} />
+                </div>
               }
               {More && <div className={Moreadj ? "more_options more_option_adjusted" : "more_options"}>
                 <div className=" nopadding more_items " onClick={() => {
@@ -585,13 +601,13 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
 
               {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
-                    {/* Date here{isNewDay(el.timeStamp)&&(<div>dateeeeee:{dateToDisplay}</div>) } */}
-                    {(new Date(el.timeStamp).getDate()===(new Date(lastDisplayedTimestamp)).getDate()) &&
-                    (new Date(el.timeStamp).getMonth()===(new Date(lastDisplayedTimestamp)).getMonth()) &&
-                    (new Date(el.timeStamp).getFullYear()===(new Date(lastDisplayedTimestamp)).getFullYear())
-                    ? 
-                    <div className=" datecontainer"></div>:
-                    <div className=" datecontainer" >{(new Date(el.timeStamp)).getDate()}/{(new Date(el.timeStamp)).getMonth()+1}/{(new Date(el.timeStamp)).getFullYear()}</div> }
+                  {/* Date here{isNewDay(el.timeStamp)&&(<div>dateeeeee:{dateToDisplay}</div>) } */}
+                  {(new Date(el.timeStamp).getDate() === (new Date(lastDisplayedTimestamp)).getDate()) &&
+                    (new Date(el.timeStamp).getMonth() === (new Date(lastDisplayedTimestamp)).getMonth()) &&
+                    (new Date(el.timeStamp).getFullYear() === (new Date(lastDisplayedTimestamp)).getFullYear())
+                    ?
+                    <div className=" datecontainer"></div> :
+                    <div className=" datecontainer" >{(new Date(el.timeStamp)).getDate()}/{(new Date(el.timeStamp)).getMonth() + 1}/{(new Date(el.timeStamp)).getFullYear()}</div>}
                   {
                     el.u_name === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
@@ -649,7 +665,14 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
                                 onContextMenu={(e) => handleContextMenu(e, el)}
                               >
                                 {el.forwarded === true ? <span className="light">forwarded</span> : null}
-                                {Translate && selectedMessage === el ? messageTtext : el.message}
+                              
+                                {
+                                  Translate && selectedMessage === el ? (
+                            messageTtext
+                                  ) : (
+                                    el.message
+                                  )
+                                }
                               </p>
                             )
                           )}
@@ -698,7 +721,8 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
                                 onContextMenu={(e) => handleContextMenu(e, el)}
                               >
                                 {el.forwarded === true ? <span className="light">forwarded</span> : null}
-                                {Translate && selectedMessage === el ? messageTtext : el.message}
+                                
+                                {Translate && selectedMessage === el ? (trnslnGIF ? <img src="/images/Fadingloader.gif" style={{height:30,width:30}} /> :messageTtext)  : el.message}
                               </p>
                             )
                           )}
@@ -744,7 +768,7 @@ function CommunityMsgScreen({socket,selectedCommunityIcon, setSelectedCommunityI
                                 <span className="bold padding5">Delete</span>
                               </div>
                             </div>
-                            {media ? null : <div className="message_items" onClick={() => { handleTranslate(messageTtext, language, setmessageTtext, seterror, setListening); toggleTranslation() }}>
+                            {media ? null : <div className="message_items" onClick={() => { handleTranslate(messageTtext, language, setmessageTtext, seterror, setListening,settrnslnGIF,trnslnGIF); toggleTranslation() }}>
                               <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
                                 <span className="bold padding5">Translate</span>
                               </div>

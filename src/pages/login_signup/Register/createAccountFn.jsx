@@ -13,7 +13,7 @@ const CreateAccount = ({ actions ,error, seterror, listening, setListening,userS
       {/* {userData.viewError && <p className='errortext'>Error in Credentials  </p>} */}
     </div>
     <button onClick={() => { actions.handleActionChange("More_Details"); }}>Enter More</button>
-    <div className="horiz">
+    {/* <div className="horiz">
       <hr className='line' />or<hr className='line' />
     </div>
     <div className="horiz">
@@ -21,7 +21,7 @@ const CreateAccount = ({ actions ,error, seterror, listening, setListening,userS
       <FaTwitter className='icon' />
       <FaFacebook className='icon' />
       <FaApple className='icon' />
-    </div>
+    </div> */}
     <div className="create_account">
       <span>have an account?</span>
       <span className='text_btn' onClick={() => { actions.handleActionChange("LOGIN") }}>Login Now!!!</span>

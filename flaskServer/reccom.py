@@ -50,7 +50,7 @@ def recommend_groups():
 
 if __name__ == '__main__':
     chat_communities = {
-    'gaming': ['video games', 'console gaming', 'PC gaming', 'mobile gaming', 'board games', 'role-playing games', 'online gaming', 'retro gaming'],
+    'gaming': ['video games', 'console gaming', 'PC gaming', 'mobile gaming', 'board games', 'role-playinggames', 'onlinegaming', 'retrogaming'],
     'sports': ['football', 'basketball', 'soccer', 'baseball', 'tennis', 'golf', 'rugby', 'cricket', 'hockey', 'volleyball'],
     'mental_health': ['anxiety', 'depression', 'therapy', 'stress management', 'self-care', 'mindfulness', 'counseling', 'support groups'],
     'music': ['rock', 'pop', 'hip hop', 'jazz', 'classical', 'country', 'EDM', 'metal', 'indie', 'folk', 'playing guitar', 'singing', 'piano'],
