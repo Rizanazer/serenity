@@ -42,6 +42,7 @@ function PersonalMsgScreen() {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [LastMessage, setLastMessage] = useState([]);
   var [ViewChat, setViewChat] = useState(false);
+  var [ViewChat1, setViewChat1] = useState(false);
   var [rightclk, setrightclk] = useState(true);
   var [SideScreen, setSideScreen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -65,6 +66,7 @@ function PersonalMsgScreen() {
   const [socket, setSocket] = useState(null)
   var [text, setText] = useState("");
   const hoverTimer = useRef(null);
+  const [blockingMode,setBlockingMode] = useState(false)
   const [chats, setChats] = useState([])
   const [hoveredMessage, setHoveredMessage] = useState("");
   const [Deletefn, setDeletefn] = useState(false);
@@ -108,7 +110,18 @@ function PersonalMsgScreen() {
     },[])
 
     /////////////////
-    
+    socket.on('unfriendnotification', (message) => {
+      
+      if(userid === message.u_id){
+        if (userdata) {
+          userdata.friends = userdata.friends.filter(friendId => friendId !== message.u_id);
+          localStorage.setItem('userdata', JSON.stringify(userdata));
+      }
+      }
+      
+    })
+
+
     socket.on('newPersonalMediaMessage', (messageData) => {
       const { from, to, filename, messageType, caption } = messageData;
       setMessages(prevMessages => [
@@ -237,6 +250,7 @@ function PersonalMsgScreen() {
     setSelectedFriendName(friend.username)
     /////////////////
     fetchpersonal(friend)
+    setBlockingMode(false)
     ///////////////////
     setViewChat(true)
   }
@@ -253,6 +267,7 @@ function PersonalMsgScreen() {
     setSelectedFriendIcon(friendicon)
     setSelectedFriendName(friendname)
     //////////////
+    setBlockingMode(true)
     fetchpersonal(friendid)
     /////////////
     setViewChat(true)
@@ -739,8 +754,9 @@ function PersonalMsgScreen() {
                 </div>
               </div>}
           {/* bottomchats component-chat_typing */}
-          {
-              isfriend?<div className="box center chat_typing flexrow spacebetween">
+          {/* {
+              isfriend && blockingMode?
+              <div className="box center chat_typing flexrow spacebetween">
               <div className="type_message">
                 <input
                   type="text"
@@ -768,7 +784,30 @@ function PersonalMsgScreen() {
                 <span className="light">you are no longer friends..</span>
             </div>
           </div>
-            }
+             } */}
+          
+              <div className="box center chat_typing flexrow spacebetween">
+              <div className="type_message">
+                <input
+                  type="text"
+                  className="nobordershadow message_length"
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type Here!!"
+                  onChange={(event) => setText(event.target.value)}
+                  value={text}
+                />
+              </div>
+              <div className="feature_with_send flexrow">
+                <div className="chatfeature">
+                  <FaMicrophone className="icon icon_small nobordershadow" onClick={()=>handleListen(setListening,seterror,setText)} style={{ cursor: 'pointer' }}/>
+                  <input type="file" accept="image/*" ref={fileImageRef} style={{ display: 'none' }} onChange={handleImageChange} />
+                  <input type="file" accept="video/*" ref={fileVideoRef} style={{ display: 'none' }} onChange={handleVideoChange} />
+                  <MdVideoFile className="icon icon_small nobordershadow"  onClick={sendvideo}/>
+                  <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage}/>
+                </div>
+                <MdSend className="icon send nobordershadow" onClick={send} />
+              </div>
+            </div>
         </>
           :
           <></>}
