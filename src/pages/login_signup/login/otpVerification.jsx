@@ -61,10 +61,10 @@ const OTPInput = ({ actions, phno, error, seterror, listening, setListening, onc
           <input className='input_otp' type='text' maxLength="1" onChange={handleOTPChange}/> */}
       </div>
      
-      {/* <button onClick={verifyOTP}>{spinner ? <img className="center" src="/images/spinnerButton.gif" style={{ height: '30px', width: '30px', position: "relative" }} /> : <span>VALIDATE-L</span>}</button> */}
+      <button onClick={verifyOTP}>{spinner ? <img className="center" src="/images/spinnerButton.gif" style={{ height: '30px', width: '30px', position: "relative" }} /> : <span>VALIDATE-L</span>}</button>
 
       
-      <button onClick={onclickvalidate}>VALIDATE-L</button>
+      {/* <button onClick={onclickvalidate}>VALIDATE-L</button> */}
       <button onClick={() => actions.handleActionChange("GetOTP")}>BACK</button>
     </div>
   );

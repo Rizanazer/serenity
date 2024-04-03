@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+require("dotenv").config()
 // const cron = require('node-cron');
 //const mongoose = require('mongoose');
 const translate = require('@iamtraction/google-translate');
@@ -1085,9 +1086,8 @@ router.post('/sidescreengroupnames', async (req, res) => {
   }
 })
 
-const accountSid = "ACc09b732d0906f9ffa434c4e71e5502ca";
-const authToken = "4b6473ca784501c72833c7f2f5d7aaf7";
-const verifySid = "VA39e2b0b0d96b22f82d8d14721020262e";
+const {accountSid,authToken,verifySid} = process.env;
+
 const client = require("twilio")(accountSid, authToken);
 
 router.post('/send-otp', (req, res) => {
