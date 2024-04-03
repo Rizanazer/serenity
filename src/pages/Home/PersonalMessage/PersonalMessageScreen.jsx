@@ -149,6 +149,7 @@ function PersonalMsgScreen() {
   },[])
   useEffect(()=>{
     if(userdata.friends.includes(selectedFriend)){
+      console.log(userdata.friends.includes(selectedFriend),"❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️");
       setIsFriend(true)
     }else{
       setIsFriend(false)
@@ -247,7 +248,8 @@ function PersonalMsgScreen() {
     console.log(friend._id)
     setSelectedChat(friend._id)
     setSelectedFriendIcon(friend.profilePicture)
-    setSelectedFriend(friend)
+    setSelectedFriend(friend._id)
+    console.log(friend._id,"🤣🤣🤣")
     setSelectedFriendName(friend.username)
     /////////////////
     fetchpersonal(friend)
@@ -261,7 +263,7 @@ function PersonalMsgScreen() {
     const response = await axios.post('/getafriend', { u_id: friendid })
     if (response) {
       console.log(`got response`);
-    }
+    console.log(friendid,"😕😕😕😕😕😕😕😕😕😕😕😕😕");
     setSelectedFriend(friendid)
 
     setChatid(chatid)
@@ -272,7 +274,7 @@ function PersonalMsgScreen() {
     fetchpersonal(friendid)
     /////////////
     setViewChat(true)
-
+    }
   }
   const send = async () => {
     const trimmedText = text.trim();
