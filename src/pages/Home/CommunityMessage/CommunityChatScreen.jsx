@@ -133,7 +133,7 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
     });
 
       newSocket.on('newMessage', async (message) => {
-        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture }
+        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture ,"timeStamp":new Date()}
         console.log(`new message ---------------------------------------------------`);
         console.log(typeof (message.c_id));
         console.log(`new message -------temp--------------------------------------------`);
@@ -159,7 +159,7 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
         setIndividualCommunity(updatedCommunities);
       });
       newSocket.on('newCommunityVideo', async (message) => {
-        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture }
+        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture ,"timeStamp":new Date()}
         if (selectedCommunity && message.c_id) {
           if (message.c_id === selectedCommunity) {
             setMessages((prev) => [...(prev || []), appenddata])
@@ -183,7 +183,7 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
 
 
       newSocket.on('newCommunityImage', async (message) => {
-        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture }
+        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture ,"timeStamp":new Date()}
         if (selectedCommunity && message.c_id) {
           if (message.c_id === selectedCommunity) {
             setMessages((prev) => [...(prev || []), appenddata])
@@ -492,9 +492,9 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
       return true;
     }
     const fulldatefromdb = new Date(timestamp);
-    const dbmonth = fulldatefromdb.getMonth();
-    const dbday = fulldatefromdb.getDate();
-    const dbyear = fulldatefromdb.getFullYear();
+    const dbmonth = fulldatefromdb?.getMonth();
+    const dbday = fulldatefromdb?.getDate();
+    const dbyear = fulldatefromdb?.getFullYear();
     const dbDateString = `${dbday}/${dbmonth}/${dbyear}`;
     if (dateToDisplay !== dbDateString) {
       setDateToDisplay(dbDateString);
@@ -645,12 +645,12 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
               {messages?.length > 0 && messages.map((el, i) => (
                 <React.Fragment key={i}>
                   {/* Date here{isNewDay(el.timeStamp)&&(<div>dateeeeee:{dateToDisplay}</div>) } */}
-                  {(new Date(el.timeStamp).getDate() === (new Date(lastDisplayedTimestamp)).getDate()) &&
-                    (new Date(el.timeStamp).getMonth() === (new Date(lastDisplayedTimestamp)).getMonth()) &&
-                    (new Date(el.timeStamp).getFullYear() === (new Date(lastDisplayedTimestamp)).getFullYear())
+                  {(new Date(el.timeStamp)?.getDate() === (new Date(lastDisplayedTimestamp))?.getDate()) &&
+                    (new Date(el.timeStamp)?.getMonth() === (new Date(lastDisplayedTimestamp))?.getMonth()) &&
+                    (new Date(el.timeStamp)?.getFullYear() === (new Date(lastDisplayedTimestamp))?.getFullYear())
                     ?
                     <div className=" datecontainer"></div> :
-                    <div className=" datecontainer" >{(new Date(el.timeStamp)).getDate()}/{(new Date(el.timeStamp)).getMonth() + 1}/{(new Date(el.timeStamp)).getFullYear()}</div>}
+                    <div className=" datecontainer" >{(new Date(el.timeStamp))?.getDate()}/{(new Date(el.timeStamp))?.getMonth() + 1}/{(new Date(el.timeStamp))?.getFullYear()}</div>}
                   {
                     el.u_name === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
