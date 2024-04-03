@@ -591,6 +591,7 @@ router.post('/unfriend', async (req, res) => {
     );
     if (result1 && result2) {
       res.json({ "success": true });
+      io.emit('unfriendnotification',{u_id:friendid})
     } else {
       res.json({ "success": false });
     }
@@ -1228,40 +1229,42 @@ io.on('connection', async (socket) => {
     const { from, to, chatid, message } = msg;
     console.log(`message is`);
     console.log(message);
+
+    // Standardize the order of users
+    const sortedUsers = [from, to].sort();
+
     const existingChat = await DirectChats.findOne({
-      $or: [
-        { users: [from, to] },
-        { users: [to, from] }
-      ]
+        $or: [
+            { users: sortedUsers },
+        ]
     });
 
     if (existingChat) {
-      existingChat?.messages.push({
-        from: from,
-        to: to,
-        messageBody: message,
-        messageType: "text"
-      });
-      existingChat.usernameTo = to;
-      await existingChat.save();
+        // Update existing chat
+        existingChat.messages.push({
+            from: from,
+            to: to,
+            messageBody: message,
+            messageType: "text"
+        });
+        existingChat.usernameTo = to;
+        await existingChat.save();
     } else {
-      await DirectChats.create({
-        usernameTo: to,
-        users: [
-          from,
-          to
-        ],
-        messages: [{
-          from: from,
-          to: to,
-          messageBody: message,
-          messageType: "text"
-        }]
-      });
+        // Create new chat
+        await DirectChats.create({
+            usernameTo: to,
+            users: sortedUsers, // Ensure consistent order
+            messages: [{
+                from: from,
+                to: to,
+                messageBody: message,
+                messageType: "text"
+            }]
+        });
     }
     io.emit("recieve_p_message", { "to": to, "from": from, "messageBody": message, "messageType": "text" });
-    // io.emit("recieve_p_message", { "to": to, "from": from, "toname": toname, "fromname": fromname, "messageBody": message, "messageType": "text" });
-  });
+});
+
   socket.on('send-image-community', async ({ image, u_name }) => {
   });
   const axios = require('axios')
@@ -1349,8 +1352,8 @@ io.on('connection', async (socket) => {
         
         
       } else {
-        const members = await Community.findById(c_id).select('members'); 
-        const unreadcount = members.map(member => ({ userId: member, count: 0 }));
+        const members = await Community.findById(c_id)?.select('members'); 
+        // const unreadcount = members.map(member => ({ userId: member, count: 0 }));
         await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }]});
       }
       io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity });

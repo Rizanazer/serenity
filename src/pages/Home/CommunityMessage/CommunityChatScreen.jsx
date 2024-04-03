@@ -133,17 +133,17 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
     });
 
       newSocket.on('newMessage', async (message) => {
-        // const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture }
-        // console.log(`new message ---------------------------------------------------`);
-        // console.log(typeof (message.c_id));
-        // console.log(`new message -------temp--------------------------------------------`);
-        // console.log(typeof (selectedCommunity));
-        // if (selectedCommunity && message.c_id) {
-        //   if (message.c_id === selectedCommunity) {
-        //     setMessages((prev) => [...(prev || []), appenddata])
-        //   }
-        // }
-        get_c_messages()
+        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture }
+        console.log(`new message ---------------------------------------------------`);
+        console.log(typeof (message.c_id));
+        console.log(`new message -------temp--------------------------------------------`);
+        console.log(typeof (selectedCommunity));
+        if (selectedCommunity && message.c_id) {
+          if (message.c_id === selectedCommunity) {
+            setMessages((prev) => [...(prev || []), appenddata])
+          }
+        }
+        // get_c_messages()
         const updatedCommunities = individualCommunity.map(community => {
           if (community._id === selectedCommunity) {
             const updatedUnreadCount = community.unreadcount.map(countObj => {
@@ -159,13 +159,13 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
         setIndividualCommunity(updatedCommunities);
       });
       newSocket.on('newCommunityVideo', async (message) => {
-        // const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture }
-        // if (selectedCommunity && message.c_id) {
-        //   if (message.c_id === selectedCommunity) {
-        //     setMessages((prev) => [...(prev || []), appenddata])
-        //   }
-        // }
-        get_c_messages()
+        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture }
+        if (selectedCommunity && message.c_id) {
+          if (message.c_id === selectedCommunity) {
+            setMessages((prev) => [...(prev || []), appenddata])
+          }
+        }
+        // get_c_messages()
         const updatedCommunities = individualCommunity.map(community => {
           if (community._id === selectedCommunity) {
             const updatedUnreadCount = community.unreadcount.map(countObj => {
@@ -183,13 +183,13 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
 
 
       newSocket.on('newCommunityImage', async (message) => {
-        // const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture }
-        // if (selectedCommunity && message.c_id) {
-        //   if (message.c_id === selectedCommunity) {
-        //     setMessages((prev) => [...(prev || []), appenddata])
-        //   }
-        // }
-        get_c_messages()
+        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture }
+        if (selectedCommunity && message.c_id) {
+          if (message.c_id === selectedCommunity) {
+            setMessages((prev) => [...(prev || []), appenddata])
+          }
+        }
+        // get_c_messages()
 
         const updatedCommunities = individualCommunity.map(community => {
           if (community._id === selectedCommunity) {
