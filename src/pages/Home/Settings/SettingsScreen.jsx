@@ -46,11 +46,11 @@ function SettingsScreen({ handleClick, setscreen, profileView, accounts, account
           >
             Accounts
           </div>
-          <div className={themecheck ? " box joinbtn selectedBtn" : " box joinbtn"}
+          {/* <div className={themecheck ? " box joinbtn selectedBtn" : " box joinbtn"}
             onClick={theme}
           >
             Theme
-          </div>
+          </div> */}
           {/* <div className={notificationcheck ? " box joinbtn selectedBtn" : " box joinbtn"}
             onClick={notification}
            >

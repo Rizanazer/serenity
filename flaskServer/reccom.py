@@ -50,9 +50,13 @@ def recommend_groups():
 
 if __name__ == '__main__':
     chat_communities = {
-    'gaming': ['video games', 'console gaming', 'PC gaming', 'mobile gaming', 'board games', 'role-playinggames', 'onlinegaming', 'retrogaming'],
-    'sports': ['football', 'basketball', 'soccer', 'baseball', 'tennis', 'golf', 'rugby', 'cricket', 'hockey', 'volleyball'],
-    'mental_health': ['anxiety', 'depression', 'therapy', 'stress management', 'self-care', 'mindfulness', 'counseling', 'support groups'],
+    'gaming': ['Videogames', 'Consolegaming', 'PCgaming', 'Mobilegaming', 'Boardgames', 'Role-playinggames', 'Onlinegaming', 'Retrogaming', 'Virtualrealitygaming', 'Augmentedrealitygaming', 'Strategygames', 'First-personshooter(FPS)games', 'Massivelymultiplayeronlinerole-playinggames(MMORPGs)', 'Real-timestrategy(RTS)games', 'Turn-basedstrategygames', 'Sandboxgames', 'Simulationgames', 'Adventuregames', 'Puzzlegames', 'Platformergames', 'Racinggames', 'Sportsgames', 'Fightinggames', 'Survivalgames', 'Horrorgames', 'Indiegames', 'Educationalgames', 'Seriousgames', 'Casualgames', 'Browser-basedgames', 'Free-to-playgames', 'Pay-to-playgames', 'Freemiumgames', 'Microtransaction-basedgames', 'Competitivegaming', 'Cooperativegaming', 'Esports', 'LANparties', 
+               'Gamedevelopment', 'Gamedesign', 'Gameprogramming', 'Gameart', 'Gamesounddesign', 'Gametesting', 'Gamemarketing',
+               'Gamestreaming', 'Let\'sPlayvideos', 'Gameemulators', 'Gamecollecting', 'Gameconventions', 'Gamejournalism', 'Gametheory', 
+               'Gameaddiction', 'Gamemonetization', 'Gamecommunities', 'Gameculture', 'Gameengines', 
+               'Gameglitches','Gamecheats'],
+    'sports': ['football', 'basketball', 'soccer', 'baseball', 'tennis', 'golf', 'rugby', 'cricket', 'hockey', 'volleyball', 'swimming', 'track and field', 'boxing', 'mixedmartialarts(MMA)', 'wrestling', 'cycling', 'skiing', 'snowboarding', 'surfing', 'skateboarding', 'table tennis', 'badminton', 'handball', 'water polo', 'lacrosse', 'rowing', 'sailing', 'climbing', 'archery', 'fencing', 'gymnastics', 'diving', 'triathlon', 'karate', 'taekwondo', 'judo', 'canoeing', 'kayaking', 'bobsleigh', 'luge', 'biathlon', 'equestrian sports', 'polo', 'squash', 'racquetball', 'ultimate frisbee', 'dragon boat racing', 'paddleboarding', 'skydiving', 'bungee jumping','paragliding'],
+   'mental_health': ['anxiety', 'depression', 'therapy', 'stress management', 'self-care', 'mindfulness', 'counseling', 'support groups'],
     'music': ['rock', 'pop', 'hip hop', 'jazz', 'classical', 'country', 'EDM', 'metal', 'indie', 'folk', 'playing guitar', 'singing', 'piano'],
     'movies': ['action', 'comedy', 'drama', 'horror', 'sci-fi', 'romance', 'documentary', 'thriller', 'animation', 'fantasy'],
     'books': ['fiction', 'non-fiction', 'mystery', 'thriller', 'science fiction', 'fantasy', 'biography', 'self-help', 'historical fiction', 'reading', 'writing', 'poetry'],
@@ -61,6 +65,19 @@ if __name__ == '__main__':
     'fitness': ['cardio', 'weightlifting', 'yoga', 'pilates', 'crossfit', 'running', 'cycling', 'strength training', 'HIIT workouts', 'playing sports', 'swimming', 'dancing'],
     'travel': ['backpacking', 'solo travel', 'budget travel', 'luxury travel', 'adventure travel', 'cultural tourism', 'road trips', 'ecotourism', 'exploring new places', 'photography', 'hiking']
 }
+
+#     chat_communities = {
+#     'gaming': ['video games', 'console gaming', 'PC gaming', 'mobile gaming', 'board games', 'role-playinggames', 'onlinegaming', 'retrogaming'],
+#     'sports': ['football', 'basketball', 'soccer', 'baseball', 'tennis', 'golf', 'rugby', 'cricket', 'hockey', 'volleyball'],
+#     'mental_health': ['anxiety', 'depression', 'therapy', 'stress management', 'self-care', 'mindfulness', 'counseling', 'support groups'],
+#     'music': ['rock', 'pop', 'hip hop', 'jazz', 'classical', 'country', 'EDM', 'metal', 'indie', 'folk', 'playing guitar', 'singing', 'piano'],
+#     'movies': ['action', 'comedy', 'drama', 'horror', 'sci-fi', 'romance', 'documentary', 'thriller', 'animation', 'fantasy'],
+#     'books': ['fiction', 'non-fiction', 'mystery', 'thriller', 'science fiction', 'fantasy', 'biography', 'self-help', 'historical fiction', 'reading', 'writing', 'poetry'],
+#     'technology': ['programming', 'software development', 'web development', 'artificial intelligence', 'machine learning', 'data science', 'cybersecurity', 'blockchain', 'cloud computing'],
+#     'cooking': ['recipes', 'baking', 'grilling', 'vegetarian', 'vegan', 'international cuisine', 'healthy eating', 'meal prep', 'cooking', 'baking', 'food photography'],
+#     'fitness': ['cardio', 'weightlifting', 'yoga', 'pilates', 'crossfit', 'running', 'cycling', 'strength training', 'HIIT workouts', 'playing sports', 'swimming', 'dancing'],
+#     'travel': ['backpacking', 'solo travel', 'budget travel', 'luxury travel', 'adventure travel', 'cultural tourism', 'road trips', 'ecotourism', 'exploring new places', 'photography', 'hiking']
+# }
 #     user_profile = {
 #     'likes': ['fiction', 'cooking', 'fitness'],
 #     'dislikes': ['programming', 'mobile games','football'],

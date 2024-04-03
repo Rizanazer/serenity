@@ -52,10 +52,7 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
   const [language, setLanguage] = useState(null);
   const profilePicture = userdata.profilePicture
   const [anonymity, setAnonymity] = useState(null);
-  var [SideScreen, setSideScreen] = useState(false);
-  var [media, setMedia] = useState(false);
-  var [Member, setMember] = useState(false);
-  var [text, setText] = useState("");
+  var [media, setMedia] = useState(false);;
   const [friendList, setFriendList] = useState([])
   const [CommunityList, setCommunityList] = useState([]);
   const [Selectedrecipients, setSelectedRecipients] = useState([]);
@@ -768,7 +765,7 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
                               >
                                 {el.forwarded === true ? <span className="light">forwarded</span> : null}
                                 
-                                {Translate && selectedMessage === el ? (trnslnGIF ? <img src="/images/Fadingloader.gif" style={{height:30,width:30}} /> :messageTtext)  : el.message}
+                                {Translate && selectedMessage === el ? (trnslnGIF ? <img src="/images/transGif.gif" style={{height:30,width:30}} /> :messageTtext)  : el.message}
                               </p>
                             )
                           )}

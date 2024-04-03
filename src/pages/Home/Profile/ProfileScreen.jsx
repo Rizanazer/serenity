@@ -242,7 +242,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
                   <span className="light">#dont_like_{el}</span>
                 </div>))}
             </div>
-            <div className="bbf_section flex gap10 flexcolumn">
+            {/* <div className="bbf_section flex gap10 flexcolumn">
               <span className="light">BFF :</span>
               <div className="profile_friends flex flexrow center gap10 scroll">
                 <div className="box padding30">friend1</div>
@@ -250,7 +250,7 @@ function ProfileScreen({ ProfileStatus, Location, setProfileStatus, setLocation,
                 <div className="box padding30">friend3</div>
                 <div className="box padding30">friend4</div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

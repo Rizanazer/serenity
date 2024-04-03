@@ -99,14 +99,14 @@ const MobileNumberInput = ({ actions, phno, setPhno, regMobile, error, seterror,
         {Notchecked && <MdOutlineClose className='icon_search' color='#d22020' />}
       </div>
 
-      {/* <button onClick={()=>{setValidate(true)}}>
+      <button onClick={() => { setValidate(true) }}>
 
         {spinner ? <img className="center" src="/images/spinnerButton.gif"
-          style={{ height: '30px', width: '30px', position: "relative" }} /> : <span>SEND-OTP</span>}</button> */}
+          style={{ height: '30px', width: '30px', position: "relative" }} /> : <span>SEND-OTP</span>}</button>
 
 
 
-      <button onClick={() => actions.handleActionChange("VALIDATE")}>next</button>
+      {/* <button onClick={() => actions.handleActionChange("VALIDATE")}>next</button> */}
       <button onClick={() => actions.handleActionChange("LOGIN")}>BACK</button>
     </div>
   );
