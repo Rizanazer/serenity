@@ -270,6 +270,7 @@
     position: absolute;
     width: 100%;
     background: transparent;
+    z-index: 100000;
 }
 
 .section3_1 {

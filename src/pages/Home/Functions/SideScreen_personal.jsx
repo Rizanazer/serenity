@@ -47,7 +47,7 @@ var SideScreenPersonalFn = ({ handleClick, data,selectedFriend ,fetchfriends}) =
                         <span className="light">{userData?.status}</span>
                     </div>
                     <div className="section3_features">
-                        <MdBlockFlipped className="icons_1" />
+                        {/* <MdBlockFlipped className="icons_1" /> */}
                         <IoMdHeartDislike className="icons_2" onClick={unfriend} />
                     </div>
                     <div className="section3_location flexrow center">

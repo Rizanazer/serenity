@@ -34,6 +34,7 @@ function PersonalMsgScreen() {
       }
     }, 100);
   }, [messages, scrollPosition]);
+  const [trnslnGIF, settrnslnGIF] = useState(false);
   const [language, setLanguage] = useState(null);
   const [error, seterror] = useState("");
   const [listening, setListening] = useState(false);
@@ -479,7 +480,7 @@ function PersonalMsgScreen() {
                       </div>
                     </div>
                   </div>
-                  <div className="incomingchat circle center">1</div>
+                  {/* <div className="incomingchat circle center">1</div> */}
                 </div>
                 {Deletefn && (
                   <div className="swipe-actions">
@@ -645,7 +646,8 @@ function PersonalMsgScreen() {
                         onMouseLeave={cancelHoverTimer}
                         onContextMenu={(e) => handleContextMenu(e, el)}
                       >
-                        {Translate && selectedMessage === el ? messageTtext : el.messageBody}
+                        {Translate && selectedMessage === el ? (trnslnGIF ? <img src="/images/transGif.gif" style={{height:30,width:30}} /> :messageTtext)  : el.messageBody}
+                        
                       </p>}
                      
                       {
@@ -672,7 +674,7 @@ function PersonalMsgScreen() {
                             <div className="neration flexrow redHover_elmt"><MdDelete className="icon_search" />
                               <span className="bold padding5">delete</span> </div>
                           </div>
-                          {media ? null : <div className="message_items" onClick={() => { handleTranslate(messageTtext,language,setmessageTtext,seterror,setListening); toggleTranslation() }}>
+                          {media ? null : <div className="message_items" onClick={() => { handleTranslate(messageTtext, language, setmessageTtext, seterror, setListening,settrnslnGIF,trnslnGIF); toggleTranslation() }}>
                             <div className="neration flexrow violetHover"><MdTranslate className="icon_search" />
                               <span className="bold padding5">translate</span>
                             </div>
