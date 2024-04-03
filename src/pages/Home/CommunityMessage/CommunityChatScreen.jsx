@@ -20,7 +20,7 @@ import fetchProfileUpdate from "../Functions/fetchownprofile";
 import logout from "../Settings/logoutFn";
 import { useNavigate } from "react-router-dom";
 
-function CommunityMsgScreen({ socket, selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [viewprofileImage, setviewprofileImage] = useState(null)
   const [error, seterror] = useState("");
@@ -29,7 +29,7 @@ function CommunityMsgScreen({ socket, selectedCommunityIcon, setSelectedCommunit
   const userdata = JSON.parse(localStorage.getItem('userdata'));
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [allCommunityMessages, setAllCommunityMessages] = useState([]);
-  // const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState(null);
   var [rightclk, setrightclk] = useState(false);
   const [selectedCommunityTemp, setSelectedCommunityTemp] = useState(null)
   const hoverTimer = useRef(null);
@@ -128,25 +128,25 @@ function CommunityMsgScreen({ socket, selectedCommunityIcon, setSelectedCommunit
   ///////////////////////////////////////////////////////////
 
   useEffect(() => {
-    // const newSocket = io('http://:3000');
-    // setSocket(newSocket);
-    // newSocket.on('connect', () => {
-    //   console.log('Connected to the server socket');
-    //   newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
-    // });
+    const newSocket = io('http://:3000');
+    setSocket(newSocket);
+    newSocket.on('connect', () => {
+      console.log('Connected to the server socket');
+      newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
+    });
 
-    if (socket) {
-      socket.on('newMessage', async (message) => {
-        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture }
-        console.log(`new message ---------------------------------------------------`);
-        console.log(typeof (message.c_id));
-        console.log(`new message -------temp--------------------------------------------`);
-        console.log(typeof (selectedCommunity));
-        if (selectedCommunity && message.c_id) {
-          if (message.c_id === selectedCommunity) {
-            setMessages((prev) => [...(prev || []), appenddata])
-          }
-        }
+      newSocket.on('newMessage', async (message) => {
+        // const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture }
+        // console.log(`new message ---------------------------------------------------`);
+        // console.log(typeof (message.c_id));
+        // console.log(`new message -------temp--------------------------------------------`);
+        // console.log(typeof (selectedCommunity));
+        // if (selectedCommunity && message.c_id) {
+        //   if (message.c_id === selectedCommunity) {
+        //     setMessages((prev) => [...(prev || []), appenddata])
+        //   }
+        // }
+        get_c_messages()
         const updatedCommunities = individualCommunity.map(community => {
           if (community._id === selectedCommunity) {
             const updatedUnreadCount = community.unreadcount.map(countObj => {
@@ -161,14 +161,60 @@ function CommunityMsgScreen({ socket, selectedCommunityIcon, setSelectedCommunit
         });
         setIndividualCommunity(updatedCommunities);
       });
-    }
-    // socket.on('disconnect',async ()=>{
-    //   // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
-    // })
-    // return () => {
-    //   socket.disconnect();
-    //   console.error('Disconnected from the server')
-    // };
+      newSocket.on('newCommunityVideo', async (message) => {
+        // const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture }
+        // if (selectedCommunity && message.c_id) {
+        //   if (message.c_id === selectedCommunity) {
+        //     setMessages((prev) => [...(prev || []), appenddata])
+        //   }
+        // }
+        get_c_messages()
+        const updatedCommunities = individualCommunity.map(community => {
+          if (community._id === selectedCommunity) {
+            const updatedUnreadCount = community.unreadcount.map(countObj => {
+              if (countObj.user === localStorage.getItem('userid')) {
+                return { ...countObj, count: 0 };
+              }
+              return countObj;
+            });
+            return { ...community, unreadcount: updatedUnreadCount };
+          }
+          return community;
+        });
+        setIndividualCommunity(updatedCommunities);
+      })
+
+
+      newSocket.on('newCommunityImage', async (message) => {
+        // const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture }
+        // if (selectedCommunity && message.c_id) {
+        //   if (message.c_id === selectedCommunity) {
+        //     setMessages((prev) => [...(prev || []), appenddata])
+        //   }
+        // }
+        get_c_messages()
+
+        const updatedCommunities = individualCommunity.map(community => {
+          if (community._id === selectedCommunity) {
+            const updatedUnreadCount = community.unreadcount.map(countObj => {
+              if (countObj.user === localStorage.getItem('userid')) {
+                return { ...countObj, count: 0 };
+              }
+              return countObj;
+            });
+            return { ...community, unreadcount: updatedUnreadCount };
+          }
+          return community;
+        });
+        setIndividualCommunity(updatedCommunities);
+      })
+    newSocket.on('disconnect',async ()=>{
+      // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
+    })
+    return () => {
+      newSocket.disconnect();
+      console.error('Disconnected from the server')
+    };
   }, [selectedCommunity]);
 
 

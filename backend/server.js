@@ -115,6 +115,16 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
         }]
       });
     }
+    io.emit('newCommunityImage', {
+      u_name:u_name,
+      u_id:u_id,
+      c_id:c_id,
+      profilePicture:profilePicture,
+      filename: `communityMessageImages/${filename}`,
+      messageType: "image",
+      caption: "caption by user available soon"
+    });
+    
     // Send success response
     res.json({ "success": true, "filename": req.filename });
   } catch (error) {
@@ -152,6 +162,15 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
         }]
       });
     }
+    io.emit('newCommunityVideo', {
+      u_name:u_name,
+      u_id:u_id,
+      c_id:c_id,
+      profilePicture:profilePicture,
+      filename: `communityMessageVideos/${filename}`,
+      messageType: "video",
+      caption: "caption by user available soon"
+    });
     // Send success response
     res.json({ "success": true, "filename": req.filename });
   } catch (error) {
@@ -182,7 +201,7 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
       });
       await existingChat.save();
     } else {
-      await CommunityChats.create({
+      await DirectChats.create({
         users: [f_id, u_id],
         messages: [{
           from: u_id,
