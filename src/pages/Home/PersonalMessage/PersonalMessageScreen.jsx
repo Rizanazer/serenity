@@ -19,7 +19,7 @@ import handleListen from "../Functions/voicetoText";
 import handleTranslate from "../Functions/transaltion_option";
 import fetchProfileUpdate from "../Functions/fetchownprofile";
 
-function PersonalMsgScreen({socket}) {
+function PersonalMsgScreen() {
 
   const userdata = JSON.parse(localStorage.getItem('userdata'))
 
@@ -62,7 +62,7 @@ function PersonalMsgScreen({socket}) {
   const alluserdatastring = localStorage.getItem('userdata')
   const friends = JSON.parse(alluserdatastring).friends
   const username = localStorage.getItem('username')
-  // const [mySocket, setMySocket] = useState(null)
+  const [socket, setSocket] = useState(null)
   var [text, setText] = useState("");
   const hoverTimer = useRef(null);
   const [chats, setChats] = useState([])
@@ -96,15 +96,15 @@ function PersonalMsgScreen({socket}) {
     console.log(selectedChat)
   }, [selectedChat])
   useEffect(() => {
-    // const socket = io('http://:3000');
-    // setMySocket(socket)
-    if(socket){
+    const socket = io('http://:3000');
+    setSocket(socket)
       socket.on('recieve_p_message', (message) => {
       // console.log(message);
       console.log("recieved pmessages")
       console.log(messages)
       const newmessage = message
       setMessages((prev) => [...prev, newmessage])
+      
     },[])
 
     /////////////////
@@ -121,7 +121,11 @@ function PersonalMsgScreen({socket}) {
           caption:caption
         }
       ]);
-    });}
+    });
+    return () => {
+      socket.off('recieve_p_message');
+      socket.off('newPersonalMediaMessage');
+  };
   }, [])
   useEffect(()=>{
     setLanguage(userdata.language)
@@ -260,11 +264,8 @@ function PersonalMsgScreen({socket}) {
     console.log(selectedChat);
     const senddata = { "from": u_id,  "to": selectedFriend, "message": trimmedText,"chatid":chatId }
     const appenddata = { "from": u_id,  "to": selectedFriend, "messageBody": trimmedText }
-    if(socket){
     socket.emit("send_p_message", senddata);
-  }
-    
-  setMessages(prev=>[...prev,appenddata])
+    // setMessages(prev=>[...prev,appenddata])
     console.log("----------------------------------appenddata");
     // console.log(appenddata);
     setText("");
