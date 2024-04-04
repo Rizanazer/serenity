@@ -20,12 +20,12 @@ const MobileNumberInput = ({ actions, phno, setPhno, regMobile, error, seterror,
   }, [listening]);
 
   useEffect(() => {
-    if (Number(phoneNumber) === regMobile) {
+    if (Number(phoneNumber) == regMobile) {
       setSpinner(true)
       setTimeout(() => { sendOTP(); setValidate(false) }
         , 2000)
     } else {
-      if (phoneNumber != null) {
+      if (phoneNumber !== null) {
         setSpinner(true)
         setTimeout(() => {
           setSpinner(false)

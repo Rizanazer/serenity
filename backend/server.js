@@ -228,22 +228,31 @@ app.post('/personal_upload_image', uploadPersonalMessageImage.single('media'), a
 });
 router.route("/register").post(profilePictureUpload.single('profilePicture'), async (req, res) => {
   try {
-    const formData = req.body
-    formData.friends = []
-    formData.communities = []
-    if (formData.hobbies) { formData.hobbies = formData.hobbies.split(' ') }
-    formData.likes = formData.likes.split(' ')
-    formData.dislikes = formData.dislikes.split(' ')
-    const propic = formData.profilePicture
-    formData.profilePicture = propic
-    formData.profilePicture = req.file.filename
+    const formData = req.body;
+    const hashedPassword = await bcrypt.hash(formData.password, 10);
+    formData.password = hashedPassword;
+    formData.friends = [];
+    formData.communities = [];
+    if (formData.hobbies) { 
+      formData.hobbies = formData.hobbies.split(' '); 
+    }
+    formData.likes = formData.likes.split(' ');
+    formData.dislikes = formData.dislikes.split(' ');
+    formData.profilePicture = req.file.filename;
     const result = await User.create(formData);
-    res.json({ "success": true, "result": result })
+    res.json({ "success": true, "result": result });
   } catch (error) {
     console.error('Error inserting data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+const bcrypt = require('bcrypt')
+router.post('/hash', async (req,res)=>{
+  const text = req.body.text
+  const hashedPassword = await bcrypt.hash(text, 10);
+  console.log(hashedPassword);
+  res.send(hashedPassword)
+})
 router.post("/replaceProfilePicture", profilePictureUpload.single('filename'),async(req,res)=>{
   try{
       const {u_id} = req.body
@@ -308,27 +317,24 @@ router.route("/fetchcommunitydetails").post(async (req, res) => {
   }
 });
 router.route("/login").post(async (req, res) => {
-  const userdata = req.body
-  //insertData(req.body.name,req.body.age);
-  const pw = userdata.pass
-  const maill = userdata.mail
-  const ph = userdata.phone
-  const query = { username: maill, password: pw };
+  const { mail, pass } = req.body; 
   try {
-    const result = await User.findOne(query);
-    //res.json(result)
-    if (result) {
-      result.online = true;
-      await result.save();
-
-      res.json({ "success": true, "userdata": result })
-    } else if (result === null) {
-      res.json({ "success": false })
+    const user = await User.findOne({ email:mail });
+    if (user) {
+      const passwordMatch = await bcrypt.compare(pass, user.password);
+      if (passwordMatch) {
+        user.online = true;
+        await user.save();
+        return res.json({ success: true, userdata: user });
+      }
     }
-  } catch {
-    res.json({ "success": false })
+    return res.json({ success: false });
+  } catch (error) {
+    console.error('Error during login:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 router.route('/log-out').post(async (req, res) => {
   try {
     const { userid } = req.body;
