@@ -806,8 +806,8 @@ function PersonalMsgScreen() {
                   <FaMicrophone className="icon icon_small nobordershadow" onClick={()=>handleListen(setListening,seterror,setText)} style={{ cursor: 'pointer' }}/>
                   <input type="file" accept="image/*" ref={fileImageRef} style={{ display: 'none' }} onChange={handleImageChange} />
                   <input type="file" accept="video/*" ref={fileVideoRef} style={{ display: 'none' }} onChange={handleVideoChange} />
-                  <MdVideoFile className="icon icon_small nobordershadow"  onClick={sendvideo}/>
-                  <MdOutlineImage className="icon icon_small nobordershadow" onClick={sendimage}/>
+                  < MdOutlineImage className="icon icon_small nobordershadow"  onClick={sendvideo}/>
+                  < MdVideoFile className="icon icon_small nobordershadow" onClick={sendimage}/>
                 </div>
                 <MdSend className="icon send nobordershadow" onClick={send} />
               </div>
