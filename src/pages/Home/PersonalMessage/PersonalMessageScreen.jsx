@@ -285,6 +285,19 @@ function PersonalMsgScreen({pmessages, setPmessages,socket}) {
       seterror('message recieved')
       setPmessages((prev) => [...prev, newmessage]) 
     })
+    socket.on('newPersonalMediaMessage', (messageData) => {
+      const { from, to, filename, messageType, caption } = messageData;
+      setPmessages(prevMessages => [
+        ...prevMessages,
+        {
+          from:from,
+          to:to,
+          filename:filename,
+          messageType:messageType,
+          caption:caption
+        }
+      ]);
+    });
     return () => {
         socket.off('recieve_p_message');
         socket.off('newPersonalMediaMessage');
@@ -420,7 +433,7 @@ function PersonalMsgScreen({pmessages, setPmessages,socket}) {
           }
         });
 
-        await fetchpersonal(selectedFriend)
+        // await fetchpersonal(selectedFriend)
       } catch (error) {
         // seterror('Error uploading image:', error)
         // setListening(true)
@@ -445,7 +458,7 @@ function PersonalMsgScreen({pmessages, setPmessages,socket}) {
         });
 
         // setMessages([...messages, newmessage])
-        await fetchpersonal(selectedFriend)
+        // await fetchpersonal(selectedFriend)
       } catch (error) {
         // seterror('Error uploading image:', error)
         // setListening(true)

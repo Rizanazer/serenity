@@ -86,19 +86,19 @@ const Home = () => {
     // }
     // });
 
-    socket.on('newPersonalMediaMessage', (messageData) => {
-      const { from, to, filename, messageType, caption } = messageData;
-      setPmessages(prevMessages => [
-        ...prevMessages,
-        {
-          from:from,
-          to:to,
-          filename:filename,
-          messageType:messageType,
-          caption:caption
-        }
-      ]);
-    });
+    // socket.on('newPersonalMediaMessage', (messageData) => {
+    //   const { from, to, filename, messageType, caption } = messageData;
+    //   setPmessages(prevMessages => [
+    //     ...prevMessages,
+    //     {
+    //       from:from,
+    //       to:to,
+    //       filename:filename,
+    //       messageType:messageType,
+    //       caption:caption
+    //     }
+    //   ]);
+    // });
 
     socket.on('disconnect',async ()=>{
       // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
@@ -195,7 +195,7 @@ const Home = () => {
     }
   }, []);
   const [error,seterror] = useState('')
-  const [listening,setListening] = useState(true)
+  const [listening,setListening] = useState(false)
   // console.log(individualCommunity);
   return (
     <>

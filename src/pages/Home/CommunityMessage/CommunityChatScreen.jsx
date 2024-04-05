@@ -237,7 +237,7 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
               logout(navigate, userdata)
             }, 3000);
           }
-          setMessages((prev) => [...(prev || []), messageData])
+          // setMessages((prev) => [...(prev || []), messageData])
 
         });
         setText("");

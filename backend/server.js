@@ -116,7 +116,7 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
         }]
       });
     }
-    io.emit('newCommunityImage', {
+    await io.emit('newCommunityImage', {
       u_name:u_name,
       u_id:u_id,
       c_id:c_id,
@@ -125,7 +125,15 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
       messageType: "image",
       caption: "caption by user available soon"
     });
-    
+    console.log( {
+      u_name:u_name,
+      u_id:u_id,
+      c_id:c_id,
+      profilePicture:profilePicture,
+      filename: `communityMessageImages/${filename}`,
+      messageType: "image",
+      caption: "caption by user available soon"
+    });
     // Send success response
     res.json({ "success": true, "filename": req.filename });
   } catch (error) {
@@ -163,7 +171,7 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
         }]
       });
     }
-    io.emit('newCommunityVideo', {
+    await io.emit('newCommunityVideo', {
       u_name:u_name,
       u_id:u_id,
       c_id:c_id,
