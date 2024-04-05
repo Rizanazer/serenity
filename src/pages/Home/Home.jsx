@@ -14,6 +14,7 @@ import AccountSettings from "./Settings/Accounts/Accounts";
 import Theme_Settings from "./Settings/Theme/Theme";
 import Notification_Settings from "./Settings/Notification/Notification";
 import { MdClose } from "react-icons/md";
+import ErrorMessage from "./Functions/errormessage";
 
 const Home = () => {
   var [ViewChat, setViewChat] = useState(false);
@@ -24,6 +25,8 @@ const Home = () => {
   var [Theme, setTheme] = useState(false);
 
   //accounts
+  const [pmessages,setPmessages] = useState([])
+  const [cmessages,setCmessages] = useState([])
 
   const [Edit_email, setEdit_email] = useState(false);
   const [Edit_mobile, setEdit_mobile] = useState(false);
@@ -45,7 +48,6 @@ const Home = () => {
   const [communityList, updateCommunityList] = useState(userdata.communities);
   const [Setting, setSetting] = useState(false);
   const [selectedCommunityStatus, setSelectedCommunityStatus] = useState(null);
-
   const toggleProfile = () => {
     setProfile(prevState => !prevState);
     setAccount(false);
@@ -59,11 +61,9 @@ const Home = () => {
   };
   /////////////////////////////socketttt
   const [socket,setSocket] = useState(null)
-
   useEffect(() => {
     const newSocket = io('http://:3000');
     setSocket(newSocket);
-  
     return () => {
       if (newSocket) {
         newSocket.disconnect();
@@ -77,7 +77,7 @@ const Home = () => {
       socket.emit('setonline',{u_id:localStorage.getItem('userid')})
 
     });
-
+    /////community message handling
     socket.on('newMessage', async (message) => {
     if (communityList.length > 0) {
       if (userdata) {
@@ -85,6 +85,21 @@ const Home = () => {
       }
     }
     });
+
+    socket.on('newPersonalMediaMessage', (messageData) => {
+      const { from, to, filename, messageType, caption } = messageData;
+      setPmessages(prevMessages => [
+        ...prevMessages,
+        {
+          from:from,
+          to:to,
+          filename:filename,
+          messageType:messageType,
+          caption:caption
+        }
+      ]);
+    });
+
     socket.on('disconnect',async ()=>{
       // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
     })
@@ -93,10 +108,11 @@ const Home = () => {
       if (socket) {
         socket.off('connect');
         socket.off('newMessage');
+        socket.off('newPersonalMediaMessage');
         socket.off('disconnect');
       }
     };}
-  }, [socket, communityList, userdata]);
+  }, []);
 
   // const toggleEmail = () => {
   //   setEdit_email(prevState => !prevState);
@@ -179,12 +195,15 @@ const Home = () => {
       }
     }
   }, []);
-
+  const [error,seterror] = useState('')
+  const [listening,setListening] = useState(true)
   // console.log(individualCommunity);
   return (
     <>
       {localStorage.getItem('validation') && localStorage.getItem('validation') === "true" ? <div className="container center ">
         {/* settings */}
+        <ErrorMessage error={error} listening={listening} setListening={setListening} seterror={seterror} />
+
         {Setting && <div className="overlay">
           <div className="flex flexrow h_w_full">
             <div className="flex set1 h_w_full">
@@ -242,7 +261,7 @@ const Home = () => {
 
         </div>}
         <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} setviewchat={setViewChat} />
-        {Screen === "PersonalMessage" && <PersonalMsgScreen socket={socket}/>}
+        {Screen === "PersonalMessage" && socket && <PersonalMsgScreen socket={socket} pmessages={pmessages} setPmessages={setPmessages}/>}
         {Screen === "CommunityMessage" && <CommunityMsgScreen
           
           socket={socket}

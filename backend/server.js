@@ -1236,7 +1236,6 @@ io.on('connection', async (socket) => {
     console.log(`message is`);
     console.log(message);
 
-    // Standardize the order of users
     const sortedUsers = [from, to].sort();
 
     const existingChat = await DirectChats.findOne({
@@ -1246,7 +1245,6 @@ io.on('connection', async (socket) => {
     });
 
     if (existingChat) {
-        // Update existing chat
         existingChat.messages.push({
             from: from,
             to: to,
@@ -1256,10 +1254,9 @@ io.on('connection', async (socket) => {
         existingChat.usernameTo = to;
         await existingChat.save();
     } else {
-        // Create new chat
         await DirectChats.create({
             usernameTo: to,
-            users: sortedUsers, // Ensure consistent order
+            users: sortedUsers,
             messages: [{
                 from: from,
                 to: to,
@@ -1269,6 +1266,7 @@ io.on('connection', async (socket) => {
         });
     }
     io.emit("recieve_p_message", { "to": to, "from": from, "messageBody": message, "messageType": "text" });
+    
 });
 
   socket.on('send-image-community', async ({ image, u_name }) => {

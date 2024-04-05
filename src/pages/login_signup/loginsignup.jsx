@@ -116,7 +116,9 @@ const handleClick = async () => {
             setSpinner(false)
           }
           else{
-            handleActionChange('GetOTP')
+            // handleActionChange('GetOTP')
+            navigate('/dashboard')
+            localStorage.setItem('validation',"true")
             setListening(false)
             setSpinner(false)
           }

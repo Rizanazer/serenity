@@ -19,7 +19,7 @@ import handleListen from "../Functions/voicetoText";
 import handleTranslate from "../Functions/transaltion_option";
 import fetchProfileUpdate from "../Functions/fetchownprofile";
 
-function PersonalMsgScreen() {
+function PersonalMsgScreen({pmessages, setPmessages,socket}) {
 
   const userdata = JSON.parse(localStorage.getItem('userdata'))
 
@@ -33,7 +33,7 @@ function PersonalMsgScreen() {
         chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
       }
     }, 100);
-  }, [messages, scrollPosition]);
+  }, [pmessages, scrollPosition]);
   const [trnslnGIF, settrnslnGIF] = useState(false);
   const [language, setLanguage] = useState(null);
   const [error, seterror] = useState("");
@@ -64,7 +64,7 @@ function PersonalMsgScreen() {
   const alluserdatastring = localStorage.getItem('userdata')
   const friends = JSON.parse(alluserdatastring).friends
   const username = localStorage.getItem('username')
-  const [socket, setSocket] = useState(null)
+  // const [socket, setSocket] = useState(null)
   var [text, setText] = useState("");
   const hoverTimer = useRef(null);
   const [blockingMode,setBlockingMode] = useState(false)
@@ -98,49 +98,51 @@ function PersonalMsgScreen() {
     console.log("selectedChat")
     console.log(selectedChat)
   }, [selectedChat])
-  useEffect(() => {
-    const socket = io('http://:3000');
-    setSocket(socket)
-      socket.on('recieve_p_message', (message) => {
-      // console.log(message);
-      console.log("recieved pmessages")
-      console.log(messages)
-      const newmessage = message
-      setMessages((prev) => [...prev, newmessage])
+
+
+  // useEffect(() => {
+    // const socket = io('http://:3000');
+    // setSocket(socket)
+    //   socket.on('recieve_p_message', (message) => {
+    //   // console.log(message);
+    //   console.log("recieved pmessages")
+    //   console.log(messages)
+    //   const newmessage = message
+    //   setMessages((prev) => [...prev, newmessage])
       
-    },[])
+    // },[])
 
     /////////////////
-    socket.on('unfriendnotification', (message) => {
+    // socket.on('unfriendnotification', (message) => {
       
-      if(userid === message.u_id){
-        if (userdata) {
-          userdata.friends = userdata.friends.filter(friendId => friendId !== message.u_id);
-          localStorage.setItem('userdata', JSON.stringify(userdata));
-      }
-      }
+    //   if(userid === message.u_id){
+    //     if (userdata) {
+    //       userdata.friends = userdata.friends.filter(friendId => friendId !== message.u_id);
+    //       localStorage.setItem('userdata', JSON.stringify(userdata));
+    //   }
+    //   }
       
-    })
+    // })
 
 
-    socket.on('newPersonalMediaMessage', (messageData) => {
-      const { from, to, filename, messageType, caption } = messageData;
-      setMessages(prevMessages => [
-        ...prevMessages,
-        {
-          from:from,
-          to:to,
-          filename:filename,
-          messageType:messageType,
-          caption:caption
-        }
-      ]);
-    });
-    return () => {
-      socket.off('recieve_p_message');
-      socket.off('newPersonalMediaMessage');
-  };
-  }, [])
+    // socket.on('newPersonalMediaMessage', (messageData) => {
+    //   const { from, to, filename, messageType, caption } = messageData;
+    //   setMessages(prevMessages => [
+    //     ...prevMessages,
+    //     {
+    //       from:from,
+    //       to:to,
+    //       filename:filename,
+    //       messageType:messageType,
+    //       caption:caption
+    //     }
+    //   ]);
+    // });
+  //   return () => {
+  //     socket.off('recieve_p_message');
+  //     socket.off('newPersonalMediaMessage');
+  // };
+  // }, [])
   useEffect(()=>{
     setLanguage(userdata.language)
     fetchcontacts()
@@ -233,14 +235,14 @@ function PersonalMsgScreen() {
   };
   //texttospeech
 
-  var [messages, setMessages] = useState([]);   
+  // var [messages, setMessages] = useState([]);   
   
   async function fetchpersonal(friend){
     try {
       const response = await axios.post('/fetchpersonal1', { f_id: friend, u_id: u_id })
-      setMessages(response.data.messages)
+      setPmessages(response.data.messages)
     } catch (error) {
-      setMessages([])
+      setPmessages([])
       console.log('personal message fetch error')
     }
   }
@@ -276,14 +278,32 @@ function PersonalMsgScreen() {
     setViewChat(true)
     }
   }
+  useEffect(()=>{
+    socket.on('recieve_p_message', (message) => {
+      const newmessage = message
+      setListening(true)
+      seterror('message recieved')
+      setPmessages((prev) => [...prev, newmessage]) 
+    })
+    return () => {
+        socket.off('recieve_p_message');
+        socket.off('newPersonalMediaMessage');
+        socket.off('disconnect');
+    };
+  },[])
   const send = async () => {
     const trimmedText = text.trim();
     console.log("selectedChat");
     console.log(selectedChat);
     const senddata = { "from": u_id,  "to": selectedFriend, "message": trimmedText,"chatid":chatId }
     const appenddata = { "from": u_id,  "to": selectedFriend, "messageBody": trimmedText }
-    socket.emit("send_p_message", senddata);
-    // setMessages(prev=>[...prev,appenddata])
+    if(socket){
+      socket.emit("send_p_message", senddata);
+    }
+
+    // setPmessages(prev=>[...prev,appenddata])
+    setListening(true)
+    seterror('message sent')
     console.log("----------------------------------appenddata");
     // console.log(appenddata);
     setText("");
@@ -329,7 +349,7 @@ function PersonalMsgScreen() {
         const messages = await axios.post('/fetchpersonal', { f_id: selectedFriend, u_id: u_id })
         // console.log(friend);
         console.log(messages.data.chats.messages);
-        setMessages(messages.data.chats.messages)
+        setPmessages(messages.data.chats.messages)
       }
     } catch (error) {
       console.log("error in deleting a message")
@@ -351,7 +371,7 @@ function PersonalMsgScreen() {
   useEffect(() => {
     async function searchmessage() {
       const response = await axios.post('/searchpersonalmessage', { u_id: userid, f_id: selectedFriend, text: searchinput })
-      setMessages(response.data.messages)
+      setPmessages(response.data.messages)
       console.log(searchinput);
     }
     searchmessage()
@@ -599,7 +619,7 @@ function PersonalMsgScreen() {
               </div>
             </div>}
             <ErrorMessage error={error} listening={listening} setListening={setListening} seterror={seterror} />
-            {messages?.length > 0 && messages.map((el, i) => (
+            {pmessages?.length > 0 && pmessages.map((el, i) => (
               <React.Fragment key={i}>
                 {
                    el.from === userid ?
