@@ -78,13 +78,13 @@ const Home = () => {
 
     });
     /////community message handling
-    socket.on('newMessage', async (message) => {
-    if (communityList.length > 0) {
-      if (userdata) {
-        fetchCommunityDetails();
-      }
-    }
-    });
+    // socket.on('newMessage', async (message) => {
+    // if (communityList.length > 0) {
+    //   if (userdata) {
+    //     fetchCommunityDetails();
+    //   }
+    // }
+    // });
 
     socket.on('newPersonalMediaMessage', (messageData) => {
       const { from, to, filename, messageType, caption } = messageData;
@@ -107,7 +107,6 @@ const Home = () => {
     return () => {
       if (socket) {
         socket.off('connect');
-        socket.off('newMessage');
         socket.off('newPersonalMediaMessage');
         socket.off('disconnect');
       }

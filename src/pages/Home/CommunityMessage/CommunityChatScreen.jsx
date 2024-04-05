@@ -20,7 +20,7 @@ import fetchProfileUpdate from "../Functions/fetchownprofile";
 import logout from "../Settings/logoutFn";
 import { useNavigate } from "react-router-dom";
 
-function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
+function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunityIcon, setIndividualCommunity, setViewChat, ViewChat, screen, create, individualCommunity, selectedCommunityName, setSelectedCommunityName, selectedCommunity, setSelectedCommunity, selectedCommunityStatus, setselectedCommunityStatus }) {
   const [searchinput, setsearchinput] = useState('')
   const [viewprofileImage, setviewprofileImage] = useState(null)
   const [error, seterror] = useState("");
@@ -29,7 +29,7 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
   const userdata = JSON.parse(localStorage.getItem('userdata'));
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [allCommunityMessages, setAllCommunityMessages] = useState([]);
-  const [socket, setSocket] = useState(null);
+  // const [socket, setSocket] = useState(null);
   var [rightclk, setrightclk] = useState(false);
   const [selectedCommunityTemp, setSelectedCommunityTemp] = useState(null)
   const hoverTimer = useRef(null);
@@ -125,14 +125,14 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
   ///////////////////////////////////////////////////////////
 
   useEffect(() => {
-    const newSocket = io('http://:3000');
-    setSocket(newSocket);
-    newSocket.on('connect', () => {
-      console.log('Connected to the server socket');
-      newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
-    });
+    // const newSocket = io('http://:3000');
+    // setSocket(newSocket);
+    // newSocket.on('connect', () => {
+    //   console.log('Connected to the server socket');
+    //   newSocket.emit('setonline',{u_id:localStorage.getItem('userid')})
+    // });
 
-      newSocket.on('newMessage', async (message) => {
+      socket.on('newMessage', async (message) => {
         const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture ,"timeStamp":new Date()}
         console.log(`new message ---------------------------------------------------`);
         console.log(typeof (message.c_id));
@@ -158,8 +158,8 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
         });
         setIndividualCommunity(updatedCommunities);
       });
-      newSocket.on('newCommunityVideo', async (message) => {
-        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture ,"timeStamp":new Date()}
+      socket.on('newCommunityVideo', async (message) => {
+        const appenddata = { "filename":message.filename,"messageType":"video","u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture ,"timeStamp":new Date()}
         if (selectedCommunity && message.c_id) {
           if (message.c_id === selectedCommunity) {
             setMessages((prev) => [...(prev || []), appenddata])
@@ -182,8 +182,9 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
       })
 
 
-      newSocket.on('newCommunityImage', async (message) => {
-        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture ,"timeStamp":new Date()}
+      socket.on('newCommunityImage', async (message) => {
+        const appenddata = { "filename":message.filename,"messageType":"image","u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture ,"timeStamp":new Date()}
+        console.log(message);
         if (selectedCommunity && message.c_id) {
           if (message.c_id === selectedCommunity) {
             setMessages((prev) => [...(prev || []), appenddata])
@@ -205,14 +206,16 @@ function CommunityMsgScreen({  selectedCommunityIcon, setSelectedCommunityIcon, 
         });
         setIndividualCommunity(updatedCommunities);
       })
-    newSocket.on('disconnect',async ()=>{
+    socket.on('disconnect',async ()=>{
       // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
     })
     return () => {
-      newSocket.disconnect();
-      console.error('Disconnected from the server')
+      socket.off('newMessage');
+      socket.off('newCommunityImage');
+      socket.off('newCommunityVideo');
+
     };
-  }, [selectedCommunity]);
+  }, []);
 
 
   const toggleMore = () => {
