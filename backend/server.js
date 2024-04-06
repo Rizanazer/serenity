@@ -92,6 +92,7 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
     const { c_id, u_id, u_name, profilePicture } = req.body;
     const filename = req.file.filename;
     // Check if a chat exists for the given communityId
+    console.log(`new image message to community`);
     let existingChat = await CommunityChats.findOne({ communityId: c_id });
     if (existingChat) {
       existingChat.messages.push({
@@ -117,15 +118,7 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
       });
     }
     await io.emit('newCommunityImage', {
-      u_name:u_name,
-      u_id:u_id,
-      c_id:c_id,
-      profilePicture:profilePicture,
-      filename: `communityMessageImages/${filename}`,
-      messageType: "image",
-      caption: "caption by user available soon"
-    });
-    console.log( {
+      timeStamp:Date.now,
       u_name:u_name,
       u_id:u_id,
       c_id:c_id,
@@ -172,6 +165,7 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
       });
     }
     await io.emit('newCommunityVideo', {
+      timeStamp:Date.now,
       u_name:u_name,
       u_id:u_id,
       c_id:c_id,
@@ -1280,6 +1274,9 @@ io.on('connection', async (socket) => {
   socket.on('send-image-community', async ({ image, u_name }) => {
   });
   const axios = require('axios')
+
+
+  //////////serenity score is commenting due to bert-server unavailability
   socket.on('sendMessage', async ({ c_id, u_name, message, u_id, profilePicture, anonymity }) => {
     try {
       if (!c_id || !u_id || !message) {

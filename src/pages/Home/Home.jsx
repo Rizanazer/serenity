@@ -77,37 +77,12 @@ const Home = () => {
       socket.emit('setonline',{u_id:localStorage.getItem('userid')})
 
     });
-    /////community message handling
-    // socket.on('newMessage', async (message) => {
-    // if (communityList.length > 0) {
-    //   if (userdata) {
-    //     fetchCommunityDetails();
-    //   }
-    // }
-    // });
-
-    // socket.on('newPersonalMediaMessage', (messageData) => {
-    //   const { from, to, filename, messageType, caption } = messageData;
-    //   setPmessages(prevMessages => [
-    //     ...prevMessages,
-    //     {
-    //       from:from,
-    //       to:to,
-    //       filename:filename,
-    //       messageType:messageType,
-    //       caption:caption
-    //     }
-    //   ]);
-    // });
-
     socket.on('disconnect',async ()=>{
       // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
     })
-    
     return () => {
       if (socket) {
         socket.off('connect');
-        socket.off('newPersonalMediaMessage');
         socket.off('disconnect');
       }
     };}
@@ -261,7 +236,7 @@ const Home = () => {
         </div>}
         <Nav Screen={Screen} setScreen={setScreen} setSetting={() => { setSetting(true) }} setviewchat={setViewChat} />
         {Screen === "PersonalMessage" && socket && <PersonalMsgScreen socket={socket} pmessages={pmessages} setPmessages={setPmessages}/>}
-        {Screen === "CommunityMessage" && <CommunityMsgScreen
+        {Screen === "CommunityMessage" && socket &&  <CommunityMsgScreen
           
           socket={socket}
           selectedCommunityIcon={selectedCommunityIcon}

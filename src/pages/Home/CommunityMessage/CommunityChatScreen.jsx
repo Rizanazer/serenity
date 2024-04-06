@@ -140,7 +140,8 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
         console.log(typeof (selectedCommunity));
         if (selectedCommunity && message.c_id) {
           if (message.c_id === selectedCommunity) {
-            setMessages((prev) => [...(prev || []), appenddata])
+            // setMessages((prev) => [...(prev || []), appenddata])
+            setMessages((prev) => [...prev, appenddata])
           }
         }
         // get_c_messages()
@@ -159,12 +160,14 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
         setIndividualCommunity(updatedCommunities);
       });
       socket.on('newCommunityVideo', async (message) => {
-        const appenddata = { "filename":message.filename,"messageType":"video","u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture ,"timeStamp":new Date()}
-        if (selectedCommunity && message.c_id) {
-          if (message.c_id === selectedCommunity) {
-            setMessages((prev) => [...(prev || []), appenddata])
-          }
-        }
+        const appenddata = { "filename":message.filename,"messagetype":"video","u_id": message.u_id, "u_name": message.u_name,   "profilePicture": message.profilePicture }
+        // if (selectedCommunity && message.c_id) {
+          // if (message.c_id === selectedCommunity) {
+          setListening(true)  
+          seterror('video recieved')
+            setMessages(prev => [...prev, appenddata])
+          // }
+        // }
         // get_c_messages()
         const updatedCommunities = individualCommunity.map(community => {
           if (community._id === selectedCommunity) {
@@ -183,13 +186,19 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
 
 
       socket.on('newCommunityImage', async (message) => {
-        const appenddata = { "filename":message.filename,"messageType":"image","u_id": message.u_id, "u_name": message.u_name, "message": message.message,  "profilePicture": message.profilePicture ,"timeStamp":new Date()}
+        const appenddata = {"caption":message.caption,"filename":message.filename,"messagetype":"image","u_id": message.u_id, "u_name": message.u_name, "profilePicture": message.profilePicture ,"timeStamp":new Date()}
         console.log(message);
-        if (selectedCommunity && message.c_id) {
-          if (message.c_id === selectedCommunity) {
-            setMessages((prev) => [...(prev || []), appenddata])
-          }
-        }
+        console.log(appenddata);
+        console.log(`selected:${selectedCommunity}`);
+        setListening(true)
+        seterror('new image recieved')
+
+        // if (selectedCommunity && message.c_id) {
+          // if (message.c_id === selectedCommunity) {
+            setMessages(prev => [...prev, appenddata])
+            
+        //   }
+        // }
         // get_c_messages()
 
         const updatedCommunities = individualCommunity.map(community => {
@@ -206,9 +215,7 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
         });
         setIndividualCommunity(updatedCommunities);
       })
-    socket.on('disconnect',async ()=>{
-      // await axios.post('/setoffline',{u_id:localStorage.getItem('userid')})
-    })
+    
     return () => {
       socket.off('newMessage');
       socket.off('newCommunityImage');
@@ -335,14 +342,14 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
             'Content-Type': 'multipart/form-data'
           }
         });
-        let newmessage = {
-          messagetype: 'image',
-          u_name: userdata.username,
-          filename: response.data.filename,
-          profilePicture: response.data.profilePicture ? response.data.profilePicture : userdata.profilePicture
+        // let newmessage = {
+        //   messagetype: 'image',
+        //   u_name: userdata.username,
+        //   filename: response.data.filename,
+        //   profilePicture: response.data.profilePicture ? response.data.profilePicture : userdata.profilePicture
 
-        }
-        setMessages([...messages, newmessage])
+        // }
+        // setMessages([...messages, newmessage])
 
       } catch (error) {
         seterror('Error uploading image:', error)
