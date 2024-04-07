@@ -133,7 +133,7 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
     // });
 
       socket.on('newMessage', async (message) => {
-        const appenddata = { "u_id": message.u_id, "u_name": message.u_name, "message": message.message, "anonymity": message.anonymity, "profilePicture": message.profilePicture ,"timeStamp":new Date()}
+        const appenddata = { "u_id": message.u_id, "message": message.message,"timeStamp":new Date()}
         console.log(`new message ---------------------------------------------------`);
         console.log(typeof (message.c_id));
         console.log(`new message -------temp--------------------------------------------`);
@@ -686,7 +686,7 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
                             </div>}
                           </div>
                         )}
-                        <div className={el.u_name === username ? " flex flexrow " : " flex flexrow"}>
+                        <div className={el.u_id.username === username ? " flex flexrow " : " flex flexrow"}>
 
                           {el.messagetype === "image" && (
                             <div className="flex flexcolumn">
@@ -732,19 +732,19 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
 
                           <div className="flex flexcolumn center">
                             {/* needs adjustment here */}
-                            {el.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
+                            {el.u_id.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
                               className="icon_search circle" alt="" srcSet="" />
-                              : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'userdummy.jpg'}`}
+                              : <img src={`uploads/profilePictures/${el.u_id.profilePicture ? el.u_id.profilePicture : 'userdummy.jpg'}`}
                                 className="icon_search circle" alt="" srcSet="" onClick={() => { }} />}
 
-                            {el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_name}</p>}
+                            {el.u_id.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_id.username}</p>}
                           </div>
                         </div>
                       </div>
                       :
                       <div className="flex flexrow gap10" >
 
-                        <div className={el.u_name === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
+                        <div className={el.u_id.username === username ? " msg-rightside flex flexrow " : " flex row_revese"}>
                           {el.messagetype === "image" && (
                             <div className="flex flexcolumn">
                               {el?.forwarded === true ? <p className="light forwardedmedia" style={{ margin: 0 }}>forwarded</p> : <></>}
@@ -781,25 +781,25 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
                           )}
                           <div className="flex flexcolumn center">
                             {/* needs adjustment here */}
-                            {el.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
+                            {el.u_id.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
                               className="icon_search circle" alt="" srcSet="" onClick={() => {
-                                if (el.u_name != username) {
+                                if (el.u_id.anonymity != username) {
                                   setSelectedUser({ username: el.u_name, userid: el.u_id });
                                   setMember(true);
                                   setSideScreen(true);
                                 }
                               }}
-                            /> : <img src={`uploads/profilePictures/${el.profilePicture ? el.profilePicture : 'chathistory.jpg'}`}
+                            /> : <img src={`uploads/profilePictures/${el.u_id.profilePicture ? el.u_id.profilePicture : 'chathistory.jpg'}`}
                               className="icon_search circle" alt="" srcSet="" onClick={() => {
-                                if (el.u_name != username) {
-                                  setSelectedUser({ username: el.u_name, userid: el.u_id });
+                                if (el.u_id.username != username) {
+                                  setSelectedUser({ username: el.u_id.username, userid: el.u_id._id });
                                   setMember(true);
                                   setSideScreen(true);
                                 }
                               }}
                             />}
 
-                            {el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_name}</p>}
+                            {el.u_id.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_id.username}</p>}
                           </div>
                         </div>
                         {rightclk && selectedMessage === el && (

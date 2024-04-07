@@ -97,8 +97,6 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
     if (existingChat) {
       existingChat.messages.push({
         u_id,
-        u_name,
-        profilePicture,
         filename:`communityMessageImages/${filename}`,
         messagetype: "image",
         caption: "caption by user available soon"
@@ -109,8 +107,6 @@ app.post('/community_upload_image', uploadCommunityMessageImage.single('image'),
         communityId: c_id,
         messages: [{
           u_id,
-          u_name,
-          profilePicture,
           filename:`communityMessageImages/${filename}`,
           messagetype: "image",
           caption: "caption by user available soon"
@@ -144,9 +140,7 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
     if (existingChat) {
       existingChat.messages.push({
         u_id,
-        u_name,
         filename:`communityMessageVideos/${filename}`,
-        profilePicture,
         messagetype: "video",
         caption: "caption by user available soon"
       });
@@ -156,8 +150,6 @@ app.post('/community_upload_video', uploadCommunityMessagevideo.single('video'),
         communityId: c_id,
         messages: [{
           u_id,
-          u_name,
-          profilePicture,
           filename:`communityMessageVideos/${filename}`,
           messagetype: "video",
           caption: "caption by user available soon"
@@ -990,7 +982,7 @@ router.post("/search_p_chatname", async (req, res) => {
 router.post("/get_c_messages", async (req, res) => {
   try {
     const { c_id } = req.body
-    const chats = await CommunityChats.findOne({ communityId: c_id })
+    const chats = await CommunityChats.findOne({ communityId: c_id }).populate('messages.u_id')
     if (chats) {
       res.json({ "success": true, "chats": chats });
     } else {
@@ -1356,7 +1348,7 @@ io.on('connection', async (socket) => {
       }
       const existingChat = await CommunityChats.findOne({ communityId: c_id });
       if (existingChat) {
-        existingChat.messages.push({ u_id, message, u_name, profilePicture, anonymity });
+        existingChat.messages.push({ u_id, message });
         await existingChat.save();
         
         
@@ -1365,7 +1357,7 @@ io.on('connection', async (socket) => {
         // const unreadcount = members.map(member => ({ userId: member, count: 0 }));
         await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }]});
       }
-      io.emit('newMessage', { u_id, u_name, message, c_id, profilePicture, anonymity });
+      io.emit('newMessage', { u_id, message, c_id });
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });

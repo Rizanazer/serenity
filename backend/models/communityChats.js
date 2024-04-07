@@ -7,10 +7,7 @@ const communityChatSchema = new mongoose.Schema({
         {
           forwarded:{type:Boolean,default:false},
           u_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-          u_name:{type:String},
           message: String,
-          profilePicture:{type:String,default:"chathistory.jpg"},
-          anonymity:{type:Boolean},
           messagetype:{type:String,default:"text"},
           filename:{type:String,default:""},
           caption:{type:String,default:""},
