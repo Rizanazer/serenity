@@ -138,12 +138,12 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
         console.log(typeof (message.c_id));
         console.log(`new message -------temp--------------------------------------------`);
         console.log(typeof (selectedCommunity));
-        if (selectedCommunity && message.c_id) {
-          if (message.c_id === selectedCommunity) {
+        // if (selectedCommunity && message.c_id) {
+          // if (message.c_id === selectedCommunity) {
             // setMessages((prev) => [...(prev || []), appenddata])
             setMessages((prev) => [...prev, appenddata])
-          }
-        }
+          // }
+        // }
         // get_c_messages()
         const updatedCommunities = individualCommunity.map(community => {
           if (community._id === selectedCommunity) {
