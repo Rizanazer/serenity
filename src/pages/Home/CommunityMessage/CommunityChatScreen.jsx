@@ -662,7 +662,7 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
                     <div className=" datecontainer"></div> :
                     <div className=" datecontainer" >{(new Date(el.timeStamp))?.getDate()}/{(new Date(el.timeStamp))?.getMonth() + 1}/{(new Date(el.timeStamp))?.getFullYear()}</div>}
                   {
-                    el.u_name === username ?
+                    el.u_id.username === username ?
                       <div className="flex flexrow gap10 msg-rightside" >
 
                         {rightclk && selectedMessage === el && (
@@ -709,7 +709,7 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
 
                           {el.messagetype !== "image" && el.messagetype !== "video" && (
                             el.message === "Serenity Alert:This was a Toxic Comment" ? (
-                              <p className="msg">{el.message}</p>
+                              <p className="msg">this is 1{el.message}</p>
                             ) : (
                               <p
                                 className="msg"

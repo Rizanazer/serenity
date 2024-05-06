@@ -5,7 +5,7 @@ import { MdOutlineClose, MdOutlineDone } from "react-icons/md";
 
 const MobileNumberInput = ({ actions, phno, setPhno, regMobile, error, seterror, listening, setListening, }) => {
   const [phoneNumber, setPhoneNumber] = useState(null);
-  const [validate, setValidate] = useState(true); //making it true for removing otpscreen
+  const [validate, setValidate] = useState(false); 
   const [spinner, setSpinner] = useState(false)
   const [checked, setChecked] = useState(false);
   const [Notchecked, setNotChecked] = useState(false);
