@@ -781,15 +781,15 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
                           )}
                           <div className="flex flexcolumn center">
                             {/* needs adjustment here */}
-                            {el.u_id.anonymity ? <img src={`uploads/profilePictures/userdummy.jpg`}
+                            {el.u_id.anonymity || el.anonymity  ? <img src={`uploads/profilePictures/userdummy.jpg`}
                               className="icon_search circle" alt="" srcSet="" onClick={() => {
-                                if (el.u_id.anonymity != username) {
+                                if (el.u_id.anonymity != username || el.anonymity != username) {
                                   setSelectedUser({ username: el.u_id.username?el.u_id.username:el.username, userid: el.u_id._id?el.u_id._id:el.u_id });
                                   setMember(true);
                                   setSideScreen(true);
                                 }
                               }}
-                            /> : <img src={`uploads/profilePictures/${el.u_id.profilePicture ? el.u_id.profilePicture : 'chathistory.jpg'}`}
+                            /> : <img src={`uploads/profilePictures/${el.u_id.profilePicture ? el.u_id.profilePicture : el.profilePicture}`}
                               className="icon_search circle" alt="" srcSet="" onClick={() => {
                                 if (el.u_id.username != username || el.username != username) {
                                   setSelectedUser({ username: el.u_id.username?el.u_id.username:el.username, userid: el.u_id._id?el.u_id._id:el.u_id });
@@ -799,7 +799,7 @@ function CommunityMsgScreen({  socket,selectedCommunityIcon, setSelectedCommunit
                               }}
                             />}
 
-                            {el.u_id.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_id.username?el.u_id.username:el.username}</p>}
+                            {el.u_id.anonymity || el.anonymity ? <p className="bold">S'user</p> : <p className="bold">{el.u_id.username?el.u_id.username:el.username}</p>}
                           </div>
                         </div>
                         {rightclk && selectedMessage === el && (
