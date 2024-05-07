@@ -1312,6 +1312,7 @@ io.on('connection', async (socket) => {
           let messagecount = 0
           if (existingChat?.messages.length > 0) {
             console.log("len", existingChat.messages.length);
+            console.log(result);
             // existingChat.messages.map((msg) => {
             //   if (msg.u_id.equals(new mongoose.Types.ObjectId(u_id)) && msg.timeStamp >= threemonthsback && msg.timeStamp < today) {
             //     if (msg.message === "Serenity Alert:This was a Toxic Comment") {
@@ -1357,7 +1358,10 @@ io.on('connection', async (socket) => {
         // const unreadcount = members.map(member => ({ userId: member, count: 0 }));
         await CommunityChats.create({ communityId: c_id, messages: [{ u_id, message, u_name, profilePicture, anonymity }]});
       }
-      io.emit('newMessage', { u_id, message, c_id });
+      if(u_id){
+
+        io.emit('newMessage', { u_id,u_name, message, c_id ,profilePicture,anonymity});
+      }
     } catch (error) {
       console.error('Error in handling incoming message:', error);
       socket.emit({ success: false, "error": "Internal server error." });
