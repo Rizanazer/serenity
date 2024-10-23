@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   serenityscore: { type: Number, default: 100 },
  
   lastExpirydate: {
-    type: Date,default: getDefaultExpiryDate
+    type: Date, default: getDefaultExpiryDate()
   },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendrequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],

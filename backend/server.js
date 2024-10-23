@@ -1080,30 +1080,29 @@ router.post('/verify-otp', (req, res) => {
 router.post('/update-serenity-score', async (req, res) => {
   const { userId, newScore } = req.body;
   try {
-      const user = await User.findById(userId);
-      if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-      }
-      const expiryDate = user.lastExpirydate;
-      const currentDate = new Date();
-      // console.log('====================================');
-      // console.log(currentDate);
-      // console.log(expiryDate);
-
-      // console.log('====================================');
-      if (expiryDate && expiryDate < currentDate) { 
-          user.serenityscore = newScore;
-          user.lastExpirydate = currentDate; 
-          await user.save();
-          console.log('Serenity score updated successfully' );
-          return res.json({ message: 'Serenity score updated successfully' });
-      } else {
-        console.log("serinityScore not updated since the limit is not Reached");
-          return res.status(400).json({ error: 'Serenity score cannot be updated as the expiry date is not within three months' });
-      }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const expiryDate = user.lastExpirydate;
+    const currentDate = new Date();
+    console.log('====================================');
+    console.log(currentDate, expiryDate);
+    if (expiryDate && expiryDate < currentDate) {
+      user.serenityscore = newScore;
+      const expiryDatenew=expiryDate.setMonth(expiryDate.getMonth() + 3);
+      user.lastExpirydate = expiryDatenew;
+      console.log(expiryDate);
+      await user.save(); 
+      console.log('Serenity score updated successfully');
+      return res.json({ message: 'Serenity score updated successfully' });
+    } else {
+      console.log("serinityScore not updated since the limit is not Reached");
+      return res.status(400).json({ error: 'Serenity score cannot be updated as the expiry date is not within three months' });
+    }
   } catch (error) {
-      console.error('Error updating serenity score:', error);
-      res.status(500).json({ error: 'Failed to update serenity score' });
+    console.error('Error updating serenity score:', error);
+    res.status(500).json({ error: 'Failed to update serenity score' });
   }
 });
 
@@ -1201,7 +1200,7 @@ io.on('connection', (socket) => {
               obsceneScore * 1.25 +
               identityHateScore * 1
             );
-            const toreduce =ToxicAggregate
+            const toreduce = ToxicAggregate
             const user = await User.findOneAndUpdate({ _id: u_id },
               { $inc: { serenityscore: -toreduce } },
               { new: true })
